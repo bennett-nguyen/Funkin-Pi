@@ -46,6 +46,8 @@ _RIGHT = pygame.image.load('./assets/img/right.png').convert_alpha()
 _SOUTH_INSTRUMENT = pygame.mixer.Sound("./assets/audio/south_instrument.mp3")
 _SOUTH_VOCAL = pygame.mixer.Sound('./assets/audio/south_vocal.mp3')
 
+# TITLE_FONT = pygame.font.Font('./assets/font/FridayFunkin-Regular.ttf', 14)
+# SCORE_FONT = pygame.font.Font('./assets/font/Gtoles.ttf', 14)
 
 class Image:
     LEFT_ARROW = pygame.transform.scale(
@@ -81,5 +83,4 @@ class Image:
 class Audio:
     INSTRUMENT = _SOUTH_INSTRUMENT
     VOCAL = _SOUTH_VOCAL
-    
     VOCAL_VOLUME = 1

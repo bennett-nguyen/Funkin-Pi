@@ -5,16 +5,16 @@ pygame.init()
 
 image_loader = game_loader.Image
 
-player_x = (game_loader.DisplaySurf.WIDTH/2/2)*3
-enemy_x = game_loader.DisplaySurf.WIDTH/2/2
 
-class TransparentSurf:
-    def __init__(self, x: int, y: int):
-        image_loader = game_loader.Image
-
-        self.surface = pygame.Surface([game_loader.DisplaySurf.WIDTH/2/1.3, 60], pygame.SRCALPHA, 32)
+class Surface:
+    def __init__(self, x, y, width, height):
+        self.surface = pygame.Surface([width, height], pygame.SRCALPHA, 32)
         #self.surface.fill('Red')
         self.rect = self.surface.get_rect(center=(x, y))
+        
+class TransparentSurf(Surface):
+    def __init__(self, x: int, y: int):
+        super().__init__(x, y, game_loader.DisplaySurf.WIDTH/2/1.3, 60)
 
         self.left_arrow = image_loader.LEFT_ARROW
         self.up_arrow = image_loader.UP_ARROW
@@ -50,33 +50,29 @@ class TransparentSurf:
             case pygame.K_RIGHT:
                 self.right_arrow = image_loader.RIGHT_ARROW
 
-class FlyingSurf:
+class FlyingSurf(Surface):
     VEL = 7
-    def __init__(self, x: int, y: int, arrow: game_loader.Image) -> None:
-        self.x = x
-        self.y = y
-
-        self.surface = pygame.Surface([game_loader.DisplaySurf.WIDTH/2/1.3, 60], pygame.SRCALPHA, 32)
-        #self.surface.fill('Red')
-        self.rect = self.surface.get_rect(center = (self.x, self.y))
+    def __init__(self, x: int, y: int, arrow: game_loader.Image, is_player: bool = False) -> None:
+        super().__init__(x, y, game_loader.DisplaySurf.WIDTH/2/1.3, 60)
 
         self.arrow = arrow
-
+        self.is_player = is_player
+        
         match self.arrow:
             case game_loader.Image.ACTIVATED_LEFT_ARROW:
-                self.arrow_rect = self.arrow.get_rect(midleft = (self.rect.midleft[0], self.y))
+                self.arrow_rect = self.arrow.get_rect(midleft = self.rect.midleft)
                 self.key = pygame.K_LEFT
 
             case game_loader.Image.ACTIVATED_DOWN_ARROW:
-                self.arrow_rect = self.arrow.get_rect(midleft =  (self.rect.midleft[0] + 100, self.y))
+                self.arrow_rect = self.arrow.get_rect(midleft =  (self.rect.midleft[0] + 100, self.rect.midleft[1]))
                 self.key = pygame.K_DOWN
 
             case game_loader.Image.ACTIVATED_UP_ARROW:
-                self.arrow_rect = self.arrow.get_rect(midright =  (self.rect.midright[0] - 100, self.y))
+                self.arrow_rect = self.arrow.get_rect(midright =  (self.rect.midright[0] - 100, self.rect.midleft[1]))
                 self.key = pygame.K_UP
 
             case game_loader.Image.ACTIVATED_RIGHT_ARROW:
-                self.arrow_rect = self.arrow.get_rect(midright =  (self.rect.midright[0], self.y))
+                self.arrow_rect = self.arrow.get_rect(midright =  self.rect.midright)
                 self.key = pygame.K_RIGHT
 
     def draw_self(self):
@@ -87,8 +83,9 @@ class FlyingSurf:
         self.rect.y -= self.VEL
         self.arrow_rect.y -= self.VEL
 
-    def collide_at_center(self, object):
-        return self.rect.center <= object.rect.center
+    # this collide method is only used for the enemy only!
+    def collide_for_enemy(self, object):
+        return self.rect.center[1] <= object.rect.center[1] and self.rect.colliderect(object)
 
     def collide(self, object):
         # range from object.rect.center[1] + range --> object.rect.center[1] - range
@@ -98,41 +95,21 @@ class FlyingSurf:
         lowest_center_range = object.rect.center[1] - range
         highest_center_range = object.rect.center[1] + range
 
-        if target.center[1] >= lowest_center_range and target.center[1] <= highest_center_range:
+        if target.center[1] >= lowest_center_range and target.center[1] <= highest_center_range and target.colliderect(object.rect):
             print('sick')
             return True
 
         elif target.colliderect(object.rect):
             print('good')
             return True
-
-    def get_key(self):
-        return self.key
     
-class Entity:
+class Entity(Surface):
     def __init__(self, x: int, y: int) -> None:
-        self.x = x
-        self.y = y
+        super().__init__(x, y, game_loader.DisplaySurf.WIDTH / 2, game_loader.DisplaySurf.HEIGHT)
         
-        self.surface = pygame.Surface([game_loader.DisplaySurf.WIDTH / 2, game_loader.DisplaySurf.HEIGHT])
-        self.surface.fill('Red')
-        self.rect = self.surface.get_rect(center=(self.x, self.y))
-        
-        self.state = image_loader.ENTITY_IDLE # idle
-        self.state_rect = self.state.get_rect(center=(self.x, self.y))
-    
+        self.state = image_loader.ENTITY_IDLE
+        self.state_rect = self.state.get_rect(center=self.rect.center)
+
     def draw_self(self):
         game_loader.DisplaySurf.Screen.blit(self.surface, self.rect)
         game_loader.DisplaySurf.Screen.blit(self.state, self.state_rect)
-    
-player_entity = Entity(player_x, game_loader.DisplaySurf.HEIGHT/2)
-
-enemy_surface = TransparentSurf(game_loader.DisplaySurf.WIDTH/2/2, 100)
-player_surface = TransparentSurf(player_x, 100)
-
-flying_object = FlyingSurf(player_x, 875, image_loader.ACTIVATED_LEFT_ARROW)
-flying_object_3 = FlyingSurf(player_x, 1000, image_loader.ACTIVATED_DOWN_ARROW)
-flying_object_2 = FlyingSurf(player_x, 1125, image_loader.ACTIVATED_UP_ARROW)
-flying_object_4 = FlyingSurf(player_x, 1250, image_loader.ACTIVATED_RIGHT_ARROW)
-
-objects = [flying_object, flying_object_3, flying_object_2, flying_object_4]
