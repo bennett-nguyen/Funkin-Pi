@@ -8,8 +8,8 @@ pygame.mixer.init()
 
 
 class DisplaySurf:
-    WIDTH = 1000
-    HEIGHT = 675
+    WIDTH = 1200
+    HEIGHT = 690
     FPS = 60
 
     Clock = pygame.time.Clock()
@@ -37,11 +37,6 @@ _ACTIVATED_UP_ARROW = pygame.image.load(
 _ACTIVATED_DOWN_ARROW = pygame.image.load(
     "./assets/img/activated_down_arrow.png").convert_alpha()
 
-_IDLE = pygame.image.load('./assets/img/idle.png').convert_alpha()
-_UP = pygame.image.load('./assets/img/up.png').convert_alpha()
-_DOWN = pygame.image.load('./assets/img/down.png').convert_alpha()
-_LEFT = pygame.image.load('./assets/img/left.png').convert_alpha()
-_RIGHT = pygame.image.load('./assets/img/right.png').convert_alpha()
 
 _SOUTH_INSTRUMENT = pygame.mixer.Sound("./assets/audio/south_instrument.mp3")
 _SOUTH_VOCAL = pygame.mixer.Sound('./assets/audio/south_vocal.mp3')
@@ -62,12 +57,6 @@ class Image:
     DOWN_ARROW = pygame.transform.scale(
         _DOWN_ARROW, (_DOWN_ARROW.get_width() / _scale, _DOWN_ARROW.get_height() / _scale))
 
-    ENTITY_IDLE = _IDLE
-    ENTITY_UP = _UP
-    ENTITY_DOWN = _DOWN
-    ENTITY_LEFT = _LEFT
-    ENTITY_RIGHT = _RIGHT
-
     ACTIVATED_LEFT_ARROW = pygame.transform.scale(_ACTIVATED_LEFT_ARROW, (
         _ACTIVATED_LEFT_ARROW.get_width() / _scale, _ACTIVATED_LEFT_ARROW.get_height() / _scale))
 
@@ -79,6 +68,12 @@ class Image:
 
     ACTIVATED_DOWN_ARROW = pygame.transform.scale(_ACTIVATED_DOWN_ARROW, (
         _ACTIVATED_DOWN_ARROW.get_width() / _scale, _ACTIVATED_DOWN_ARROW.get_height() / _scale))
+
+    ENTITY_IDLE = './assets/img/idle.mp4'
+    ENTITY_LEFT = './assets/img/left.mp4'
+    ENTITY_RIGHT = './assets/img/right.mp4'
+    ENTITY_UP = './assets/img/up.mp4'
+    ENTITY_DOWN = './assets/img/down.mp4'
 
 class Audio:
     INSTRUMENT = _SOUTH_INSTRUMENT
