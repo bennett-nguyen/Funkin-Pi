@@ -17,28 +17,24 @@ enemy_entity = Entity(enemy_surface_x, DisplaySurf.HEIGHT/2)
 enemy_surface = TransparentSurf(enemy_surface_x, 80)
 player_surface = TransparentSurf(player_surface_x, 80)
 
-step_counter = 0
-missed_counter = 0
-
-# accuracy = missed_counter / (step_counter + missed_counter) * 100
-
 # Audio.INSTRUMENT.play()
 # Audio.VOCAL.play()
+
 
 def draw_window():
     DisplaySurf.Screen.fill('Black')
 
-    if player_entity.animation_is_playable():                
-        player_entity.load_animation()
-        player_entity.draw_self()
-    else:
+    if not player_entity.animation_is_playable():
         player_entity.change_animation(Image.ENTITY_IDLE)
-        player_entity.draw_self()
+
+    player_entity.load_animation()
+    player_entity.draw_self()
 
     player_surface.draw_self()
     enemy_surface.draw_self()
 
-    pygame.draw.line(DisplaySurf.Screen, "White", (DisplaySurf.WIDTH/2, 0), (DisplaySurf.WIDTH/2, DisplaySurf.HEIGHT), 3)
+    pygame.draw.line(DisplaySurf.Screen, "White", (DisplaySurf.WIDTH/2,
+                     0), (DisplaySurf.WIDTH/2, DisplaySurf.HEIGHT), 3)
 
     for object in objects:
         object.draw_self()
@@ -53,6 +49,7 @@ def draw_window():
             break
 
     pygame.display.update()
+
 
 while True:
     current_time = pygame.time.get_ticks()
@@ -84,16 +81,14 @@ while True:
                     player_entity.change_animation(Image.ENTITY_RIGHT)
                     player_entity.draw_self()
 
-            for object in objects:
+            for object in objects[:]:
                 if object.key == event.key:
                     if object.collide(player_surface):
                         objects.remove(object)
                         break
 
-
         if event.type == pygame.KEYUP:
             player_surface.event_on_arrow_deactivate(event)
-
 
     draw_window()
     DisplaySurf.Clock.tick(DisplaySurf.FPS)

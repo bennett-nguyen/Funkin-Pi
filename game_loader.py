@@ -15,15 +15,30 @@ class DisplaySurf:
     Clock = pygame.time.Clock()
     Screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
-# Video animation must be 500x675px
+
+class Stat:
+    missed_counter = 0
+    hit_counter = 0
+
+    point = 0
+
+    def get_accuracy(self):
+        return self.hit_counter / (self.missed_counter + self.hit_counter) * 100
+
+# Video animation must be 600x690px
+
 
 # Images
 _scale = 2  # Increase this to get smaller arrow images
 
-_LEFT_ARROW = pygame.image.load("./assets/img/left_arrow.png").convert_alpha()
-_RIGHT_ARROW = pygame.image.load("./assets/img/right_arrow.png").convert_alpha()
-_UP_ARROW = pygame.image.load("./assets/img/up_arrow.png").convert_alpha()
-_DOWN_ARROW = pygame.image.load("./assets/img/down_arrow.png").convert_alpha()
+_LEFT_ARROW = pygame.image.load(
+    "./assets/img/left_arrow.png").convert_alpha()
+_RIGHT_ARROW = pygame.image.load(
+    "./assets/img/right_arrow.png").convert_alpha()
+_UP_ARROW = pygame.image.load(
+    "./assets/img/up_arrow.png").convert_alpha()
+_DOWN_ARROW = pygame.image.load(
+    "./assets/img/down_arrow.png").convert_alpha()
 
 _ACTIVATED_LEFT_ARROW = pygame.image.load(
     "./assets/img/activated_left_arrow.png").convert_alpha()
@@ -37,12 +52,9 @@ _ACTIVATED_UP_ARROW = pygame.image.load(
 _ACTIVATED_DOWN_ARROW = pygame.image.load(
     "./assets/img/activated_down_arrow.png").convert_alpha()
 
-
-_SOUTH_INSTRUMENT = pygame.mixer.Sound("./assets/audio/south_instrument.mp3")
-_SOUTH_VOCAL = pygame.mixer.Sound('./assets/audio/south_vocal.mp3')
-
 # TITLE_FONT = pygame.font.Font('./assets/font/FridayFunkin-Regular.ttf', 14)
 # SCORE_FONT = pygame.font.Font('./assets/font/Gtoles.ttf', 14)
+
 
 class Image:
     LEFT_ARROW = pygame.transform.scale(
@@ -75,7 +87,9 @@ class Image:
     ENTITY_UP = './assets/img/up.mp4'
     ENTITY_DOWN = './assets/img/down.mp4'
 
+
 class Audio:
-    INSTRUMENT = _SOUTH_INSTRUMENT
-    VOCAL = _SOUTH_VOCAL
+    INSTRUMENT = pygame.mixer.Sound("./assets/audio/south_instrument.mp3")
+    VOCAL = pygame.mixer.Sound('./assets/audio/south_vocal.mp3')
+
     VOCAL_VOLUME = 1
