@@ -56,7 +56,7 @@ _ACTIVATED_DOWN_ARROW = pygame.image.load(
 # SCORE_FONT = pygame.font.Font('./assets/font/Gtoles.ttf', 14)
 
 
-class Image:
+class Gallery:
     LEFT_ARROW = pygame.transform.scale(
         _LEFT_ARROW, (_LEFT_ARROW.get_width() / _scale, _LEFT_ARROW.get_height() / _scale))
 
@@ -89,7 +89,9 @@ class Image:
 
 
 class Audio:
-    INSTRUMENT = pygame.mixer.Sound("./assets/audio/south_instrument.mp3")
-    VOCAL = pygame.mixer.Sound('./assets/audio/south_vocal.mp3')
+    SOUTH_INSTRUMENT = pygame.mixer.Sound("./assets/audio/south_instrument.ogg")
+    SOUTH_VOCAL = pygame.mixer.Sound('./assets/audio/south_vocal.ogg')
 
+    TUTORIAL = pygame.mixer.Sound('./assets/audio/tutorial.ogg')
+    
     VOCAL_VOLUME = 1

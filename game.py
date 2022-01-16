@@ -1,12 +1,13 @@
 import pygame
-from game_loader import DisplaySurf, Audio, Image
+from game_loader import DisplaySurf, Audio, Gallery
 from game_components import Entity, TransparentSurf
 from sys import exit
-from test import objects
+from mapping import file_loader, processor
 
 pygame.init()
 pygame.display.set_caption("Friday Night Funkin' - π Edition")
 
+objects = processor(file_loader())
 
 player_surface_x = (DisplaySurf.WIDTH/2/2)*3
 enemy_surface_x = DisplaySurf.WIDTH/2/2
@@ -17,15 +18,16 @@ enemy_entity = Entity(enemy_surface_x, DisplaySurf.HEIGHT/2)
 enemy_surface = TransparentSurf(enemy_surface_x, 80)
 player_surface = TransparentSurf(player_surface_x, 80)
 
-# Audio.INSTRUMENT.play()
-# Audio.VOCAL.play()
+current_time = 0
+
+Audio.TUTORIAL.play()
 
 
-def draw_window():
+def draw_window(current_time):
     DisplaySurf.Screen.fill('Black')
 
     if not player_entity.animation_is_playable():
-        player_entity.change_animation(Image.ENTITY_IDLE)
+        player_entity.change_animation(Gallery.ENTITY_IDLE)
 
     player_entity.load_animation()
     player_entity.draw_self()
@@ -35,25 +37,25 @@ def draw_window():
 
     pygame.draw.line(DisplaySurf.Screen, "White", (DisplaySurf.WIDTH/2,
                      0), (DisplaySurf.WIDTH/2, DisplaySurf.HEIGHT), 3)
+    
+    if current_time > file_loader()["initial value"]["time"] * 1000:
+        for object in objects:
+            object.draw_self()
+            object.move()
 
-    for object in objects:
-        object.draw_self()
-        object.move()
+            if object.rect.y <= - object.surface.get_height():
+                objects.remove(object)
 
-        if object.rect.y <= - object.surface.get_height():
-            objects.remove(object)
+            if object.collide_for_enemy(enemy_surface):
+                objects.remove(object)
 
-        if object.collide_for_enemy(enemy_surface):
-            objects.remove(object)
-
-            break
+                break
 
     pygame.display.update()
 
-
 while True:
     current_time = pygame.time.get_ticks()
-
+    
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -62,23 +64,23 @@ while True:
         if event.type == pygame.KEYDOWN:
             match event.key:
                 case pygame.K_UP:
-                    player_surface.up_arrow = Image.ACTIVATED_UP_ARROW
-                    player_entity.change_animation(Image.ENTITY_UP)
+                    player_surface.up_arrow = Gallery.ACTIVATED_UP_ARROW
+                    player_entity.change_animation(Gallery.ENTITY_UP)
                     player_entity.draw_self()
 
                 case pygame.K_DOWN:
-                    player_surface.down_arrow = Image.ACTIVATED_DOWN_ARROW
-                    player_entity.change_animation(Image.ENTITY_DOWN)
+                    player_surface.down_arrow = Gallery.ACTIVATED_DOWN_ARROW
+                    player_entity.change_animation(Gallery.ENTITY_DOWN)
                     player_entity.draw_self()
 
                 case pygame.K_LEFT:
-                    player_surface.left_arrow = Image.ACTIVATED_LEFT_ARROW
-                    player_entity.change_animation(Image.ENTITY_LEFT)
+                    player_surface.left_arrow = Gallery.ACTIVATED_LEFT_ARROW
+                    player_entity.change_animation(Gallery.ENTITY_LEFT)
                     player_entity.draw_self()
 
                 case pygame.K_RIGHT:
-                    player_surface.right_arrow = Image.ACTIVATED_RIGHT_ARROW
-                    player_entity.change_animation(Image.ENTITY_RIGHT)
+                    player_surface.right_arrow = Gallery.ACTIVATED_RIGHT_ARROW
+                    player_entity.change_animation(Gallery.ENTITY_RIGHT)
                     player_entity.draw_self()
 
             for object in objects[:]:
@@ -89,6 +91,6 @@ while True:
 
         if event.type == pygame.KEYUP:
             player_surface.event_on_arrow_deactivate(event)
-
-    draw_window()
+            
+    draw_window(current_time)
     DisplaySurf.Clock.tick(DisplaySurf.FPS)
