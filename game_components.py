@@ -6,10 +6,31 @@ pygame.init()
 
 image_loader = game_loader.Gallery
 
+# --------Components for the start screen --------
+class ImageAnimation:
+    def __init__(self, images: tuple, x: int, y: int, speed: float):
+        self.images = images
+        self.index = 0
+        self.speed = speed # 0 -> 1 high speed == fast animation
 
+        self.surf = self.images[self.index]
+        self.rect = self.surf.get_rect(center=(x, y))
+
+    def toggle_animation(self):
+        self.index += self.speed
+        if self.index >= len(self.images):
+            self.index = 0
+        self.surf = self.images[int(self.index)]
+
+        game_loader.DisplaySurf.Screen.blit(self.surf, self.rect)
+
+# ------------------------------------------------
+
+
+# -------- Components for the main game ----------
 class Surface:
     def __init__(self, x, y, width, height):
-        self.surface = pygame.Surface([width, height], pygame.SRCALPHA, 32)
+        self.surface = pygame.Surface((width, height), pygame.SRCALPHA, 32)
         # self.surface.fill('Red')
         self.rect = self.surface.get_rect(center=(x, y))
 
@@ -148,3 +169,4 @@ class Entity(Surface):
         game_loader.DisplaySurf.Screen.blit(self.surface, self.rect)
         game_loader.DisplaySurf.Screen.blit(
             self.animation_surf, self.animation_rect)
+# ----------------------------------------------------
