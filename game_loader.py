@@ -2,9 +2,13 @@
 Load all of the resources for this game and initialize the display surface
 """
 import pygame
+from pygame.locals import *
+
+flags = FULLSCREEN | DOUBLEBUF
 
 pygame.init()
-pygame.mixer.init()
+pygame.event.set_allowed([pygame.QUIT, pygame.KEYDOWN, pygame.KEYUP, pygame.MOUSEBUTTONDOWN])
+pygame.display.set_caption("Friday Night Funkin' - At Home")
 
 
 class DisplaySurf:
@@ -13,16 +17,16 @@ class DisplaySurf:
     FPS = 60
 
     Clock = pygame.time.Clock()
-    Screen = pygame.display.set_mode((WIDTH, HEIGHT))
+    Screen = pygame.display.set_mode((WIDTH, HEIGHT), flags, 24)
 
-class Stat:
-    missed_counter = 0
-    hit_counter = 0
+# class Stat:
+#     missed_counter = 0
+#     hit_counter = 0
 
-    point = 0
+#     score = 0
 
-    def get_accuracy(self):
-        return self.hit_counter / (self.missed_counter + self.hit_counter) * 100
+#     def get_accuracy(self):
+#         return self.hit_counter / (self.missed_counter + self.hit_counter) * 100
 
 # Video animation must be 600x690px
 
@@ -52,12 +56,15 @@ _ACTIVATED_DOWN_ARROW = pygame.image.load(
     "./assets/img/activated_down_arrow.png").convert_alpha()
 
 
-
 class Font:
-    TITLE_FONT = pygame.font.Font('./assets/font/FridayFunkin-Regular.ttf', 100)
-    TITLE_FONT_2 = pygame.font.Font('./assets/font/FridayFunkin-Regular.ttf', 75)
+    TITLE_FONT = pygame.font.Font(
+        './assets/font/FridayFunkin-Regular.ttf', 100)
+    TITLE_FONT_2 = pygame.font.Font(
+        './assets/font/FridayFunkin-Regular.ttf', 75)
     WEEK_FONT = pygame.font.Font('./assets/font/FridayFunkin-Regular.ttf', 50)
     SCORE_FONT = pygame.font.Font('./assets/font/Gtoles.ttf', 300)
+    MENU_SCORE = pygame.font.Font('./assets/font/vcr_osd.ttf', 20)
+
 
 class Gallery:
     LEFT_ARROW = pygame.transform.scale(
@@ -89,19 +96,29 @@ class Gallery:
     ENTITY_RIGHT = './assets/img/right.mp4'
     ENTITY_UP = './assets/img/up.mp4'
     ENTITY_DOWN = './assets/img/down.mp4'
-    
+
     LOGO = pygame.image.load("./assets/img/logo.jpg").convert()
-    
-    BUTTON_DEACTIVATED_IMAGES = (pygame.transform.rotozoom(pygame.image.load("./assets/img/play_1.jpg").convert(), 0, 0.6), pygame.transform.rotozoom(pygame.image.load("./assets/img/play_2.jpg").convert(), 0, 0.6))
-    BUTTON_ON_HOVER_IMAGES = (pygame.transform.rotozoom(pygame.image.load("./assets/img/play_3.png").convert_alpha(), 0, 0.6), pygame.transform.rotozoom(pygame.image.load("./assets/img/play_4.png").convert_alpha(), 0, 0.6))
-    BUTTON_ACTIVATED_IMAGES = (pygame.transform.rotozoom(pygame.image.load("./assets/img/play_1.jpg").convert_alpha(), 0, 0.6), pygame.transform.rotozoom(pygame.image.load("./assets/img/play_3.png").convert_alpha(), 0, 0.6))
+
+    BUTTON_DEACTIVATED_IMAGES = (pygame.transform.rotozoom(pygame.image.load("./assets/img/play_1.jpg").convert(
+    ), 0, 0.6), pygame.transform.rotozoom(pygame.image.load("./assets/img/play_2.jpg").convert(), 0, 0.6))
+    BUTTON_ON_HOVER_IMAGES = (pygame.transform.rotozoom(pygame.image.load("./assets/img/play_3.png").convert_alpha(
+    ), 0, 0.6), pygame.transform.rotozoom(pygame.image.load("./assets/img/play_4.png").convert_alpha(), 0, 0.6))
+    BUTTON_ACTIVATED_IMAGES = (pygame.transform.rotozoom(pygame.image.load("./assets/img/play_1.jpg").convert_alpha(
+    ), 0, 0.6), pygame.transform.rotozoom(pygame.image.load("./assets/img/play_3.png").convert_alpha(), 0, 0.6))
+
+    POINTER = (pygame.transform.rotozoom(pygame.image.load("./assets/img/pointer_1.png").convert_alpha(), 0, 0.2),
+               pygame.transform.rotozoom(pygame.image.load("./assets/img/pointer_2.png").convert_alpha(), 0, 0.2))
+
+
 class Audio:
     FREAKY_MENU = pygame.mixer.Sound('./assets/audio/freaky_menu.ogg')
     CONFIRM_MENU = pygame.mixer.Sound('./assets/audio/confirm_menu.ogg')
-    
-    SOUTH_INSTRUMENT = pygame.mixer.Sound("./assets/audio/south_instrument.ogg")
+    SCROLL_MENU = pygame.mixer.Sound('./assets/audio/scroll_menu.ogg')
+
+    SOUTH_INSTRUMENT = pygame.mixer.Sound(
+        "./assets/audio/south_instrument.ogg")
     SOUTH_VOCAL = pygame.mixer.Sound('./assets/audio/south_vocal.ogg')
 
     TUTORIAL = pygame.mixer.Sound('./assets/audio/tutorial.ogg')
-    
+
     VOCAL_VOLUME = 1
