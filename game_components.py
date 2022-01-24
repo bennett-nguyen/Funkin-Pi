@@ -6,11 +6,11 @@ pygame.init()
 
 image_loader = game_loader.Gallery
 
-
+# -------- Components for the main game ----------
 class Surface:
-    def __init__(self, x, y, width, height):
-        self.surface = pygame.Surface([width, height], pygame.SRCALPHA, 32)
-        # self.surface.fill('Red')
+    def __init__(self, x: int, y: int, width: int, height: int, color: tuple[int] = None):
+        self.surface = pygame.Surface((width, height), pygame.SRCALPHA, 32) if color is None else pygame.Surface((width, height))
+        if color is not None:self.surface.fill(color)
         self.rect = self.surface.get_rect(center=(x, y))
 
 
@@ -121,6 +121,7 @@ class FlyingSurf(Surface):
 
 class Entity(Surface):
     def __init__(self, x: int, y: int) -> None:
+        
         super().__init__(x, y, game_loader.DisplaySurf.WIDTH /
                          2, game_loader.DisplaySurf.HEIGHT)
 
@@ -148,3 +149,156 @@ class Entity(Surface):
         game_loader.DisplaySurf.Screen.blit(self.surface, self.rect)
         game_loader.DisplaySurf.Screen.blit(
             self.animation_surf, self.animation_rect)
+# ----------------------------------------------------
+
+
+
+# --------Components for the start screen --------
+class ImageAnimation:
+    def __init__(self, images: tuple, x: int, y: int, speed: float):
+        self.images = images
+        self.index = 0
+        self.speed = speed  # 0 -> 1 high speed == fast animation
+
+        self.surf = self.images[self.index]
+        self.rect = self.surf.get_rect(center=(x, y))
+
+    def toggle_animation(self):
+        self.index += self.speed
+        if self.index >= len(self.images):
+            self.index = 0
+        self.surf = self.images[int(self.index)]
+
+        game_loader.DisplaySurf.Screen.blit(self.surf, self.rect)
+
+
+# still under construction
+class Track:
+    def __init__(self, name: str, difficulties: list[str], score: dict):
+        self.display_name = game_loader.Font.TITLE_FONT_2.render(
+            name.upper(), True, (255, 255, 255))
+
+        self.difficulties = [
+            game_loader.Font.TITLE_FONT_2.render(difficulty.upper(), True, (255, 255, 255))
+            for difficulty in difficulties
+            if difficulty.lower() in ["easy", "normal"]
+        ]
+        self.score = score
+        
+        self.alpha = 255
+        self.display_name.set_alpha(self.alpha)
+        
+    def move_up(self):
+        self.display_name_rect.y -= 100
+    
+    def move_down(self):
+        self.display_name_rect.y += 100
+        
+    def init_rect_coordinates(self, x, y):
+        self.display_name_rect = self.display_name.get_rect(center = (x, y))
+
+class TrackChooser(Surface):
+    def __init__(self, x: int, y: int, width, height, tracks: list[Track]):
+        pass
+
+
+def file_parser() -> list[dict]:
+    import json
+    import os
+    files = []
+
+    try:
+        for entry in os.listdir("./mapping/header"):
+            if not entry.endswith(".json"):
+                continue
+
+            with open(f"./mapping/header/{entry}", "r") as f:
+                file = json.load(f)
+                files.append(file)
+    except Exception as e:
+        print("an exception occurred during runtime:")
+        print(e)
+        raise Exception('exited due to errors')
+
+    return files
+
+
+def description_parser(files: list[dict]) -> list[Track]:
+    return [
+        Track(file["description"]["name"], file["description"]["difficulties"], file["description"]["score"])
+        for file in files
+        if "description" in file
+    ]
+# ------------------------------------------------
+
+
+# -------- Components for screen transitioning ---
+class SceneSwitcher:
+    def __init__(self, scenes: dict):
+        self.scenes = scenes
+        self.current = self.scenes["start screen"]
+        self.is_transitioning = False
+        self.redirect_delay = 0
+        
+        self.current_time = 0
+        self.redirected_time = 0
+        
+        self.surface = pygame.Surface(game_loader.DisplaySurf.Screen.get_size())
+        self.surface.fill((0, 0, 0))
+        
+        self.alpha = 0
+        self.fade_delay = 0
+        self.fade_state = "OUT"
+        
+    def change_scene(self):
+        state = self.current.redirect
+        self.current.reset_attr()
+        self.current = self.scenes[state]
+        self.reset_attr()
+    
+    def fade(self):
+        if self.fade_state == "OUT":
+            self.alpha += 4
+            self.surface.set_alpha(self.alpha)
+            game_loader.DisplaySurf.Screen.blit(self.surface, (0, 0))
+            
+            if self.alpha >= 255:
+                self.fade_state = "IN"
+
+        elif self.fade_state == "IN":
+            self.alpha -= 4
+            self.surface.set_alpha(self.alpha)
+            game_loader.DisplaySurf.Screen.blit(self.surface, (0, 0))
+            
+            if self.alpha <= 0:
+                self.fade_state = "OUT"
+                self.alpha = 0
+                self.is_transitioning = False
+                self.fade_delay = 0
+
+    def update(self):
+        self.current_time = pygame.time.get_ticks()
+
+        if not self.is_transitioning:
+            self.current.input()
+        self.current.redraw()
+
+        if self.current.redirect is not None:
+            if not self.redirected_time:
+                self.redirected_time = pygame.time.get_ticks()
+                self.redirect_delay = self.current.redirect_delay
+                self.fade_delay = self.current.fade_delay
+                self.is_transitioning = True
+
+            if self.current_time - self.redirected_time > self.redirect_delay:
+                self.change_scene()
+
+        if (
+            self.is_transitioning
+            and self.current_time - self.redirected_time > self.fade_delay
+        ):
+            self.fade()
+
+    def reset_attr(self):
+        self.redirect_delay = self.redirected_time = 0
+# ------------------------------------------------

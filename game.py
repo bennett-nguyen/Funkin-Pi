@@ -5,7 +5,6 @@ from sys import exit
 from mapping import file_loader, processor
 
 pygame.init()
-pygame.display.set_caption("Friday Night Funkin' - π Edition")
 
 objects = processor(file_loader())
 

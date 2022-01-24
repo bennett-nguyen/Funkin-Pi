@@ -4,9 +4,8 @@
         "space": 125,
         "velocity": 7
     },
+
     "mapping": {
-        "wave1": {
-            "object": null
-        }
+        
     }
 }

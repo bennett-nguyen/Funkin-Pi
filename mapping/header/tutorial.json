@@ -1,0 +1,11 @@
+{
+    "description": {
+        "name": "TUTORIAL",
+        "difficulties": ["easy"],
+        "score": {"easy": 0}
+    },
+
+    "mapping": {
+        "easy": {"#include": "./include/tutorial-easy.json"}
+    }
+}
