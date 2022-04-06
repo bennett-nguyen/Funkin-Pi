@@ -1,12 +1,12 @@
 import pygame
-from game_loader import DisplaySurf, Audio
-from game_components import SceneSwitcher
-from scenes import StartScreen, MenuScreen
+from load.game_loader import DisplaySurf, Audio
+from scene.component import SceneSwitcher
+from scene.scenes import StartScreen, MenuScreen
 from sys import exit
 
 pygame.init()
 
-Audio.FREAKY_MENU.play(-1)
+# Audio.FREAKY_MENU.play(-1)
 
 game_scenes = {
     "start screen": StartScreen(),
