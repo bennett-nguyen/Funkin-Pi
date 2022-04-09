@@ -1,0 +1,11 @@
+{
+    "description": {
+        "name": "Test5",
+        "difficulties": ["easy"],
+        "score": {"easy": 0}
+    },
+
+    "mapping": {
+        "easy": {"#include": "./include/south-easy.json"}
+    }
+}
