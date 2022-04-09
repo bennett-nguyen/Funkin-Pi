@@ -3,11 +3,17 @@ import load.game_loader as game_loader
 
 pygame.init()
 
+
 class Surface:
-    def __init__(self, x: int, y: int, width: int, height: int, color: tuple[int] = None):
-        self.surface = pygame.Surface((width, height), pygame.SRCALPHA, 32) if color is None else pygame.Surface((width, height))
-        if color is not None: self.surface.fill(color)
+    def __init__(self, x: int, y: int, width: int, height: int, color: tuple[int] = None, alpha: bool = False):
+        self.surface = pygame.Surface(
+            (width, height), pygame.SRCALPHA, 32) if alpha else pygame.Surface((width, height))
+
+        if color is not None:
+            self.surface.fill(color)
+
         self.rect = self.surface.get_rect(center=(x, y))
+
 
 class ImageAnimation:
     def __init__(self, images: tuple, x: int, y: int, speed: float):
