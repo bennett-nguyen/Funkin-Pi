@@ -87,29 +87,27 @@ class MenuScreen(Scene):
 
         self.yellow_rectangle = genc.Surface(
             game_loader.DisplaySurf.WIDTH/2, 150, game_loader.DisplaySurf.WIDTH - 150, 200, (249, 209, 81))
-        
+
         self.choose_your_track = game_loader.Font.TITLE_FONT_2.render(
             "CHOOSE YOUR TRACK", True, "Black")
         self.cyt_rect = self.choose_your_track.get_rect(
             center=self.yellow_rectangle.rect.center)
-        
+
         self.score_text = game_loader.Font.MENU_SCORE.render(
             f"SCORE: {self.week_score}", True, "White")
         self.st_rect = self.score_text.get_rect(
             midleft=(self.yellow_rectangle.rect.midleft[0], 25))
 
-        
         self.track_chooser_rect = genc.Surface(
             game_loader.DisplaySurf.WIDTH/2, 470, 270, 300)
         self.pointer = genc.ImageAnimation(
             game_loader.Gallery.POINTER, self.track_chooser_rect.rect.centerx + 250, self.track_chooser_rect.rect.centery, 0.1)
         self.tracks = Data.descriptions
 
-        
         distance = 0
 
         for track in self.tracks:
-            track.init_rect_coordinates(
+            track.init_display_name_rect_coordinates(
                 self.track_chooser_rect.rect.centerx, self.track_chooser_rect.rect.centery + distance)
             distance += 120
 
@@ -117,10 +115,9 @@ class MenuScreen(Scene):
 
     def redraw(self):
         self.logic.update()
-        
+
         game_loader.DisplaySurf.Screen.blit(
             self.yellow_rectangle.surface, self.yellow_rectangle.rect)
-        
 
         game_loader.DisplaySurf.Screen.blit(
             self.choose_your_track, self.cyt_rect)
