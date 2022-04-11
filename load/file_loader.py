@@ -20,15 +20,34 @@ def file_parser() -> list[dict]:
     except Exception as e:
         print("an exception occurred during runtime:")
         print(e)
-        raise Exception(f'invalid header file detected: {entry}\nconsider inspect it before running the game.') from e
+        raise Exception(
+            f'invalid header file detected: {entry}\nconsider inspect it before running the game.') from e
 
     return files
 
 
-def description_parser(files: list[dict]) -> list[Track]:
+def make_text_lowercase(array):
     return [
-        Track(file["description"]["name"], file["description"]
-              ["difficulties"], file["description"]["score"])
+        difficulty.lower() for difficulty in array
+    ]
+
+
+def remove_junk(array):
+    return [
+        difficulty for difficulty in array if difficulty in ["easy", "normal", "hard"]
+    ]
+
+
+def description_parser(files: list[dict]) -> list[Track]:
+
+    return [
+        Track(file["description"]["name"],
+            list(set(
+                remove_junk(
+                    make_text_lowercase(file["description"]["difficulties"])))
+                ),
+            file["description"]["score"])
+
         for file in files
         if "description" in file
     ]

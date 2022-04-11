@@ -113,7 +113,7 @@ class Gallery:
 
 class Data:
     descriptions = file_loader.description_parser(file_loader.file_parser())
-
+    
 class Audio:
     FREAKY_MENU = pygame.mixer.Sound('./assets/audio/freaky_menu.ogg')
     CONFIRM_MENU = pygame.mixer.Sound('./assets/audio/confirm_menu.ogg')
