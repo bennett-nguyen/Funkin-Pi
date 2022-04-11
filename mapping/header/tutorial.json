@@ -1,7 +1,7 @@
 {
     "description": {
         "name": "TUTORIAL",
-        "difficulties": ["easy"],
+        "difficulties": ["easy", "normal", "hard"],
         "score": {"easy": 0}
     },
 

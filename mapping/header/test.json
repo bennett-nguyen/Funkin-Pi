@@ -1,7 +1,7 @@
 {
     "description": {
         "name": "test",
-        "difficulties": ["easy"],
+        "difficulties": ["normal", "hard"],
         "score": {"easy": 0}
     },
 
