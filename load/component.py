@@ -41,13 +41,11 @@ class Track:
             [difficulty for difficulty in difficulties if self.difficulties[difficulty] is not None]
             )
 
-        self.score = score
-
-    def move_up(self):
-        self.display_name_rect.y -= 100
-
-    def move_down(self):
-        self.display_name_rect.y += 100
+        self.score = {
+            "easy": score.get("easy", 0),
+            "normal": score.get("normal", 0),
+            "hard": score.get("hard", 0)
+        }
 
     def init_display_name_rect_coordinates(self, x, y):
         self.display_name_rect = self.display_name.get_rect(center=(x, y))
