@@ -2,7 +2,7 @@
     "description": {
         "name": "test",
         "difficulties": ["normal", "hard"],
-        "score": {"easy": 0}
+        "score": {"normal": 420420420}
     },
 
     "mapping": {
