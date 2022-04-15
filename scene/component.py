@@ -104,10 +104,17 @@ class MenuLogic:
         self.current_track = self.tracks[self.track_index]
 
         self.avail_diff = self.current_track.available_difficulties
-        self.curr_diff = self.current_track.difficulties[
+        self.curr_diff_text = self.current_track.difficulties[
             self.avail_diff[self.diff_index]]
         self.prev_diff = self.avail_diff[self.diff_index]
-
+        
+        self.current_score = self.current_track.score
+        
+        self.score_text = game_loader.Font.MENU_SCORE.render(
+            f"SCORE: {self.current_score[self.prev_diff]}", True, "White")
+        self.st_rect = self.score_text.get_rect(
+            midleft=(75, 25))
+        
         self.speed = 20
         self.jumping_speed = 30
 
@@ -116,7 +123,7 @@ class MenuLogic:
         self.current_time = self.keydown_time = 0
         self.delay_time = 250
 
-        self.difficulty_centery = self.curr_diff[1].centery
+        self.difficulty_centery = self.curr_diff_text[1].centery
         self.offset_centery = -70
         self.alpha = 50
 
@@ -125,16 +132,16 @@ class MenuLogic:
     def difficulty_animation(self):
 
         if self.changing_difficulty:
-            self.curr_diff[1].centery += 10
+            self.curr_diff_text[1].centery += 10
             self.offset_centery += 10
             self.alpha += 36.4
 
         if not self.offset_centery:
-            self.curr_diff[1].centery = self.difficulty_centery
+            self.curr_diff_text[1].centery = self.difficulty_centery
             self.changing_difficulty = self.is_transitioning = False
             self.offset_centery = -70
             self.alpha = 50
-            self.curr_diff[0].set_alpha(255)
+            self.curr_diff_text[0].set_alpha(255)
 
     def move_track(self):
         if self.is_transitioning:
@@ -223,14 +230,20 @@ class MenuLogic:
                 self.prev_diff)
 
 
-        self.curr_diff = self.current_track.difficulties[
+        self.curr_diff_text = self.current_track.difficulties[
             self.avail_diff[self.diff_index]]
         self.prev_diff = self.avail_diff[self.diff_index]
 
+        self.current_score = self.current_track.score
+        
+        self.score_text = game_loader.Font.MENU_SCORE.render(
+            f"SCORE: {self.current_score[self.prev_diff]}", True, "White")
+        self.st_rect = self.score_text.get_rect(
+            midleft=(75, 25))
 
         if self.changing_difficulty:
-            self.curr_diff[1].centery += self.offset_centery
-            self.curr_diff[0].set_alpha(self.alpha)
+            self.curr_diff_text[1].centery += self.offset_centery
+            self.curr_diff_text[0].set_alpha(self.alpha)
 
     def redraw(self):
         if self.is_transitioning:
@@ -253,9 +266,10 @@ class MenuLogic:
                 track.display_name, track.display_name_rect)
 
             game_loader.DisplaySurf.Screen.blit(
-                self.curr_diff[0], self.curr_diff[1]
+                self.curr_diff_text[0], self.curr_diff_text[1]
             )
 
+            game_loader.DisplaySurf.Screen.blit(self.score_text, self.st_rect)
     def update(self):
         self.input()
         self.redraw()

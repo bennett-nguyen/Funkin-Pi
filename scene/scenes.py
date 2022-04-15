@@ -83,8 +83,6 @@ class MenuScreen(Scene):
         self.redirect = None
         self.redirect_delay = 1000
 
-        self.week_score = 0
-
         self.yellow_rectangle = genc.Surface(
             game_loader.DisplaySurf.WIDTH/2, 150, game_loader.DisplaySurf.WIDTH - 150, 200, (249, 209, 81))
 
@@ -92,11 +90,6 @@ class MenuScreen(Scene):
             "CHOOSE YOUR TRACK", True, "Black")
         self.cyt_rect = self.choose_your_track.get_rect(
             center=self.yellow_rectangle.rect.center)
-
-        self.score_text = game_loader.Font.MENU_SCORE.render(
-            f"SCORE: {self.week_score}", True, "White")
-        self.st_rect = self.score_text.get_rect(
-            midleft=(self.yellow_rectangle.rect.midleft[0], 25))
 
         self.track_chooser_rect = genc.Surface(
             game_loader.DisplaySurf.WIDTH/2, 470, 270, 300)
@@ -121,7 +114,6 @@ class MenuScreen(Scene):
 
         game_loader.DisplaySurf.Screen.blit(
             self.choose_your_track, self.cyt_rect)
-        game_loader.DisplaySurf.Screen.blit(self.score_text, self.st_rect)
 
         self.pointer.toggle_animation()
 
