@@ -8,6 +8,7 @@ class Scene:
     def __init__(self):
         self.redirect = None
         self.redirect_delay = 0
+        self.allow_keydown = True
 
         self.fade_delay = 0
 
@@ -19,9 +20,7 @@ class Scene:
 
     def reset_attr(self):
         self.redirect = None
-
-    def set_direct(self):
-        pass
+        self.allow_keydown = False
 
 
 class SceneSwitcher:
@@ -44,8 +43,11 @@ class SceneSwitcher:
 
     def change_scene(self):
         state = self.current.redirect
+        main_game_data = getattr(self.current, 'loaded_data', None)
         self.current.reset_attr()
         self.current = self.scenes[state]
+        if main_game_data is not None:
+            self.current.receive_data(main_game_data)
         self.reset_attr()
 
     def fade(self):
@@ -210,6 +212,14 @@ class MenuLogic:
                 game_loader.Audio.SCROLL_MENU.play()
 
             self.process_input_data()
+    
+    def load_track_data(self):
+        return {
+            "name": self.current_track.name,
+            "chosen_difficulty": self.prev_diff,
+            "difficulty_config": self.current_track.difficulties_config[self.prev_diff],
+            "objects": self.current_track.objects[self.prev_diff]
+        }
 
     def process_input_data(self):
         prev_avail_diffs = self.avail_diff
