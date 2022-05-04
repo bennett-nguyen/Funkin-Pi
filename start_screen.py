@@ -1,7 +1,7 @@
 import pygame
 from load.game_loader import DisplaySurf, Audio
 from scene.component import SceneSwitcher
-from scene.scenes import StartScreen, MenuScreen
+from scene.scenes import StartScreen, MenuScreen, MainGame
 from sys import exit
 
 pygame.init()
@@ -11,7 +11,7 @@ pygame.init()
 game_scenes = {
     "start screen": StartScreen(),
     "menu screen": MenuScreen(),
-    "main game": None
+    "main game": MainGame()
 }
 
 switcher = SceneSwitcher(game_scenes)
