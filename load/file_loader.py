@@ -1,7 +1,46 @@
+import itertools
 import pygame
-from load.component import Track
+import load.component as lcom
+from pprint import pprint
 
 pygame.init()
+
+
+def check_presence(file):
+    # assuming all of the informations are correct
+    description = file["description"]
+    available_difficulties = description["difficulties"]
+
+    for difficulty in available_difficulties:
+        if difficulty not in description["score"] or difficulty not in description["config"]:
+            raise Exception(
+                "difficulties in either score, config or mapping didn't match available difficulties")
+
+
+def process_info_diff(array):
+    lower_case_text = [
+        difficulty.lower() for difficulty in array
+    ]
+
+    remove_junk = [
+        difficulty for difficulty in list(set(lower_case_text)) if difficulty in ["easy", "normal", "hard"]
+    ]
+    
+    return [
+        string for order, string in itertools.product(("e", "n", "h"), remove_junk) if string[0] == order
+    ]
+
+def get_mapping(mapping, file):
+    new_mapping = {}
+
+    for diff_key, instruction in mapping.items():
+        if type(instruction) is str and "." in instruction:
+            include, diff = instruction.split(".")
+            new_mapping[diff_key] = file[include][diff]
+        elif type(instruction) is dict:
+            new_mapping[diff_key] = instruction
+
+    return new_mapping
 
 
 def file_parser() -> list[dict]:
@@ -9,44 +48,36 @@ def file_parser() -> list[dict]:
     import os
     files = []
 
-    try:
-        for entry in os.listdir("./mapping/header"):
-            if not entry.endswith(".json"):
-                continue
+    for entry in os.listdir("./mapping/header"):
+        if not entry.endswith(".json"):
+            continue
 
-            with open(f"./mapping/header/{entry}", "r") as f:
-                file = json.load(f)
-                files.append(file)
-    except Exception as e:
-        print("an exception occurred during runtime:")
-        print(e)
-        raise Exception(
-            f'invalid header file detected: {entry}\nconsider inspect it before running the game.') from e
+        with open(f"./mapping/header/{entry}", "r") as f:
+            file = json.load(f)
+            file["description"]["difficulties"] = process_info_diff(file["description"]["difficulties"])
+            
+        with open(f"./mapping/header/{entry}", "w") as f:
+            json.dump(file, f, indent=4)
+        
+        check_presence(file)
+        
+        file["description"]["mapping"] = get_mapping(file["description"]["mapping"], file)
+        files.append(file)
 
     return files
 
 
-def make_text_lowercase(array):
-    return [
-        difficulty.lower() for difficulty in array
-    ]
 
-
-def remove_junk(array):
-    return [
-        difficulty for difficulty in array if difficulty in ["easy", "normal", "hard"]
-    ]
-
-
-def description_parser(files: list[dict]) -> list[Track]:
+def data_parser(files: list[dict]) -> list[lcom.Track]:
 
     return [
-        Track(file["description"]["name"],
-            list(set(
-                remove_junk(
-                    make_text_lowercase(file["description"]["difficulties"])))
-                ),
-            file["description"]["score"])
+        lcom.Track(
+            file["description"]["name"],
+            file["description"]["difficulties"],
+            file["description"]["score"],
+            file["description"]["config"],
+            file["description"]["mapping"]
+        )
 
         for file in files
         if "description" in file
