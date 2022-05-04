@@ -20,15 +20,6 @@ class DisplaySurf:
     Clock = pygame.time.Clock()
     Screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
-# class Stat:
-#     missed_counter = 0
-#     hit_counter = 0
-
-#     score = 0
-
-#     def get_accuracy(self):
-#         return self.hit_counter / (self.missed_counter + self.hit_counter) * 100
-
 # Video animation must be 600x690px
 
 
@@ -93,11 +84,11 @@ class Gallery:
     ACTIVATED_DOWN_ARROW = pygame.transform.scale(_ACTIVATED_DOWN_ARROW, (
         _ACTIVATED_DOWN_ARROW.get_width() / _scale, _ACTIVATED_DOWN_ARROW.get_height() / _scale))
 
-    ENTITY_IDLE = './assets/img/idle.mp4'
-    ENTITY_LEFT = './assets/img/left.mp4'
-    ENTITY_RIGHT = './assets/img/right.mp4'
-    ENTITY_UP = './assets/img/up.mp4'
-    ENTITY_DOWN = './assets/img/down.mp4'
+    # ENTITY_IDLE = './assets/img/idle.mp4'
+    # ENTITY_LEFT = './assets/img/left.mp4'
+    # ENTITY_RIGHT = './assets/img/right.mp4'
+    # ENTITY_UP = './assets/img/up.mp4'
+    # ENTITY_DOWN = './assets/img/down.mp4'
 
     LOGO = pygame.image.load("./assets/img/logo.jpg").convert()
 
@@ -112,8 +103,8 @@ class Gallery:
                pygame.transform.rotozoom(pygame.image.load("./assets/img/pointer_2.png").convert_alpha(), 0, 0.2))
 
 class Data:
-    descriptions = file_loader.description_parser(file_loader.file_parser())
-    
+    descriptions = file_loader.data_parser(file_loader.file_parser())
+
 class Audio:
     FREAKY_MENU = pygame.mixer.Sound('./assets/audio/freaky_menu.ogg')
     CONFIRM_MENU = pygame.mixer.Sound('./assets/audio/confirm_menu.ogg')
