@@ -1,21 +1,19 @@
+import pprint
 import pygame
 import load.game_loader as game_loader
 import general_component.component as genc
+import game.component as game_component
 from load.game_loader import Data
 from scene.component import MenuLogic, Scene
 
-
 pygame.init()
-
 
 class StartScreen(Scene):
     def __init__(self):
         super().__init__()
         self.sound_1_effect_played = self.sound_2_effect_played = self.button_pressed = False
 
-        self.redirect = None
         self.redirect_delay = 3500
-
         self.fade_delay = 2500
 
         # custom fade in animation
@@ -80,8 +78,9 @@ class StartScreen(Scene):
 class MenuScreen(Scene):
     def __init__(self):
         super().__init__()
-        self.redirect = None
-        self.redirect_delay = 1000
+        self.redirect_delay = 4000
+        self.fade_delay = 2900
+        self.on_toggle_chosen_track = False
 
         self.yellow_rectangle = genc.Surface(
             game_loader.DisplaySurf.WIDTH/2, 150, game_loader.DisplaySurf.WIDTH - 150, 200, (249, 209, 81))
@@ -102,6 +101,7 @@ class MenuScreen(Scene):
         for track in self.tracks:
             track.init_display_name_rect_coordinates(
                 self.track_chooser_rect.rect.centerx, self.track_chooser_rect.rect.centery + distance)
+            track.run_init()
             distance += 120
 
         self.logic = MenuLogic(self.tracks)
@@ -116,9 +116,83 @@ class MenuScreen(Scene):
             self.choose_your_track, self.cyt_rect)
 
         self.pointer.toggle_animation()
+        
+        if self.on_toggle_chosen_track:
+            self.logic.current_track.display_name_animation.toggle_animation()
 
     def input(self):
         key = pygame.key.get_pressed()
+        
+        if self.allow_keydown:
+            if key[pygame.K_ESCAPE]:
+                self.redirect = "start screen"
+                self.allow_keydown = False
+            elif key[pygame.K_RETURN]:
+                self.loaded_data = self.logic.load_track_data()
+                self.logic.current_track.set_animation_coordinates(self.logic.current_track.display_name_rect.centerx, self.logic.current_track.display_name_rect.centery)
+                game_loader.Audio.CONFIRM_MENU.play()
+                self.on_toggle_chosen_track = True
+                self.redirect = "main game"
+                self.allow_keydown = False
+        
+    def reset_attr(self):
+        super().reset_attr()
+        self.loaded_data = None
 
-        if key[pygame.K_ESCAPE]:
-            self.redirect = "start screen"
+
+class MainGame(Scene):
+    def __init__(self):
+        super().__init__()
+        self.redirect_delay = 1000
+
+        self.player_surface_x = (game_loader.DisplaySurf.WIDTH/2/2)*3
+        self.enemy_surface_x = game_loader.DisplaySurf.WIDTH/2/2
+        
+        self.enemy_arrow_set = game_component.ArrowSet(self.enemy_surface_x, 80)
+        self.player_arrow_set = game_component.ArrowSet(self.player_surface_x, 80) 
+
+        # self.player_entity = game_component.Entity(self.player_surface_x, game_loader.DisplaySurf.HEIGHT/2)
+        # self.enemy_entity = game_component.Entity(self.enemy_surface_x, game_loader.DisplaySurf.HEIGHT/2)
+        
+    
+    def redraw(self):
+        game_loader.DisplaySurf.Screen.fill('Black')
+
+        # if not self.player_entity.animation_is_playable():
+        #     self.player_entity.change_animation(game_loader.Gallery.ENTITY_IDLE)
+
+        # self.player_entity.load_animation()
+        # self.player_entity.draw_self()
+        
+        self.enemy_arrow_set.draw_self()
+        self.player_arrow_set.draw_self()
+
+        pygame.draw.line(game_loader.DisplaySurf.Screen, "White", (game_loader.DisplaySurf.WIDTH/2,
+                            0), (game_loader.DisplaySurf.WIDTH/2, game_loader.DisplaySurf.HEIGHT), 3)
+
+        # for object in self.objects:
+        #     object.draw_self()
+        #     object.move()
+
+        #     # object goes offscreen
+        #     if object.rect.y <= - object.surface.get_height():
+        #         self.objects.remove(object)
+
+        #     if object.collide_for_enemy(self.enemy_arrow_set):
+        #         self.objects.remove(object)
+
+        #         break
+
+        pygame.display.update()
+
+    def input(self):
+        pass
+    
+    def receive_data(self, data):
+        self.track_name = data["name"]
+        self.chosen_difficulty = data["chosen_difficulty"]
+        self.game_delay = data["difficulty_config"]["delay"]
+        self.objects = data["objects"]
+        
+    def reset_attr(self):
+        super().reset_attr()
