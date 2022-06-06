@@ -1,7 +1,6 @@
 import itertools
 import pygame
 import load.component as lcom
-from pprint import pprint
 
 pygame.init()
 
@@ -69,7 +68,6 @@ def file_parser() -> list[dict]:
 
 
 def data_parser(files: list[dict]) -> list[lcom.Track]:
-
     return [
         lcom.Track(
             file["description"]["name"],
@@ -77,8 +75,6 @@ def data_parser(files: list[dict]) -> list[lcom.Track]:
             file["description"]["score"],
             file["description"]["config"],
             file["description"]["mapping"]
-        )
-
-        for file in files
-        if "description" in file
+        ) 
+        for file in files if "description" in file
     ]

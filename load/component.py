@@ -14,27 +14,22 @@ class Track:
 
         self.display_name_on_toggle = game_loader.Font.TITLE_FONT_2.render(
             name.upper(), True, (0, 255, 255))
-
-        easy_text = game_loader.Font.TITLE_FONT_2.render(
-            "EASY", True, (19, 253, 0))
-        normal_text = game_loader.Font.TITLE_FONT_2.render(
-            "NORMAL", True, (242, 253, 0))
-        hard_text = game_loader.Font.TITLE_FONT_2.render(
-            "HARD", True, (255, 0, 0))
-
-        easy_text_rect = easy_text.get_rect(midleft=(900, 470))
-        normal_text_rect = normal_text.get_rect(midleft=(900, 470))
-        hard_text_rect = hard_text.get_rect(midleft=(900, 470))
+        
 
         self.difficulties = {}
         self.available_difficulties = difficulties
 
-        for i in (("easy", easy_text, easy_text_rect), ("normal", normal_text, normal_text_rect), ("hard", hard_text, hard_text_rect)):
-            if i[0] not in difficulties:
-                self.difficulties[i[0]] = None
+        self.load_side_stuff()
+        for string, text, rect in (
+            ("easy", self.easy_text, self.easy_text_rect),
+            ("normal", self.normal_text, self.normal_text_rect),
+            ("hard", self.hard_text, self.hard_text_rect)
+        ):
+            if string not in difficulties:
+                self.difficulties[string] = None
                 continue
 
-            self.difficulties[i[0]] = (i[1], i[2])
+            self.difficulties[string] = (text, rect)
 
         self.score = {
             "easy": score.get("easy", 0),
@@ -46,37 +41,17 @@ class Track:
 
     def mapping_to_objects(self):
         self.objects = {}
-        
-        player_surface_x = (game_loader.DisplaySurf.WIDTH/2/2)*3
-        enemy_surface_x = game_loader.DisplaySurf.WIDTH/2/2
 
         for diff, instruction in self.mapping.items():
             space = self.difficulties_config[diff]["space"]
-            velocity = self.difficulties_config[diff]["velocity"]
             
             self.objects[diff] = []
 
-            game.component.FlyingObject.VEL = velocity
-            temp_dist = 0
+            game.component.FlyingObject.VEL = self.difficulties_config[diff]["velocity"]
 
             for name, map in instruction.items():
-                if "enemy" in name:
-                    for key in map:
-                        arrow = game_loader.Gallery.ACTIVATED_LEFT_ARROW if key == 'l' else game_loader.Gallery.ACTIVATED_RIGHT_ARROW if key == 'r' else game_loader.Gallery.ACTIVATED_UP_ARROW if key == 'u' else game_loader.Gallery.ACTIVATED_DOWN_ARROW if key == 'd' else None
-                        if arrow is None:
-                            continue
-                        self.objects[diff].append(game.component.FlyingObject(
-                            enemy_surface_x, game_loader.DisplaySurf.HEIGHT + space + temp_dist, arrow))
-                        temp_dist += space
-
-                elif "player" in name:
-                    for key in map:
-                        arrow = game_loader.Gallery.ACTIVATED_LEFT_ARROW if key == 'l' else game_loader.Gallery.ACTIVATED_RIGHT_ARROW if key == 'r' else game_loader.Gallery.ACTIVATED_UP_ARROW if key == 'u' else game_loader.Gallery.ACTIVATED_DOWN_ARROW if key == 'd' else None
-                        if arrow is None:
-                            continue
-                        self.objects[diff].append(game.component.FlyingObject(
-                            player_surface_x, game_loader.DisplaySurf.HEIGHT + space + temp_dist, arrow))
-                        temp_dist += space
+                if "enemy" in name or "player" in name:
+                    self.enemy_n_player_mapping(name, diff, space, map)
 
                 elif "set" in name and map.startswith("$"):
                     match map[1:map.find(":")]:
@@ -86,14 +61,47 @@ class Track:
                             space = self.difficulties_config[diff]["space"]
 
     def init_display_name_rect_coordinates(self, x, y):
-        
         self.display_name_rect = self.display_name.get_rect(center=(x, y))
         self.display_name_animation = genc.ImageAnimation(
             (self.display_name, self.display_name_on_toggle), self.display_name_rect.centerx, self.display_name_rect.centery, 0.3)
     
     def run_init(self):
         self.mapping_to_objects()
-        
+
     def set_animation_coordinates(self, x, y):
         self.display_name_animation.rect.centerx = x
         self.display_name_animation.rect.centery = y
+
+    def enemy_n_player_mapping(self, name, diff, space, map):
+
+        player_surface_x = (game_loader.DisplaySurf.WIDTH/4)*3
+        enemy_surface_x = game_loader.DisplaySurf.WIDTH/4
+        temp_dist = 0
+
+        mapping_determiner_x = enemy_surface_x if "enemy" in name else player_surface_x if "player" in name else None
+
+        for key in map:
+            arrow = self.arrow_map.get(key, None)
+            if arrow is None: continue
+            self.objects[diff].append(game.component.FlyingObject(
+                mapping_determiner_x, game_loader.DisplaySurf.HEIGHT + space + temp_dist, arrow))
+            temp_dist += space
+
+    def load_side_stuff(self):
+        self.arrow_map = {
+            "l": game_loader.Gallery.ACTIVATED_LEFT_ARROW,
+            "r": game_loader.Gallery.ACTIVATED_RIGHT_ARROW,
+            "u": game_loader.Gallery.ACTIVATED_UP_ARROW,
+            "d": game_loader.Gallery.ACTIVATED_DOWN_ARROW,
+        }
+
+        self.easy_text = game_loader.Font.TITLE_FONT_2.render(
+            "EASY", True, (19, 253, 0))
+        self.normal_text = game_loader.Font.TITLE_FONT_2.render(
+            "NORMAL", True, (242, 253, 0))
+        self.hard_text = game_loader.Font.TITLE_FONT_2.render(
+            "HARD", True, (255, 0, 0))
+
+        self.easy_text_rect = self.easy_text.get_rect(midleft=(900, 470))
+        self.normal_text_rect = self.normal_text.get_rect(midleft=(900, 470))
+        self.hard_text_rect = self.hard_text.get_rect(midleft=(900, 470))
