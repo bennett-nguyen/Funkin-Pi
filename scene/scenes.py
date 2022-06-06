@@ -1,4 +1,3 @@
-import pprint
 import pygame
 import load.game_loader as game_loader
 import general_component.component as genc
@@ -107,7 +106,7 @@ class MenuScreen(Scene):
         self.logic = MenuLogic(self.tracks)
 
     def redraw(self):
-        self.logic.update()
+        self.logic.redraw()
 
         game_loader.DisplaySurf.Screen.blit(
             self.yellow_rectangle.surface, self.yellow_rectangle.rect)
@@ -122,11 +121,14 @@ class MenuScreen(Scene):
 
     def input(self):
         key = pygame.key.get_pressed()
-        
+
         if self.allow_keydown:
+            self.logic.input()
+
             if key[pygame.K_ESCAPE]:
                 self.redirect = "start screen"
                 self.allow_keydown = False
+
             elif key[pygame.K_RETURN]:
                 self.loaded_data = self.logic.load_track_data()
                 self.logic.current_track.set_animation_coordinates(self.logic.current_track.display_name_rect.centerx, self.logic.current_track.display_name_rect.centery)
@@ -145,8 +147,8 @@ class MainGame(Scene):
         super().__init__()
         self.redirect_delay = 1000
 
-        self.player_surface_x = (game_loader.DisplaySurf.WIDTH/2/2)*3
-        self.enemy_surface_x = game_loader.DisplaySurf.WIDTH/2/2
+        self.player_surface_x = (game_loader.DisplaySurf.WIDTH/4)*3
+        self.enemy_surface_x = game_loader.DisplaySurf.WIDTH/4
         
         self.enemy_arrow_set = game_component.ArrowSet(self.enemy_surface_x, 80)
         self.player_arrow_set = game_component.ArrowSet(self.player_surface_x, 80) 
