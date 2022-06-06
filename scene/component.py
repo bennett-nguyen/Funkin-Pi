@@ -32,7 +32,7 @@ class SceneSwitcher:
 
         self.current_time = 0
         self.redirected_time = 0
-
+        
         self.screen = pygame.Surface(
             game_loader.DisplaySurf.Screen.get_size())
         self.screen.fill((0, 0, 0))
@@ -67,8 +67,8 @@ class SceneSwitcher:
             if self.alpha <= 0:
                 self.fade_state = "OUT"
                 self.alpha = 0
-                self.is_transitioning = False
                 self.fade_delay = 0
+                self.is_transitioning = False
 
     def update(self):
         self.current_time = pygame.time.get_ticks()
@@ -109,14 +109,14 @@ class MenuLogic:
         self.curr_diff_text = self.current_track.difficulties[
             self.avail_diff[self.diff_index]]
         self.prev_diff = self.avail_diff[self.diff_index]
-        
+
         self.current_score = self.current_track.score
-        
+
         self.score_text = game_loader.Font.MENU_SCORE.render(
             f"SCORE: {self.current_score[self.prev_diff]}", True, "White")
         self.st_rect = self.score_text.get_rect(
             midleft=(75, 25))
-        
+
         self.speed = 20
         self.jumping_speed = 30
 
@@ -163,56 +163,20 @@ class MenuLogic:
         if self.current_time - self.keydown_time > self.delay_time:
             self.on_keydown_delay = False
 
-        if not self.on_keydown_delay and not self.is_transitioning:
-            if key[pygame.K_UP]:
-                self.keydown_time = pygame.time.get_ticks()
-                self.on_keydown_delay = self.is_transitioning = True
-                if self.track_index >= 1:
-                    self.is_moving_down = True
-                    self.track_index -= 1
-                else:
-                    self.is_moving_up = self.jumping = True
-                    self.track_index = len(self.tracks) - 1
+        if all(
+            (
+                not (self.on_keydown_delay or self.is_transitioning),
+                any((key[pygame.K_UP], key[pygame.K_DOWN],
+                    key[pygame.K_LEFT], key[pygame.K_RIGHT]))
+            )
+        ):
+            self.keydown_time = pygame.time.get_ticks()
+            self.on_keydown_delay = self.is_transitioning = True
 
-                game_loader.Audio.SCROLL_MENU.play()
-
-            elif key[pygame.K_DOWN]:
-                self.keydown_time = pygame.time.get_ticks()
-                self.on_keydown_delay = self.is_transitioning = True
-
-                if self.track_index + 1 < len(self.tracks):
-                    self.is_moving_up = True
-                    self.track_index += 1
-                else:
-                    self.is_moving_down = self.jumping = True
-                    self.track_index = 0
-
-                game_loader.Audio.SCROLL_MENU.play()
-
-            elif key[pygame.K_LEFT]:
-                self.keydown_time = pygame.time.get_ticks()
-                self.on_keydown_delay = self.is_transitioning = self.changing_difficulty = True
-
-                if self.diff_index >= 1:
-                    self.diff_index -= 1
-                else:
-                    self.diff_index = len(self.avail_diff)-1
-
-                game_loader.Audio.SCROLL_MENU.play()
-
-            elif key[pygame.K_RIGHT]:
-                self.keydown_time = pygame.time.get_ticks()
-                self.on_keydown_delay = self.is_transitioning = self.changing_difficulty = True
-
-                if self.diff_index + 1 < len(self.avail_diff):
-                    self.diff_index += 1
-                else:
-                    self.diff_index = 0
-
-                game_loader.Audio.SCROLL_MENU.play()
-
+            self.key_up_n_down(key)
+            self.key_left_n_right(key)
             self.process_input_data()
-    
+
     def load_track_data(self):
         return {
             "name": self.current_track.name,
@@ -223,33 +187,29 @@ class MenuLogic:
 
     def process_input_data(self):
         prev_avail_diffs = self.avail_diff
-        prev_diff_index = prev_avail_diffs.index(
-            self.prev_diff)
-
+        prev_diff_index = prev_avail_diffs.index(self.prev_diff)
 
         self.current_track = self.tracks[self.track_index]
         self.avail_diff = self.current_track.available_difficulties
-
+        current_diff_index_of_prev = self.avail_diff.index(self.prev_diff)
 
         if self.prev_diff not in self.avail_diff:
             self.diff_index = 0
             self.is_transitioning = self.changing_difficulty = True
 
-        elif prev_diff_index != self.avail_diff.index(self.prev_diff):
-            self.diff_index = self.avail_diff.index(
-                self.prev_diff)
+        elif prev_diff_index != current_diff_index_of_prev:
+            self.diff_index = current_diff_index_of_prev
 
 
-        self.curr_diff_text = self.current_track.difficulties[
-            self.avail_diff[self.diff_index]]
+        self.curr_diff_text = self.current_track.difficulties[self.avail_diff[self.diff_index]]
         self.prev_diff = self.avail_diff[self.diff_index]
 
         self.current_score = self.current_track.score
-        
+
         self.score_text = game_loader.Font.MENU_SCORE.render(
             f"SCORE: {self.current_score[self.prev_diff]}", True, "White")
-        self.st_rect = self.score_text.get_rect(
-            midleft=(75, 25))
+
+        self.st_rect = self.score_text.get_rect(midleft=(75, 25))
 
         if self.changing_difficulty:
             self.curr_diff_text[1].centery += self.offset_centery
@@ -280,6 +240,49 @@ class MenuLogic:
             )
 
             game_loader.DisplaySurf.Screen.blit(self.score_text, self.st_rect)
-    def update(self):
-        self.input()
-        self.redraw()
+
+    def key_up_n_down(self, key):
+        track_len = len(self.tracks)
+
+        if key[pygame.K_UP]:
+
+            if min(0, self.track_index - 1):
+                self.is_moving_up = self.jumping = track_len > 1
+                self.track_index = track_len - 1 if track_len > 1 else self.track_index
+            else:
+                self.is_moving_down = True
+                self.track_index -= 1
+
+        elif key[pygame.K_DOWN]:
+
+            if self.track_index + 1 < track_len:
+                self.is_moving_up = True
+                self.track_index += 1
+            else:
+                self.is_moving_down = self.jumping = track_len > 1
+                self.track_index = 0 if track_len > 1 else self.track_index
+
+        game_loader.Audio.SCROLL_MENU.play()
+
+    def key_left_n_right(self, key):
+        avail_diff_len = len(self.avail_diff)
+
+        if key[pygame.K_LEFT]:
+            self.changing_difficulty = True
+
+            if self.diff_index >= 1:
+                self.diff_index -= 1
+            else:
+                self.diff_index = avail_diff_len - 1
+
+            game_loader.Audio.SCROLL_MENU.play()
+
+        elif key[pygame.K_RIGHT]:
+            self.changing_difficulty = True
+
+            if self.diff_index + 1 < avail_diff_len:
+                self.diff_index += 1
+            else:
+                self.diff_index = 0
+
+            game_loader.Audio.SCROLL_MENU.play()
