@@ -1,24 +1,19 @@
-# this file will be removed in near future
-
 import pygame
 import load.game_loader as game_loader
 import general_component.component as genc
-import cv2
+# import cv2
 
 pygame.init()
 
-image_loader = game_loader.Gallery
 
-# -------- Components for the main game ----------
-
-class TransparentSurf(genc.Surface):
+class ArrowSet(genc.Surface):
     def __init__(self, x: int, y: int):
         super().__init__(x, y, game_loader.DisplaySurf.WIDTH/2/1.3, 70)
 
-        self.left_arrow = image_loader.LEFT_ARROW
-        self.up_arrow = image_loader.UP_ARROW
-        self.down_arrow = image_loader.DOWN_ARROW
-        self.right_arrow = image_loader.RIGHT_ARROW
+        self.left_arrow = game_loader.Gallery.LEFT_ARROW
+        self.up_arrow = game_loader.Gallery.UP_ARROW
+        self.down_arrow = game_loader.Gallery.DOWN_ARROW
+        self.right_arrow = game_loader.Gallery.RIGHT_ARROW
 
         self.left_arrow_rect = self.left_arrow.get_rect(
             midleft=(self.rect.midleft[0] + 25, self.rect.midleft[1]))
@@ -29,39 +24,40 @@ class TransparentSurf(genc.Surface):
         self.right_arrow_rect = self.right_arrow.get_rect(
             midright=(self.rect.midright[0] - 25, self.rect.midright[1]))
 
-    def draw_arrow(self):
-        game_loader.DisplaySurf.Screen.blit(
-            self.left_arrow, self.left_arrow_rect)
-        game_loader.DisplaySurf.Screen.blit(
-            self.up_arrow, self.up_arrow_rect)
-        game_loader.DisplaySurf.Screen.blit(
-            self.down_arrow, self.down_arrow_rect)
-        game_loader.DisplaySurf.Screen.blit(
-            self.right_arrow, self.right_arrow_rect)
+        self.arrow_list = ((self.left_arrow, self.left_arrow_rect), (self.up_arrow, self.up_arrow_rect), (
+            self.down_arrow, self.down_arrow_rect), (self.right_arrow, self.right_arrow_rect))
+
+    def update_arrows(self):
+        self.arrow_list = ((self.left_arrow, self.left_arrow_rect), (self.up_arrow, self.up_arrow_rect), (
+            self.down_arrow, self.down_arrow_rect), (self.right_arrow, self.right_arrow_rect))
 
     def draw_self(self):
-        game_loader.DisplaySurf.Screen.blit(self.surface, self.rect)
-        self.draw_arrow()
+        self.update_arrows()
+
+        for object in self.arrow_list:
+            game_loader.DisplaySurf.Screen.blit(
+                object[0], object[1])
 
     def event_on_arrow_deactivate(self, event):
         match event.key:
             case pygame.K_UP:
-                self.up_arrow = image_loader.UP_ARROW
+                self.up_arrow = game_loader.Gallery.UP_ARROW
 
             case pygame.K_DOWN:
-                self.down_arrow = image_loader.DOWN_ARROW
+                self.down_arrow = game_loader.Gallery.DOWN_ARROW
 
             case pygame.K_LEFT:
-                self.left_arrow = image_loader.LEFT_ARROW
+                self.left_arrow = game_loader.Gallery.LEFT_ARROW
 
             case pygame.K_RIGHT:
-                self.right_arrow = image_loader.RIGHT_ARROW
+                self.right_arrow = game_loader.Gallery.RIGHT_ARROW
 
-class FlyingSurf(genc.Surface):
+
+class FlyingObject(genc.Surface):
     VEL = 7
 
-    def __init__(self, x: int, y: int, arrow: game_loader.Gallery) -> None:
-        super().__init__(x, y, game_loader.DisplaySurf.WIDTH/2/1.3, 70)
+    def __init__(self, x: int, y: int, arrow) -> None:
+        super().__init__(x, y, game_loader.DisplaySurf.WIDTH/(13/5), 70)
 
         self.arrow = arrow
 
@@ -87,7 +83,6 @@ class FlyingSurf(genc.Surface):
                 self.key = pygame.K_RIGHT
 
     def draw_self(self):
-        game_loader.DisplaySurf.Screen.blit(self.surface, self.rect)
         game_loader.DisplaySurf.Screen.blit(self.arrow, self.arrow_rect)
 
     def move(self):
@@ -103,11 +98,9 @@ class FlyingSurf(genc.Surface):
         highest_center_range = object.rect.center[1] + range
 
         if target.center[1] >= lowest_center_range and target.center[1] <= highest_center_range and target.colliderect(object.rect):
-            print('sick')
             return True
 
         elif target.colliderect(object.rect):
-            print('good')
             return True
 
     # this method is only used for the enemy!
@@ -115,34 +108,35 @@ class FlyingSurf(genc.Surface):
         return self.rect.center[1] <= object.rect.center[1] and self.rect.colliderect(object)
 
 
-class Entity(genc.Surface):
-    def __init__(self, x: int, y: int) -> None:
-        
-        super().__init__(x, y, game_loader.DisplaySurf.WIDTH /
-                         2, game_loader.DisplaySurf.HEIGHT)
 
-        self.state = cv2.VideoCapture(image_loader.ENTITY_IDLE)
+# TODO: add parameters for custom animation
+# class Entity(genc.Surface):
+#     def __init__(self, x: int, y: int) -> None:
 
-    def animation_is_playable(self):
-        success, _ = self.state.read()
-        return success
+#         super().__init__(x, y, game_loader.DisplaySurf.WIDTH /
+#                          2, game_loader.DisplaySurf.HEIGHT)
 
-    def change_animation(self, animation_path):
-        self.state = cv2.VideoCapture(animation_path)
+#         self.state = cv2.VideoCapture(image_loader.ENTITY_IDLE)
 
-    def load_animation(self):
-        success, frame = self.state.read()
+#     def animation_is_playable(self):
+#         success, _ = self.state.read()
+#         return success
 
-        if not success:
-            return
+#     def change_animation(self, animation_path):
+#         self.state = cv2.VideoCapture(animation_path)
 
-        self.animation_surf = pygame.image.frombuffer(
-            frame.tobytes(), frame.shape[1::-1], "BGR")
-        self.animation_rect = self.animation_surf.get_rect(
-            center=self.rect.center)
+#     def load_animation(self):
+#         success, frame = self.state.read()
 
-    def draw_self(self):
-        game_loader.DisplaySurf.Screen.blit(self.surface, self.rect)
-        game_loader.DisplaySurf.Screen.blit(
-            self.animation_surf, self.animation_rect)
-# ----------------------------------------------------
+#         if not success:
+#             return
+
+#         self.animation_surf = pygame.image.frombuffer(
+#             frame.tobytes(), frame.shape[1::-1], "BGR")
+#         self.animation_rect = self.animation_surf.get_rect(
+#             center=self.rect.center)
+
+#     def draw_self(self):
+#         game_loader.DisplaySurf.Screen.blit(self.surface, self.rect)
+#         game_loader.DisplaySurf.Screen.blit(
+#             self.animation_surf, self.animation_rect)

@@ -20,15 +20,6 @@ class DisplaySurf:
     Clock = pygame.time.Clock()
     Screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
-# class Stat:
-#     missed_counter = 0
-#     hit_counter = 0
-
-#     score = 0
-
-#     def get_accuracy(self):
-#         return self.hit_counter / (self.missed_counter + self.hit_counter) * 100
-
 # Video animation must be 600x690px
 
 
@@ -93,36 +84,65 @@ class Gallery:
     ACTIVATED_DOWN_ARROW = pygame.transform.scale(_ACTIVATED_DOWN_ARROW, (
         _ACTIVATED_DOWN_ARROW.get_width() / _scale, _ACTIVATED_DOWN_ARROW.get_height() / _scale))
 
-    ENTITY_IDLE = './assets/img/idle.mp4'
-    ENTITY_LEFT = './assets/img/left.mp4'
-    ENTITY_RIGHT = './assets/img/right.mp4'
-    ENTITY_UP = './assets/img/up.mp4'
-    ENTITY_DOWN = './assets/img/down.mp4'
+    # ENTITY_IDLE = './assets/img/idle.mp4'
+    # ENTITY_LEFT = './assets/img/left.mp4'
+    # ENTITY_RIGHT = './assets/img/right.mp4'
+    # ENTITY_UP = './assets/img/up.mp4'
+    # ENTITY_DOWN = './assets/img/down.mp4'
 
     LOGO = pygame.image.load("./assets/img/logo.jpg").convert()
+    PAUSED_BACKGROUND = pygame.image.load("./assets/img/paused_template.png").convert_alpha()
 
-    BUTTON_DEACTIVATED_IMAGES = (pygame.transform.rotozoom(pygame.image.load("./assets/img/play_1.jpg").convert(
-    ), 0, 0.6), pygame.transform.rotozoom(pygame.image.load("./assets/img/play_2.jpg").convert(), 0, 0.6))
-    BUTTON_ON_HOVER_IMAGES = (pygame.transform.rotozoom(pygame.image.load("./assets/img/play_3.png").convert_alpha(
-    ), 0, 0.6), pygame.transform.rotozoom(pygame.image.load("./assets/img/play_4.png").convert_alpha(), 0, 0.6))
-    BUTTON_ACTIVATED_IMAGES = (pygame.transform.rotozoom(pygame.image.load("./assets/img/play_1.jpg").convert_alpha(
-    ), 0, 0.6), pygame.transform.rotozoom(pygame.image.load("./assets/img/play_3.png").convert_alpha(), 0, 0.6))
+    PLAY_BUTTON_DEACTIVATED_IMAGES = (
+        pygame.transform.rotozoom(pygame.image.load("./assets/img/play_1.jpg").convert(), 0, 0.6),
+        pygame.transform.rotozoom(pygame.image.load("./assets/img/play_2.jpg").convert(), 0, 0.6)
+    )
+    PLAY_BUTTON_ON_HOVER_IMAGES = (
+        pygame.transform.rotozoom(pygame.image.load("./assets/img/play_3.png").convert_alpha(), 0, 0.6),
+        pygame.transform.rotozoom(pygame.image.load("./assets/img/play_4.png").convert_alpha(), 0, 0.6)
+    )
+    PLAY_BUTTON_ACTIVATED_IMAGES = (
+        pygame.transform.rotozoom(pygame.image.load("./assets/img/play_1.jpg").convert(), 0, 0.6),
+        pygame.transform.rotozoom(pygame.image.load("./assets/img/play_3.png").convert_alpha(), 0, 0.6)
+    )
+    
+    PS_BUTTON_SCALE = 0.6
 
-    POINTER = (pygame.transform.rotozoom(pygame.image.load("./assets/img/pointer_1.png").convert_alpha(), 0, 0.2),
-               pygame.transform.rotozoom(pygame.image.load("./assets/img/pointer_2.png").convert_alpha(), 0, 0.2))
+    CONTINUE_BUTTON_DEACTIVATED_IMAGES = (
+        pygame.transform.rotozoom(pygame.image.load("./assets/img/continue_1.png").convert_alpha(), 0, PS_BUTTON_SCALE),
+        pygame.transform.rotozoom(pygame.image.load("./assets/img/continue_2.png").convert_alpha(), 0, PS_BUTTON_SCALE)
+    )
+    CONTINUE_BUTTON_ON_HOVER_IMAGES = (
+        pygame.transform.rotozoom(pygame.image.load("./assets/img/continue_3.png").convert_alpha(), 0, PS_BUTTON_SCALE),
+        pygame.transform.rotozoom(pygame.image.load("./assets/img/continue_4.png").convert_alpha(), 0, PS_BUTTON_SCALE)
+    )
+
+    EXIT_BUTTON_DEACTIVATED_IMAGES = (
+        pygame.transform.rotozoom(pygame.image.load("./assets/img/exit_1.png").convert_alpha(), 0, PS_BUTTON_SCALE),
+        pygame.transform.rotozoom(pygame.image.load("./assets/img/exit_2.png").convert_alpha(), 0, PS_BUTTON_SCALE)
+    )
+    EXIT_BUTTON_ON_HOVER_IMAGES = (
+        pygame.transform.rotozoom(pygame.image.load("./assets/img/exit_3.png").convert_alpha(), 0, PS_BUTTON_SCALE),
+        pygame.transform.rotozoom(pygame.image.load("./assets/img/exit_4.png").convert_alpha(), 0, PS_BUTTON_SCALE)
+    )
+
+    POINTER = (
+        pygame.transform.rotozoom(pygame.image.load("./assets/img/pointer_1.png").convert_alpha(), 0, 0.2),
+        pygame.transform.rotozoom(pygame.image.load("./assets/img/pointer_2.png").convert_alpha(), 0, 0.2)
+    )
+    
+
 
 class Data:
-    descriptions = file_loader.description_parser(file_loader.file_parser())
-    
+    descriptions = file_loader.data_parser(file_loader.file_parser())
+
 class Audio:
     FREAKY_MENU = pygame.mixer.Sound('./assets/audio/freaky_menu.ogg')
     CONFIRM_MENU = pygame.mixer.Sound('./assets/audio/confirm_menu.ogg')
     SCROLL_MENU = pygame.mixer.Sound('./assets/audio/scroll_menu.ogg')
 
     SOUTH_INSTRUMENT = pygame.mixer.Sound(
-        "./assets/audio/south_instrument.ogg")
-    SOUTH_VOCAL = pygame.mixer.Sound('./assets/audio/south_vocal.ogg')
-
-    TUTORIAL = pygame.mixer.Sound('./assets/audio/tutorial.ogg')
+        "./assets/audio/soundtrack/south/south_instrument.ogg")
+    SOUTH_VOCAL = pygame.mixer.Sound('./assets/audio/soundtrack/south/south_vocal.ogg')
 
     VOCAL_VOLUME = 1
