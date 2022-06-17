@@ -1,4 +1,5 @@
 import pygame
+import time
 from load.game_loader import DisplaySurf, Audio
 from scene.component import SceneSwitcher
 from scene.scenes import StartScreen, MenuScreen, MainGame
@@ -16,13 +17,22 @@ game_scenes = {
 
 switcher = SceneSwitcher(game_scenes)
 
+
 def game():
+    dt = 0 # delta time
+    prev_time = time.time()
+
     while True:
         DisplaySurf.Screen.fill('Black')
         DisplaySurf.Clock.tick(DisplaySurf.FPS)
         
+        now = time.time()
+        dt = now - prev_time
+        prev_time = now
+        
         events = pygame.event.get()
         switcher.receive_events(events)
+        switcher.receive_dt(dt)
 
         for event in events:
             if event.type == pygame.QUIT:
