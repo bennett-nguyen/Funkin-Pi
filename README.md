@@ -9,3 +9,7 @@ And to not feel guilty about myself every night for not completing the game. I w
 # When will it be completed?
 
 I don't want to make any promises but I assure you that the demo version will be released at the end of summer (or earlier)
+
+# Links
+
+Orignal game: https://github.com/ninjamuffin99/Funkin
