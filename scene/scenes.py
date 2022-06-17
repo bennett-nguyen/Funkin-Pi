@@ -103,7 +103,7 @@ class MenuScreen(Scene):
             track.run_init()
             distance += 120
 
-        self.logic = MenuLogic(self.tracks)
+        self.logic = MenuLogic(self.tracks, self.dt)
 
     def redraw(self):
         self.logic.redraw()
