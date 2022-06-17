@@ -27,7 +27,13 @@ class ArrowSet(genc.Surface):
         self.arrow_list = ((self.left_arrow, self.left_arrow_rect), (self.up_arrow, self.up_arrow_rect), (
             self.down_arrow, self.down_arrow_rect), (self.right_arrow, self.right_arrow_rect))
 
+    def update_arrows(self):
+        self.arrow_list = ((self.left_arrow, self.left_arrow_rect), (self.up_arrow, self.up_arrow_rect), (
+            self.down_arrow, self.down_arrow_rect), (self.right_arrow, self.right_arrow_rect))
+
     def draw_self(self):
+        self.update_arrows()
+
         for object in self.arrow_list:
             game_loader.DisplaySurf.Screen.blit(
                 object[0], object[1])
