@@ -109,8 +109,8 @@ class Gallery:
     PS_BUTTON_SCALE = 0.6
 
     CONTINUE_BUTTON_DEACTIVATED_IMAGES = (
-        pygame.transform.rotozoom(pygame.image.load("./assets/img/continue_1.jpg").convert(), 0, PS_BUTTON_SCALE),
-        pygame.transform.rotozoom(pygame.image.load("./assets/img/continue_2.jpg").convert(), 0, PS_BUTTON_SCALE)
+        pygame.transform.rotozoom(pygame.image.load("./assets/img/continue_1.png").convert_alpha(), 0, PS_BUTTON_SCALE),
+        pygame.transform.rotozoom(pygame.image.load("./assets/img/continue_2.png").convert_alpha(), 0, PS_BUTTON_SCALE)
     )
     CONTINUE_BUTTON_ON_HOVER_IMAGES = (
         pygame.transform.rotozoom(pygame.image.load("./assets/img/continue_3.png").convert_alpha(), 0, PS_BUTTON_SCALE),
@@ -118,8 +118,8 @@ class Gallery:
     )
 
     EXIT_BUTTON_DEACTIVATED_IMAGES = (
-        pygame.transform.rotozoom(pygame.image.load("./assets/img/exit_1.jpg").convert(), 0, PS_BUTTON_SCALE),
-        pygame.transform.rotozoom(pygame.image.load("./assets/img/exit_2.jpg").convert(), 0, PS_BUTTON_SCALE)
+        pygame.transform.rotozoom(pygame.image.load("./assets/img/exit_1.png").convert_alpha(), 0, PS_BUTTON_SCALE),
+        pygame.transform.rotozoom(pygame.image.load("./assets/img/exit_2.png").convert_alpha(), 0, PS_BUTTON_SCALE)
     )
     EXIT_BUTTON_ON_HOVER_IMAGES = (
         pygame.transform.rotozoom(pygame.image.load("./assets/img/exit_3.png").convert_alpha(), 0, PS_BUTTON_SCALE),
