@@ -29,7 +29,7 @@ class Scene:
 class SceneSwitcher:
     def __init__(self, scenes: dict):
         self.scenes = scenes
-        self.current = self.scenes["menu screen"]
+        self.current = self.scenes["main menu"]
         self.is_transitioning = False
         self.redirect_delay = 0
 
