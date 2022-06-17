@@ -19,7 +19,7 @@ class Track:
         self.difficulties = {}
         self.available_difficulties = difficulties
 
-        self.load_side_stuff()
+        self._load_side_stuff()
         for string, text, rect in (
             ("easy", self.easy_text, self.easy_text_rect),
             ("normal", self.normal_text, self.normal_text_rect),
@@ -87,7 +87,7 @@ class Track:
                 mapping_determiner_x, game_loader.DisplaySurf.HEIGHT + space + temp_dist, arrow))
             temp_dist += space
 
-    def load_side_stuff(self):
+    def _load_side_stuff(self):
         self.arrow_map = {
             "l": game_loader.Gallery.ACTIVATED_LEFT_ARROW,
             "r": game_loader.Gallery.ACTIVATED_RIGHT_ARROW,

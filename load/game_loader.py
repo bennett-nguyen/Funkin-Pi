@@ -111,9 +111,7 @@ class Audio:
     SCROLL_MENU = pygame.mixer.Sound('./assets/audio/scroll_menu.ogg')
 
     SOUTH_INSTRUMENT = pygame.mixer.Sound(
-        "./assets/audio/south_instrument.ogg")
-    SOUTH_VOCAL = pygame.mixer.Sound('./assets/audio/south_vocal.ogg')
-
-    TUTORIAL = pygame.mixer.Sound('./assets/audio/tutorial.ogg')
+        "./assets/audio/soundtrack/south/south_instrument.ogg")
+    SOUTH_VOCAL = pygame.mixer.Sound('./assets/audio/soundtrack/south/south_vocal.ogg')
 
     VOCAL_VOLUME = 1
