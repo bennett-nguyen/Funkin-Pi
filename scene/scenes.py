@@ -3,7 +3,7 @@ import load.game_loader as game_loader
 import general_component.component as genc
 import game.component as game_component
 from load.game_loader import Data
-from scene.component import MenuLogic, Scene
+from scene.component import MenuLogic, Scene, PausedScreen
 
 pygame.init()
 
@@ -23,11 +23,11 @@ class StartScreen(Scene):
         # ----
 
         self.deactivated_button = genc.ImageAnimation(
-            game_loader.Gallery.BUTTON_DEACTIVATED_IMAGES, game_loader.DisplaySurf.WIDTH/2, game_loader.DisplaySurf.HEIGHT/2 + 270, 0.1)
+            game_loader.Gallery.PLAY_BUTTON_DEACTIVATED_IMAGES, game_loader.DisplaySurf.WIDTH/2, game_loader.DisplaySurf.HEIGHT/2 + 270, 0.1)
         self.on_hover_button = genc.ImageAnimation(
-            game_loader.Gallery.BUTTON_ON_HOVER_IMAGES, game_loader.DisplaySurf.WIDTH/2, game_loader.DisplaySurf.HEIGHT/2 + 270, 0.1)
+            game_loader.Gallery.PLAY_BUTTON_ON_HOVER_IMAGES, game_loader.DisplaySurf.WIDTH/2, game_loader.DisplaySurf.HEIGHT/2 + 270, 0.1)
         self.activated_button = genc.ImageAnimation(
-            game_loader.Gallery.BUTTON_ACTIVATED_IMAGES, game_loader.DisplaySurf.WIDTH/2, game_loader.DisplaySurf.HEIGHT/2 + 270, 0.15)
+            game_loader.Gallery.PLAY_BUTTON_ACTIVATED_IMAGES, game_loader.DisplaySurf.WIDTH/2, game_loader.DisplaySurf.HEIGHT/2 + 270, 0.15)
         self.button_hit_box = genc.Surface(
             game_loader.DisplaySurf.WIDTH/2, game_loader.DisplaySurf.HEIGHT/2 + 270, 250, 120)
 
@@ -164,6 +164,7 @@ class MainGame(Scene):
         self.display_stat = game_loader.Font.MENU_SCORE.render(f"Score: {self.score}", True, 'White')
         self.display_stat_rect = self.display_stat.get_rect(midbottom = (self.player_surface_x, game_loader.DisplaySurf.HEIGHT - self.padding))
 
+        self.paused_screen_instance = PausedScreen()
         # self.player_entity = game_component.Entity(self.player_surface_x, game_loader.DisplaySurf.HEIGHT/2)
         # self.enemy_entity = game_component.Entity(self.enemy_surface_x, game_loader.DisplaySurf.HEIGHT/2)
         
@@ -198,6 +199,9 @@ class MainGame(Scene):
         #         break
         game_loader.DisplaySurf.Screen.blit(self.display_stat, self.display_stat_rect)
         game_loader.DisplaySurf.Screen.blit(self.display_track_name, self.display_track_name_rect)
+        
+        if self.paused_screen_instance.run:
+            self.paused_screen_instance.activate_pause_screen()
 
         pygame.display.update()
 
@@ -216,6 +220,9 @@ class MainGame(Scene):
 
                     case pygame.K_RIGHT:
                         self.player_arrow_set.right_arrow = game_loader.Gallery.ACTIVATED_RIGHT_ARROW
+                    
+                    case pygame.K_p:
+                        self.paused_screen_instance.run = True
             
             elif event.type == pygame.KEYUP:
                 self.player_arrow_set.event_on_arrow_deactivate(event)

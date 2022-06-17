@@ -1,5 +1,6 @@
 import pygame
 import load.game_loader as game_loader
+import general_component.component as gcom
 
 pygame.init()
 
@@ -290,3 +291,76 @@ class MenuLogic:
                 self.diff_index = 0
 
             game_loader.Audio.SCROLL_MENU.play()
+
+class PausedScreen:
+    def __init__(self):
+        self.background = pygame.Surface((1200, 690))
+        self.background.fill("Grey")
+        self.background.set_alpha(15)
+        
+        self.paused_background = game_loader.Gallery.PAUSED_BACKGROUND
+        self.paused_background_rect = self.paused_background.get_rect(center = (game_loader.DisplaySurf.WIDTH/2, game_loader.DisplaySurf.HEIGHT/2))
+        
+        self.continue_button_hit_box = gcom.Surface(game_loader.DisplaySurf.WIDTH/2, game_loader.DisplaySurf.HEIGHT/2 + 30, 250, 120, (255, 0, 0))
+        self.exit_button_hit_box = gcom.Surface(game_loader.DisplaySurf.WIDTH/2, game_loader.DisplaySurf.HEIGHT/2 + 180, 250, 120, (0, 255, 0))
+
+        button_speed = 0.2
+        self.deactivated_continue_button = gcom.ImageAnimation(
+            game_loader.Gallery.CONTINUE_BUTTON_DEACTIVATED_IMAGES,
+            self.continue_button_hit_box.rect.centerx,
+            self.continue_button_hit_box.rect.centery,
+            button_speed
+        )
+        
+        self.continue_button_on_hover = gcom.ImageAnimation(
+            game_loader.Gallery.CONTINUE_BUTTON_ON_HOVER_IMAGES,
+            self.continue_button_hit_box.rect.centerx,
+            self.continue_button_hit_box.rect.centery,
+            button_speed
+        )
+        
+        self.deactivated_exit_button = gcom.ImageAnimation(
+            game_loader.Gallery.EXIT_BUTTON_DEACTIVATED_IMAGES,
+            self.exit_button_hit_box.rect.centerx,
+            self.exit_button_hit_box.rect.centery,
+            button_speed
+        )
+        self.exit_button_on_hover = gcom.ImageAnimation(
+            game_loader.Gallery.EXIT_BUTTON_ON_HOVER_IMAGES,
+            self.exit_button_hit_box.rect.centerx,
+            self.exit_button_hit_box.rect.centery,
+            button_speed
+        )
+
+        self.run = False
+        
+    def _is_continue_button_on_hover(self):
+        if self.continue_button_hit_box.rect.collidepoint(pygame.mouse.get_pos()):
+            self.continue_button_on_hover.toggle_animation()
+            return
+        
+        self.deactivated_continue_button.toggle_animation()
+        
+    def _is_exit_button_on_hover(self):
+        if self.exit_button_hit_box.rect.collidepoint(pygame.mouse.get_pos()):
+            self.exit_button_on_hover.toggle_animation()
+            return
+        
+        self.deactivated_exit_button.toggle_animation()
+
+
+    def activate_pause_screen(self):
+        while self.run:
+            game_loader.DisplaySurf.Clock.tick(30)
+            game_loader.DisplaySurf.Screen.blit(self.background, (0, 0))
+            game_loader.DisplaySurf.Screen.blit(self.paused_background, self.paused_background_rect)
+            
+            self._is_continue_button_on_hover()
+            self._is_exit_button_on_hover()
+            
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    exit()
+            
+            pygame.display.update()
