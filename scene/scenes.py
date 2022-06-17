@@ -120,22 +120,28 @@ class MenuScreen(Scene):
             self.logic.current_track.display_name_animation.toggle_animation()
 
     def input(self):
-        key = pygame.key.get_pressed()
 
         if self.allow_keydown:
             self.logic.input()
 
-            if key[pygame.K_ESCAPE]:
-                self.redirect = "start screen"
-                self.allow_keydown = False
+            for event in self.events:
+                if event.type == pygame.KEYDOWN:
+                    match event.key:
+                        case pygame.K_ESCAPE:
+                            self.redirect = "start screen"
+                            self.allow_keydown = False
 
-            elif key[pygame.K_RETURN]:
-                self.loaded_data = self.logic.load_track_data()
-                self.logic.current_track.set_animation_coordinates(self.logic.current_track.display_name_rect.centerx, self.logic.current_track.display_name_rect.centery)
-                game_loader.Audio.CONFIRM_MENU.play()
-                self.on_toggle_chosen_track = True
-                self.redirect = "main game"
-                self.allow_keydown = False
+                        case pygame.K_RETURN:
+                            self._key_return_event()
+
+    def _key_return_event(self):
+        self.loaded_data = self.logic.load_track_data()
+        self.logic.current_track.set_animation_coordinates(self.logic.current_track.display_name_rect.centerx,
+                                                          self.logic.current_track.display_name_rect.centery)
+        game_loader.Audio.CONFIRM_MENU.play()
+        self.on_toggle_chosen_track = True
+        self.redirect = "main game"
+        self.allow_keydown = False
         
     def reset_attr(self):
         super().reset_attr()
@@ -146,12 +152,17 @@ class MainGame(Scene):
     def __init__(self):
         super().__init__()
         self.redirect_delay = 1000
+        self.padding = 10
 
         self.player_surface_x = (game_loader.DisplaySurf.WIDTH/4)*3
         self.enemy_surface_x = game_loader.DisplaySurf.WIDTH/4
         
         self.enemy_arrow_set = game_component.ArrowSet(self.enemy_surface_x, 80)
-        self.player_arrow_set = game_component.ArrowSet(self.player_surface_x, 80) 
+        self.player_arrow_set = game_component.ArrowSet(self.player_surface_x, 80)
+        
+        self.score = 0
+        self.display_stat = game_loader.Font.MENU_SCORE.render(f"Score: {self.score}", True, 'White')
+        self.display_stat_rect = self.display_stat.get_rect(midbottom = (self.player_surface_x, game_loader.DisplaySurf.HEIGHT - self.padding))
 
         # self.player_entity = game_component.Entity(self.player_surface_x, game_loader.DisplaySurf.HEIGHT/2)
         # self.enemy_entity = game_component.Entity(self.enemy_surface_x, game_loader.DisplaySurf.HEIGHT/2)
@@ -171,6 +182,7 @@ class MainGame(Scene):
 
         pygame.draw.line(game_loader.DisplaySurf.Screen, "White", (game_loader.DisplaySurf.WIDTH/2,
                             0), (game_loader.DisplaySurf.WIDTH/2, game_loader.DisplaySurf.HEIGHT), 3)
+        
 
         # for object in self.objects:
         #     object.draw_self()
@@ -184,17 +196,39 @@ class MainGame(Scene):
         #         self.objects.remove(object)
 
         #         break
+        game_loader.DisplaySurf.Screen.blit(self.display_stat, self.display_stat_rect)
+        game_loader.DisplaySurf.Screen.blit(self.display_track_name, self.display_track_name_rect)
 
         pygame.display.update()
 
     def input(self):
-        pass
+        for event in self.events:
+            if event.type == pygame.KEYDOWN:
+                match event.key:
+                    case pygame.K_UP:
+                        self.player_arrow_set.up_arrow = game_loader.Gallery.ACTIVATED_UP_ARROW
+
+                    case pygame.K_DOWN:
+                        self.player_arrow_set.down_arrow = game_loader.Gallery.ACTIVATED_DOWN_ARROW
+
+                    case pygame.K_LEFT:
+                        self.player_arrow_set.left_arrow = game_loader.Gallery.ACTIVATED_LEFT_ARROW
+
+                    case pygame.K_RIGHT:
+                        self.player_arrow_set.right_arrow = game_loader.Gallery.ACTIVATED_RIGHT_ARROW
+            
+            elif event.type == pygame.KEYUP:
+                self.player_arrow_set.event_on_arrow_deactivate(event)
+                        
     
     def receive_data(self, data):
         self.track_name = data["name"]
         self.chosen_difficulty = data["chosen_difficulty"]
         self.game_delay = data["difficulty_config"]["delay"]
         self.objects = data["objects"]
+        
+        self.display_track_name = game_loader.Font.MENU_SCORE.render(f"{self.track_name} - {self.chosen_difficulty}", True, "White")
+        self.display_track_name_rect = self.display_track_name.get_rect(bottomleft = (self.padding, game_loader.DisplaySurf.HEIGHT - self.padding))
         
     def reset_attr(self):
         super().reset_attr()

@@ -9,6 +9,7 @@ class Scene:
         self.redirect = None
         self.redirect_delay = 0
         self.allow_keydown = True
+        self.events = None
 
         self.fade_delay = 0
 
@@ -49,6 +50,9 @@ class SceneSwitcher:
         if main_game_data is not None:
             self.current.receive_data(main_game_data)
         self.reset_attr()
+    
+    def receive_events(self, events):
+        self.current.events = events
 
     def fade(self):
         if self.fade_state == "OUT":
