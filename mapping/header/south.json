@@ -7,16 +7,9 @@
             "hard"
         ],
         "score": {
-            "easy": 69696,
-            "normal": 1000,
-            "hard": 10000
-        },
-        "player_animation": {
-            "idle": "assets/img/idle.mp4",
-            "left": "assets/img/left.mp4",
-            "right": "assets/img/right.mp4",
-            "up": "assets/img/up.mp4",
-            "down": "assets/img/down.mp4"
+            "easy": 0,
+            "normal": 0,
+            "hard": 0
         },
         "config": {
             "easy": {
@@ -39,7 +32,19 @@
             "easy": "include.easy",
             "normal": "include.normal",
             "hard": "include.hard"
-        }
+        },
+        "soundtrack": {
+            "instrument": "assets/audio/soundtrack/south/south_instrument.ogg",
+            "vocal": "assets/audio/soundtrack/south/south_vocal.ogg"
+        },
+        "player_animation": {
+            "idle": "assets/img/video/south/player/idle.mp4",
+            "left": "assets/img/video/south/player/left.mp4",
+            "right": "assets/img/video/south/player/right.mp4",
+            "up": "assets/img/video/south/player/up.mp4",
+            "down": "assets/img/video/south/player/down.mp4"
+        },
+        "enemy_animation": {}
     },
     "include": {
         "easy": {
