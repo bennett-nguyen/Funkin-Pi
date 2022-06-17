@@ -4,7 +4,7 @@ A FNF rip-off but with RTX 3080 RAY TRACING 4K 60 FPS ULTRA REALISTIC graphics t
 # Why is this here?
 It has been 6 months since the my declaration about the release date of the game. But, the game still hasn't been completed to this point. The main reason for the procrastination is my laziness; others include: school, other work, and especially that my old computer was broken and I had to wait for 2 months.
 
-And to not feel guilty about myself every night for not completing the game. I will make this repository republic and show the Internet my shitty-ass python code.
+And to not feel guilty about myself every night for not completing the game. I will make this repository public and show the Internet my shitty-ass python code.
 
 # When will it be completed?
 
