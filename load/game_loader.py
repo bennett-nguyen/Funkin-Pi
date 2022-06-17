@@ -91,16 +91,47 @@ class Gallery:
     # ENTITY_DOWN = './assets/img/down.mp4'
 
     LOGO = pygame.image.load("./assets/img/logo.jpg").convert()
+    PAUSED_BACKGROUND = pygame.image.load("./assets/img/paused_template.png").convert_alpha()
 
-    BUTTON_DEACTIVATED_IMAGES = (pygame.transform.rotozoom(pygame.image.load("./assets/img/play_1.jpg").convert(
-    ), 0, 0.6), pygame.transform.rotozoom(pygame.image.load("./assets/img/play_2.jpg").convert(), 0, 0.6))
-    BUTTON_ON_HOVER_IMAGES = (pygame.transform.rotozoom(pygame.image.load("./assets/img/play_3.png").convert_alpha(
-    ), 0, 0.6), pygame.transform.rotozoom(pygame.image.load("./assets/img/play_4.png").convert_alpha(), 0, 0.6))
-    BUTTON_ACTIVATED_IMAGES = (pygame.transform.rotozoom(pygame.image.load("./assets/img/play_1.jpg").convert_alpha(
-    ), 0, 0.6), pygame.transform.rotozoom(pygame.image.load("./assets/img/play_3.png").convert_alpha(), 0, 0.6))
+    PLAY_BUTTON_DEACTIVATED_IMAGES = (
+        pygame.transform.rotozoom(pygame.image.load("./assets/img/play_1.jpg").convert(), 0, 0.6),
+        pygame.transform.rotozoom(pygame.image.load("./assets/img/play_2.jpg").convert(), 0, 0.6)
+    )
+    PLAY_BUTTON_ON_HOVER_IMAGES = (
+        pygame.transform.rotozoom(pygame.image.load("./assets/img/play_3.png").convert_alpha(), 0, 0.6),
+        pygame.transform.rotozoom(pygame.image.load("./assets/img/play_4.png").convert_alpha(), 0, 0.6)
+    )
+    PLAY_BUTTON_ACTIVATED_IMAGES = (
+        pygame.transform.rotozoom(pygame.image.load("./assets/img/play_1.jpg").convert(), 0, 0.6),
+        pygame.transform.rotozoom(pygame.image.load("./assets/img/play_3.png").convert_alpha(), 0, 0.6)
+    )
+    
+    PS_BUTTON_SCALE = 0.6
 
-    POINTER = (pygame.transform.rotozoom(pygame.image.load("./assets/img/pointer_1.png").convert_alpha(), 0, 0.2),
-               pygame.transform.rotozoom(pygame.image.load("./assets/img/pointer_2.png").convert_alpha(), 0, 0.2))
+    CONTINUE_BUTTON_DEACTIVATED_IMAGES = (
+        pygame.transform.rotozoom(pygame.image.load("./assets/img/continue_1.jpg").convert(), 0, PS_BUTTON_SCALE),
+        pygame.transform.rotozoom(pygame.image.load("./assets/img/continue_2.jpg").convert(), 0, PS_BUTTON_SCALE)
+    )
+    CONTINUE_BUTTON_ON_HOVER_IMAGES = (
+        pygame.transform.rotozoom(pygame.image.load("./assets/img/continue_3.png").convert_alpha(), 0, PS_BUTTON_SCALE),
+        pygame.transform.rotozoom(pygame.image.load("./assets/img/continue_4.png").convert_alpha(), 0, PS_BUTTON_SCALE)
+    )
+
+    EXIT_BUTTON_DEACTIVATED_IMAGES = (
+        pygame.transform.rotozoom(pygame.image.load("./assets/img/exit_1.jpg").convert(), 0, PS_BUTTON_SCALE),
+        pygame.transform.rotozoom(pygame.image.load("./assets/img/exit_2.jpg").convert(), 0, PS_BUTTON_SCALE)
+    )
+    EXIT_BUTTON_ON_HOVER_IMAGES = (
+        pygame.transform.rotozoom(pygame.image.load("./assets/img/exit_3.png").convert_alpha(), 0, PS_BUTTON_SCALE),
+        pygame.transform.rotozoom(pygame.image.load("./assets/img/exit_4.png").convert_alpha(), 0, PS_BUTTON_SCALE)
+    )
+
+    POINTER = (
+        pygame.transform.rotozoom(pygame.image.load("./assets/img/pointer_1.png").convert_alpha(), 0, 0.2),
+        pygame.transform.rotozoom(pygame.image.load("./assets/img/pointer_2.png").convert_alpha(), 0, 0.2)
+    )
+    
+
 
 class Data:
     descriptions = file_loader.data_parser(file_loader.file_parser())
