@@ -20,12 +20,15 @@ def game():
     while True:
         DisplaySurf.Screen.fill('Black')
         DisplaySurf.Clock.tick(DisplaySurf.FPS)
+        
+        events = pygame.event.get()
+        switcher.receive_events(events)
 
-        for event in pygame.event.get():
+        for event in events:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
-                
+
         switcher.update()
         pygame.display.update()
         
