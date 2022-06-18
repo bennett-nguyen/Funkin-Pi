@@ -29,7 +29,7 @@ class Scene:
 class SceneSwitcher:
     def __init__(self, scenes: dict):
         self.scenes = scenes
-        self.current = self.scenes["main menu"]
+        self.current = self.scenes["start screen"]
         self.is_transitioning = False
         self.redirect_delay = 0
 
@@ -192,7 +192,12 @@ class MenuLogic:
             "name": self.current_track.name,
             "chosen_difficulty": self.prev_diff,
             "difficulty_config": self.current_track.difficulties_config[self.prev_diff],
-            "objects": self.current_track.objects[self.prev_diff]
+            "objects": self.current_track.objects[self.prev_diff],
+
+            "instrument": self.current_track.instrument,
+            "vocal": self.current_track.vocal,
+
+            "player_entity": self.current_track.player_entity,
         }
 
     def process_input_data(self):
