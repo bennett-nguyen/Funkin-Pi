@@ -1,7 +1,7 @@
 import pygame
 import load.game_loader as game_loader
 import general_component.component as genc
-# import cv2
+import cv2
 
 pygame.init()
 
@@ -54,11 +54,10 @@ class ArrowSet(genc.Surface):
 
 
 class FlyingObject(genc.Surface):
-    VEL = 7
 
-    def __init__(self, x: int, y: int, arrow) -> None:
+    def __init__(self, x: int, y: int, arrow, VEL) -> None:
         super().__init__(x, y, game_loader.DisplaySurf.WIDTH/(13/5), 70)
-
+        self.VEL = VEL
         self.arrow = arrow
 
         match self.arrow:
@@ -85,9 +84,15 @@ class FlyingObject(genc.Surface):
     def draw_self(self):
         game_loader.DisplaySurf.Screen.blit(self.arrow, self.arrow_rect)
 
-    def move(self):
-        self.rect.y -= self.VEL
-        self.arrow_rect.y -= self.VEL
+    def move(self, dt):
+        rect_vel_y = self.rect.y
+        arrow_rect_vel_y = self.arrow_rect.y
+
+        rect_vel_y -= round(self.VEL * dt)
+        arrow_rect_vel_y -= round(self.VEL * dt)
+
+        self.rect.y = rect_vel_y
+        self.arrow_rect.y = arrow_rect_vel_y
 
     def collide(self, object):
         # range from object.rect.center[1] + range --> object.rect.center[1] - range
@@ -109,34 +114,42 @@ class FlyingObject(genc.Surface):
 
 
 
-# TODO: add parameters for custom animation
-# class Entity(genc.Surface):
-#     def __init__(self, x: int, y: int) -> None:
 
-#         super().__init__(x, y, game_loader.DisplaySurf.WIDTH /
-#                          2, game_loader.DisplaySurf.HEIGHT)
+class Entity(genc.Surface):
+    def __init__(self, is_player: bool, video_path) -> None:
+        x = game_loader.DisplaySurf.WIDTH/4
 
-#         self.state = cv2.VideoCapture(image_loader.ENTITY_IDLE)
+        if is_player:
+            x = (game_loader.DisplaySurf.WIDTH/4)*3
 
-#     def animation_is_playable(self):
-#         success, _ = self.state.read()
-#         return success
+        super().__init__(x, game_loader.DisplaySurf.HEIGHT/2, game_loader.DisplaySurf.WIDTH /
+                         2, game_loader.DisplaySurf.HEIGHT)
 
-#     def change_animation(self, animation_path):
-#         self.state = cv2.VideoCapture(animation_path)
+        self.video_path = video_path
+        self.state = cv2.VideoCapture(self.video_path["idle"])
 
-#     def load_animation(self):
-#         success, frame = self.state.read()
+    def animation_is_playable(self):
+        success, _ = self.state.read()
+        return success
 
-#         if not success:
-#             return
+    def change_animation(self, animation):
+        '''
+        animation type: idle, left, up, down, right
+        '''
+        self.state = cv2.VideoCapture(self.video_path[animation])
 
-#         self.animation_surf = pygame.image.frombuffer(
-#             frame.tobytes(), frame.shape[1::-1], "BGR")
-#         self.animation_rect = self.animation_surf.get_rect(
-#             center=self.rect.center)
+    def load_animation(self):
+        success, frame = self.state.read()
 
-#     def draw_self(self):
-#         game_loader.DisplaySurf.Screen.blit(self.surface, self.rect)
-#         game_loader.DisplaySurf.Screen.blit(
-#             self.animation_surf, self.animation_rect)
+        if not success:
+            return
+
+        self.animation_surf = pygame.image.frombuffer(
+            frame.tobytes(), frame.shape[1::-1], "BGR")
+        self.animation_rect = self.animation_surf.get_rect(
+            center=self.rect.center)
+
+    def draw_self(self):
+        game_loader.DisplaySurf.Screen.blit(self.surface, self.rect)
+        game_loader.DisplaySurf.Screen.blit(
+            self.animation_surf, self.animation_rect)
