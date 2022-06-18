@@ -74,7 +74,9 @@ def data_parser(files: list[dict]) -> list[lcom.Track]:
             file["description"]["difficulties"],
             file["description"]["score"],
             file["description"]["config"],
-            file["description"]["mapping"]
+            file["description"]["mapping"],
+            file["description"]["soundtrack"],
+            file["description"]["player_animation"]
         ) 
         for file in files if "description" in file
     ]

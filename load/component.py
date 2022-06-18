@@ -7,7 +7,7 @@ pygame.init()
 
 
 class Track:
-    def __init__(self, name: str, difficulties: list[str], score: dict, difficulties_config: dict, mapping: dict):
+    def __init__(self, name: str, difficulties: list[str], score: dict, difficulties_config: dict, mapping: dict, soundtrack: dict, player_animation_path: dict):
         self.name = name
         self.display_name = game_loader.Font.TITLE_FONT_2.render(
             name.upper(), True, (255, 255, 255))
@@ -38,8 +38,29 @@ class Track:
         }
         self.difficulties_config = difficulties_config
         self.mapping = mapping
+        
+        self.soundtrack_path = soundtrack
+        self.player_animation_path = player_animation_path
+        self.player_entity = game.component.Entity(True, player_animation_path)
 
-    def mapping_to_objects(self):
+    def init_display_name_rect_coordinates(self, x, y):
+        self.display_name_rect = self.display_name.get_rect(center=(x, y))
+        self.display_name_animation = genc.ImageAnimation(
+            (self.display_name, self.display_name_on_toggle), self.display_name_rect.centerx, self.display_name_rect.centery, 0.3)
+    
+    def run_init(self):
+        self._mapping_to_objects()
+        self._load_audio()
+
+    def set_animation_coordinates(self, x, y):
+        self.display_name_animation.rect.centerx = x
+        self.display_name_animation.rect.centery = y
+        
+    def _load_audio(self):
+        self.instrument = pygame.mixer.Sound(self.soundtrack_path["instrument"])
+        self.vocal = pygame.mixer.Sound(self.soundtrack_path["vocal"])
+
+    def _mapping_to_objects(self):
         self.objects = {}
 
         for diff, instruction in self.mapping.items():
@@ -47,11 +68,9 @@ class Track:
             
             self.objects[diff] = []
 
-            game.component.FlyingObject.VEL = self.difficulties_config[diff]["velocity"]
-
             for name, map in instruction.items():
                 if "enemy" in name or "player" in name:
-                    self.enemy_n_player_mapping(name, diff, space, map)
+                    self._enemy_n_player_mapping(name, diff, space, map, self.difficulties_config[diff]["velocity"])
 
                 elif "set" in name and map.startswith("$"):
                     match map[1:map.find(":")]:
@@ -60,19 +79,7 @@ class Track:
                         case "reset":
                             space = self.difficulties_config[diff]["space"]
 
-    def init_display_name_rect_coordinates(self, x, y):
-        self.display_name_rect = self.display_name.get_rect(center=(x, y))
-        self.display_name_animation = genc.ImageAnimation(
-            (self.display_name, self.display_name_on_toggle), self.display_name_rect.centerx, self.display_name_rect.centery, 0.3)
-    
-    def run_init(self):
-        self.mapping_to_objects()
-
-    def set_animation_coordinates(self, x, y):
-        self.display_name_animation.rect.centerx = x
-        self.display_name_animation.rect.centery = y
-
-    def enemy_n_player_mapping(self, name, diff, space, map):
+    def _enemy_n_player_mapping(self, name, diff, space, map, velocity):
 
         player_surface_x = (game_loader.DisplaySurf.WIDTH/4)*3
         enemy_surface_x = game_loader.DisplaySurf.WIDTH/4
@@ -83,8 +90,12 @@ class Track:
         for key in map:
             arrow = self.arrow_map.get(key, None)
             if arrow is None: continue
-            self.objects[diff].append(game.component.FlyingObject(
-                mapping_determiner_x, game_loader.DisplaySurf.HEIGHT + space + temp_dist, arrow))
+            self.objects[diff].append(
+                game.component.FlyingObject(
+                mapping_determiner_x, game_loader.DisplaySurf.HEIGHT + space + temp_dist,
+                arrow,
+                velocity
+                ))
             temp_dist += space
 
     def _load_side_stuff(self):
