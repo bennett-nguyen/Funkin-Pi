@@ -7,7 +7,6 @@ from sys import exit
 
 pygame.init()
 
-# Audio.FREAKY_MENU.play(-1)
 
 game_scenes = {
     "start screen": StartScreen(),
@@ -19,6 +18,7 @@ switcher = SceneSwitcher(game_scenes)
 
 
 def game():
+    # Audio.FREAKY_MENU.play(-1)
     dt = 0 # delta time
     prev_time = time.time()
 
@@ -27,7 +27,7 @@ def game():
         DisplaySurf.Clock.tick(DisplaySurf.FPS)
         
         now = time.time()
-        dt = now - prev_time
+        dt = float(now - prev_time)
         prev_time = now
         
         events = pygame.event.get()
