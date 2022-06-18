@@ -15,17 +15,17 @@
             "easy": {
                 "delay": 0,
                 "space": 125,
-                "velocity": 7
+                "velocity": 1000000
             },
             "normal": {
                 "delay": 0,
                 "space": 125,
-                "velocity": 13
+                "velocity": 60
             },
             "hard": {
                 "delay": 0,
                 "space": 125,
-                "velocity": 16
+                "velocity": 170
             }
         },
         "mapping": {
