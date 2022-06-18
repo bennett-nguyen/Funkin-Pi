@@ -141,8 +141,4 @@ class Audio:
     CONFIRM_MENU = pygame.mixer.Sound('./assets/audio/confirm_menu.ogg')
     SCROLL_MENU = pygame.mixer.Sound('./assets/audio/scroll_menu.ogg')
 
-    SOUTH_INSTRUMENT = pygame.mixer.Sound(
-        "./assets/audio/soundtrack/south/south_instrument.ogg")
-    SOUTH_VOCAL = pygame.mixer.Sound('./assets/audio/soundtrack/south/south_vocal.ogg')
-
     VOCAL_VOLUME = 1
