@@ -1,7 +1,6 @@
-from pprint import pprint
 import pygame
 import load.game_loader as game_loader
-import general_component.component as genc
+import general_component.component as gcom
 import game.component as game_component
 from load.game_loader import Data
 from scene.component import MenuLogic, Scene, PausedScreen
@@ -11,7 +10,7 @@ pygame.init()
 class StartScreen(Scene):
     def __init__(self):
         super().__init__()
-        self.sound_1_effect_played = self.sound_2_effect_played = self.button_pressed = False
+        self.sound_1_effect_played = self.sound_2_effect_played = False
 
         self.redirect_delay = 3500
         self.fade_delay = 2500
@@ -22,46 +21,43 @@ class StartScreen(Scene):
 
         self.alpha = 255
         # ----
+        
+        self.start_button = gcom.Button(
+            (game_loader.DisplaySurf.WIDTH/2, game_loader.DisplaySurf.HEIGHT/2 + 270),
+            (250, 120),
+            game_loader.Gallery.PLAY_BUTTON_DEACTIVATED_IMAGES,
+            game_loader.Gallery.PLAY_BUTTON_ON_HOVER_IMAGES,
+            game_loader.Gallery.PLAY_BUTTON_ACTIVATED_IMAGES
+        )
 
-        self.deactivated_button = genc.ImageAnimation(
-            game_loader.Gallery.PLAY_BUTTON_DEACTIVATED_IMAGES, game_loader.DisplaySurf.WIDTH/2, game_loader.DisplaySurf.HEIGHT/2 + 270, 0.1)
-        self.on_hover_button = genc.ImageAnimation(
-            game_loader.Gallery.PLAY_BUTTON_ON_HOVER_IMAGES, game_loader.DisplaySurf.WIDTH/2, game_loader.DisplaySurf.HEIGHT/2 + 270, 0.1)
-        self.activated_button = genc.ImageAnimation(
-            game_loader.Gallery.PLAY_BUTTON_ACTIVATED_IMAGES, game_loader.DisplaySurf.WIDTH/2, game_loader.DisplaySurf.HEIGHT/2 + 270, 0.15)
-        self.button_hit_box = genc.Surface(
-            game_loader.DisplaySurf.WIDTH/2, game_loader.DisplaySurf.HEIGHT/2 + 270, 250, 120)
 
     def redraw(self):
         game_loader.DisplaySurf.Screen.blit(game_loader.Gallery.LOGO, game_loader.Gallery.LOGO.get_rect(
             center=(game_loader.DisplaySurf.WIDTH/2, game_loader.DisplaySurf.HEIGHT/2)))
+        self.start_button.check_hover()
 
-        if self.button_pressed:
-            self.activated_button.toggle_animation()
+        if self.start_button.is_activated(check_type=1):
+            self.start_button.toggle_animation(animation_type=2)
             self.redirect = "menu screen"
 
-        if not self.button_pressed:
-            if self.button_hit_box.rect.collidepoint(pygame.mouse.get_pos()):
-                self.on_hover_button.toggle_animation()
-
-                if not self.sound_2_effect_played:
-                    game_loader.Audio.SCROLL_MENU.play()
-                    self.sound_2_effect_played = True
-            else:
-                self.deactivated_button.toggle_animation()
-                self.sound_2_effect_played = False
+        elif self.start_button.is_on_hover:
+            self.start_button.toggle_animation(animation_type=1)
+            if not self.sound_2_effect_played:
+                game_loader.Audio.SCROLL_MENU.play()
+                self.sound_2_effect_played = True
+        
+        else:
+            self.start_button.toggle_animation(animation_type=0)
+            self.sound_2_effect_played = False
 
         if self.alpha > -1:
             self.custom_fade_in()
 
     def input(self):
-        if (
-            pygame.mouse.get_pressed()[0]
-            and self.button_hit_box.rect.collidepoint(pygame.mouse.get_pos())
-        ) or (pygame.key.get_pressed()[pygame.K_RETURN]):
-            self.button_pressed = True
+        self.start_button.check_click(click_type=0)
+        self.start_button.check_key_activate(key = pygame.K_RETURN)
 
-        if self.button_pressed and not self.sound_1_effect_played:
+        if self.start_button.is_activated(check_type=1) and not self.sound_1_effect_played:
             game_loader.Audio.CONFIRM_MENU.play()
             self.sound_1_effect_played = True
 
@@ -72,17 +68,17 @@ class StartScreen(Scene):
 
     def reset_attr(self):
         super().reset_attr()
-        self.sound_1_effect_played = self.sound_2_effect_played = self.button_pressed = False
-
+        self.sound_1_effect_played = self.sound_2_effect_played = False
+        self.start_button.deactivate_button(0)
 
 class MenuScreen(Scene):
     def __init__(self):
         super().__init__()
-        self.redirect_delay = 4000
-        self.fade_delay = 2900
+        self.redirect_delay = 3500
+        self.fade_delay = 2400
         self.on_toggle_chosen_track = False
 
-        self.yellow_rectangle = genc.Surface(
+        self.yellow_rectangle = gcom.Surface(
             game_loader.DisplaySurf.WIDTH/2, 150, game_loader.DisplaySurf.WIDTH - 150, 200, (249, 209, 81))
 
         self.choose_your_track = game_loader.Font.TITLE_FONT_2.render(
@@ -90,9 +86,9 @@ class MenuScreen(Scene):
         self.cyt_rect = self.choose_your_track.get_rect(
             center=self.yellow_rectangle.rect.center)
 
-        self.track_chooser_rect = genc.Surface(
+        self.track_chooser_rect = gcom.Surface(
             game_loader.DisplaySurf.WIDTH/2, 470, 270, 300)
-        self.pointer = genc.ImageAnimation(
+        self.pointer = gcom.ImageAnimation(
             game_loader.Gallery.POINTER, self.track_chooser_rect.rect.centerx + 250, self.track_chooser_rect.rect.centery, 0.1)
         self.tracks = Data.descriptions
 

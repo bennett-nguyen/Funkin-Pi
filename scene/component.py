@@ -307,71 +307,55 @@ class PausedScreen:
         self.background = pygame.Surface((1200, 690))
         self.background.fill("Grey")
         self.background.set_alpha(15)
-        self.is_continue_button_on_hover = False
-        self.is_exit_button_on_hover = False
+        self.play_sfx_1 = False
+        self.play_sfx_2 = False
         
         self.paused_background = game_loader.Gallery.PAUSED_BACKGROUND
         self.paused_background_rect = self.paused_background.get_rect(center = (game_loader.DisplaySurf.WIDTH/2, game_loader.DisplaySurf.HEIGHT/2))
-        
-        self.continue_button_hit_box = gcom.Surface(game_loader.DisplaySurf.WIDTH/2, game_loader.DisplaySurf.HEIGHT/2 + 30, 250, 120, (255, 0, 0))
-        self.exit_button_hit_box = gcom.Surface(game_loader.DisplaySurf.WIDTH/2, game_loader.DisplaySurf.HEIGHT/2 + 180, 250, 120, (0, 255, 0))
 
-        button_speed = 0.2
-        self.deactivated_continue_button = gcom.ImageAnimation(
+        button_speed = (0.2, 0.2, 0.2)
+
+        self.continue_button = gcom.Button(
+            (game_loader.DisplaySurf.WIDTH/2, game_loader.DisplaySurf.HEIGHT/2 + 30),
+            (250, 120),
             game_loader.Gallery.CONTINUE_BUTTON_DEACTIVATED_IMAGES,
-            self.continue_button_hit_box.rect.centerx,
-            self.continue_button_hit_box.rect.centery,
-            button_speed
-        )
-        
-        self.continue_button_on_hover = gcom.ImageAnimation(
             game_loader.Gallery.CONTINUE_BUTTON_ON_HOVER_IMAGES,
-            self.continue_button_hit_box.rect.centerx,
-            self.continue_button_hit_box.rect.centery,
-            button_speed
+            speed=button_speed
         )
         
-        self.deactivated_exit_button = gcom.ImageAnimation(
+        self.exit_button = gcom.Button(
+            (game_loader.DisplaySurf.WIDTH/2, game_loader.DisplaySurf.HEIGHT/2 + 180),
+            (250, 120),
             game_loader.Gallery.EXIT_BUTTON_DEACTIVATED_IMAGES,
-            self.exit_button_hit_box.rect.centerx,
-            self.exit_button_hit_box.rect.centery,
-            button_speed
-        )
-        self.exit_button_on_hover = gcom.ImageAnimation(
             game_loader.Gallery.EXIT_BUTTON_ON_HOVER_IMAGES,
-            self.exit_button_hit_box.rect.centerx,
-            self.exit_button_hit_box.rect.centery,
-            button_speed
+            speed=button_speed
         )
 
         self.run = False
-        
-    def _is_button_on_hover(self):
-        if self.continue_button_hit_box.rect.collidepoint(pygame.mouse.get_pos()):
-            self.continue_button_on_hover.toggle_animation()
-            self.deactivated_exit_button.toggle_animation()
-            if not self.is_continue_button_on_hover:
+
+    def _check_hover(self):
+        self.continue_button.check_hover()
+        self.exit_button.check_hover()
+
+        if self.continue_button.is_on_hover:
+            self.continue_button.toggle_animation(animation_type=1)
+            self.exit_button.toggle_animation(animation_type=0)
+            if not self.play_sfx_1:
                 game_loader.Audio.SCROLL_MENU.play()
-                self.is_continue_button_on_hover = True
+                self.play_sfx_1 = True
             return
         
-        elif self.exit_button_hit_box.rect.collidepoint(pygame.mouse.get_pos()):
-            self.exit_button_on_hover.toggle_animation()
-            self.deactivated_continue_button.toggle_animation()
-            if not self.is_exit_button_on_hover:
+        elif self.exit_button.is_on_hover:
+            self.exit_button.toggle_animation(animation_type=1)
+            self.continue_button.toggle_animation(animation_type=0)
+            if not self.play_sfx_2:
                 game_loader.Audio.SCROLL_MENU.play()
-                self.is_exit_button_on_hover = True
+                self.play_sfx_2 = True
             return
-        
-        self.deactivated_exit_button.toggle_animation()
-        self.deactivated_continue_button.toggle_animation()
-        self.is_exit_button_on_hover = self.is_continue_button_on_hover = False
-        
-    
-    def _continue_button_on_press(self):
-        if self.is_continue_button_on_hover and pygame.mouse.get_pressed()[0]:
-            self.run = False
-            game_loader.DisplaySurf.Clock.tick(60)
+
+        self.continue_button.toggle_animation(animation_type=0)
+        self.exit_button.toggle_animation(animation_type=0)
+        self.play_sfx_1 = self.play_sfx_2 = False
 
 
     def activate_pause_screen(self):
@@ -380,12 +364,16 @@ class PausedScreen:
             game_loader.DisplaySurf.Screen.blit(self.background, (0, 0))
             game_loader.DisplaySurf.Screen.blit(self.paused_background, self.paused_background_rect)
 
-            self._is_button_on_hover()
-            self._continue_button_on_press()
-
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     exit()
+
+
+            self._check_hover()
+            self.continue_button.check_click(click_type=0)
+            if self.continue_button.activated_by_click:
+                self.run = False
+                game_loader.DisplaySurf.Clock.tick(60)
 
             pygame.display.update()
