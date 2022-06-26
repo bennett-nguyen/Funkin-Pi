@@ -48,15 +48,102 @@ _ACTIVATED_DOWN_ARROW = pygame.image.load(
     "./assets/img/activated_down_arrow.png").convert_alpha()
 
 
+class _Font:
+    # TITLE_SIZE = 100
+    # TITLE_SIZE_2 = 75
+    # TITLE_SIZE_3 = 50
+    # MENU_SCORE = 20
 
-class Font:
-    TITLE_FONT = pygame.font.Font(
-        './assets/font/FridayFunkin-Regular.ttf', 100)
-    TITLE_FONT_2 = pygame.font.Font(
-        './assets/font/FridayFunkin-Regular.ttf', 75)
-    WEEK_FONT = pygame.font.Font('./assets/font/FridayFunkin-Regular.ttf', 50)
-    SCORE_FONT = pygame.font.Font('./assets/font/Gtoles.ttf', 300)
-    MENU_SCORE = pygame.font.Font('./assets/font/vcr_osd.ttf', 20)
+    DEPRECATED_FNF_FONT = './assets/font/FridayFunkin-Regular.ttf'
+    VRC_OSD = './assets/font/vcr_osd.ttf'
+    PHANTOMMUFF_EMPTY = './assets/font/PhantomMuff Empty Letters.ttf'
+    PHANTOMMUFF_FULL = './assets/font/PhantomMuff Full Letters.ttf'
+
+    def __init__(self):
+        self.FONT_MAP = {
+            "vrc-osd": self.VRC_OSD,
+            "deprecated-fnf-font": self.DEPRECATED_FNF_FONT,
+            "phantommuff-empty": self.PHANTOMMUFF_EMPTY,
+            "phantommuff-full": self.PHANTOMMUFF_FULL
+        }
+
+    def get_font(self, name: str, size: int):
+        """
+        Available fonts: 
+        - vrc-osd
+        - deprecated-fnf-font
+        - phantommuff-empty
+        - phantommuff-full
+        
+        Standard size:
+        - title font 1: 100
+        - title font 2: 75
+        - title font 3: 50
+        - menu score: 20
+        """
+        return pygame.font.Font(self.FONT_MAP[name], size)
+
+CustomFont = _Font()
+
+_message_x = DisplaySurf.WIDTH/2
+_message_1_y = DisplaySurf.HEIGHT/2 - 150
+_message_2_y = DisplaySurf.HEIGHT/2
+_message_3_y = DisplaySurf.HEIGHT/2 + 150
+
+_title_font = CustomFont.get_font("phantommuff-empty", 80)
+_title_font_1 = CustomFont.get_font("phantommuff-empty", 100)
+
+_message_1 = _title_font_1.render(" ", True, "White")
+_message_1_rect = _message_1.get_rect(center = (_message_x, _message_1_y))
+
+_message_2 = _title_font.render("BENNETT NGUYEN'S PRESENT", True, "White")
+_message_2_rect = _message_2.get_rect(center = (_message_x, _message_2_y))
+
+_message_3 = _title_font_1.render(" ", True, "White")
+_message_3_rect = _message_3.get_rect(center = (_message_x, _message_3_y))
+
+
+
+_message_4 = _title_font_1.render("MADE", True, "White")
+_message_4_rect = _message_4.get_rect(center = (_message_x, _message_1_y))
+
+_message_5 = _title_font_1.render("WITH", True, "White")
+_message_5_rect = _message_5.get_rect(center = (_message_x, _message_2_y))
+
+_message_6 = _title_font_1.render("PYTHON AND PYGAME", True, "White")
+_message_6_rect = _message_6.get_rect(center = (_message_x, _message_3_y))
+
+
+
+_message_7 = _title_font_1.render("FROM THE", True, "White")
+_message_7_rect = _message_7.get_rect(center = (_message_x, _message_1_y))
+
+_message_8 = _title_font_1.render("AMAZING", True, "White")
+_message_8_rect = _message_8.get_rect(center = (_message_x, _message_2_y))
+
+_message_9 = _title_font_1.render("FRIDAY NIGHT FUNKIN'", True, "White")
+_message_9_rect = _message_9.get_rect(center = (_message_x, _message_3_y))
+
+class Message:
+    _req_message_list_1 = [
+        (_message_1, _message_1_rect),
+        (_message_2, _message_2_rect),
+        (_message_3, _message_3_rect)
+    ]
+    
+    _req_message_list_2 = [
+        (_message_4, _message_4_rect),
+        (_message_5, _message_5_rect),
+        (_message_6, _message_6_rect)
+    ]
+    
+    _req_message_list_3 = [
+        (_message_7, _message_7_rect),
+        (_message_8, _message_8_rect),
+        (_message_9, _message_9_rect)
+    ]
+    
+    _opt_message_list = file_loader.load_opt_message()
 
 
 class Gallery:

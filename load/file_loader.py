@@ -4,7 +4,6 @@ import load.component as lcom
 
 pygame.init()
 
-
 def check_presence(file):
     # assuming all of the informations are correct
     description = file["description"]
@@ -41,10 +40,48 @@ def get_mapping(mapping, file):
 
     return new_mapping
 
+def load_opt_message():
+    import json
+    import load.game_loader as game_loader
+    
+    _message_x = game_loader.DisplaySurf.WIDTH/2
+    _message_1_y = game_loader.DisplaySurf.HEIGHT/2 - 150
+    _message_2_y = game_loader.DisplaySurf.HEIGHT/2
+    _message_3_y = game_loader.DisplaySurf.HEIGHT/2 + 150
+
+    message_init_map = {
+        "init_message": lambda text: game_loader.CustomFont.get_font(name="phantommuff-empty", size=100).render(text, True, "White"),
+        "get_rect": lambda surf, x, y: surf.get_rect(center = (x, y))
+    }
+
+    random_message = []
+    
+    with open("./assets/optional-message.json", "r") as f:
+        file = json.load(f)
+        
+        for messages in file["random"]:
+            message_surf_1 = message_init_map["init_message"](messages["message_1"].upper())
+            message_surf_2 = message_init_map["init_message"](messages["message_2"].upper())
+            message_surf_3 = message_init_map["init_message"](messages["message_3"].upper())
+            
+            message_rect_1 = message_init_map["get_rect"](message_surf_1, _message_x, _message_1_y)
+            message_rect_2 = message_init_map["get_rect"](message_surf_2, _message_x, _message_2_y)
+            message_rect_3 = message_init_map["get_rect"](message_surf_3, _message_x, _message_3_y)
+            
+            random_message.append(
+                (
+                    (message_surf_1, message_rect_1),
+                    (message_surf_2, message_rect_2),
+                    (message_surf_3, message_rect_3)
+                )
+            )
+            
+        return random_message
 
 def file_parser() -> list[dict]:
     import json
     import os
+
     files = []
 
     for entry in os.listdir("./mapping/header"):
