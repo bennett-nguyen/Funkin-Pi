@@ -1,6 +1,5 @@
 import pygame
 import load.game_loader as game_loader
-from typing import Callable
 
 pygame.init()
 
