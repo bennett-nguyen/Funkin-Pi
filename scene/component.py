@@ -9,6 +9,7 @@ class Scene:
     def __init__(self):
         self.redirect = None
         self.redirect_delay = 0
+        self.deactivate_fade = False
         self.allow_keydown = True
         self.events = None
         self.dt = 0
@@ -27,11 +28,12 @@ class Scene:
 
 
 class SceneSwitcher:
-    def __init__(self, scenes: dict):
+    def __init__(self, scenes: dict, start: str):
         self.scenes = scenes
-        self.current = self.scenes["start screen"]
+        self.current = self.scenes[start]
         self.is_transitioning = False
         self.redirect_delay = 0
+        self.deactivate_fade = False
 
         self.current_time = 0
         self.redirected_time = 0
@@ -90,20 +92,24 @@ class SceneSwitcher:
             if not self.redirected_time:
                 self.redirected_time = pygame.time.get_ticks()
                 self.redirect_delay = self.current.redirect_delay
-                self.fade_delay = self.current.fade_delay
-                self.is_transitioning = True
+                self.deactivate_fade = self.current.deactivate_fade
+                
+                if not self.deactivate_fade:
+                    self.fade_delay = self.current.fade_delay
+                    self.is_transitioning = True
 
             if self.current_time - self.redirected_time > self.redirect_delay:
                 self.change_scene()
 
         if (
-            self.is_transitioning
+            self.is_transitioning and not self.deactivate_fade
             and self.current_time - self.redirected_time > self.fade_delay
         ):
             self.fade()
 
     def reset_attr(self):
         self.redirect_delay = self.redirected_time = 0
+        self.deactivate_fade = False
 
 
 class MenuLogic:
