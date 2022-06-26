@@ -114,6 +114,7 @@ class StartScreen(Scene):
 class MenuScreen(Scene):
     def __init__(self):
         super().__init__()
+        title_font_2 = game_loader.CustomFont.get_font("phantommuff-empty", 75)
         self.redirect_delay = 3500
         self.fade_delay = 2400
         self.on_toggle_chosen_track = False
@@ -121,7 +122,7 @@ class MenuScreen(Scene):
         self.yellow_rectangle = gcom.Surface(
             game_loader.DisplaySurf.WIDTH/2, 150, game_loader.DisplaySurf.WIDTH - 150, 200, (249, 209, 81))
 
-        self.choose_your_track = game_loader.Font.TITLE_FONT_2.render(
+        self.choose_your_track = title_font_2.render(
             "CHOOSE YOUR TRACK", True, "Black")
         self.cyt_rect = self.choose_your_track.get_rect(
             center=self.yellow_rectangle.rect.center)
@@ -190,6 +191,7 @@ class MenuScreen(Scene):
 class MainGame(Scene):
     def __init__(self):
         super().__init__()
+        menu_score_font = game_loader.CustomFont.get_font("vrc-osd", 20)
         self.redirect_delay = 1000
         self.padding = 10
         self.audio_is_playing = False
@@ -203,7 +205,7 @@ class MainGame(Scene):
         self.player_arrow_set = game_component.ArrowSet(self.player_surface_x, 80)
         
         self.score = 0
-        self.display_stat = game_loader.Font.MENU_SCORE.render(f"Score: {self.score}", True, 'White')
+        self.display_stat = menu_score_font.render(f"Score: {self.score}", True, 'White')
         self.display_stat_rect = self.display_stat.get_rect(midbottom = (self.player_surface_x, game_loader.DisplaySurf.HEIGHT - self.padding))
 
         self.paused_screen_instance = PausedScreen()
@@ -280,18 +282,20 @@ class MainGame(Scene):
         self.vocal.play()
     
     def receive_data(self, data):
+        menu_score_font = game_loader.CustomFont.get_font("vrc-osd", 20)
+
         self.track_name = data["name"]
         self.chosen_difficulty = data["chosen_difficulty"]
         self.game_delay = data["difficulty_config"]["delay"]
         self.objects = data["objects"]
-        
+
         self.instrument = data["instrument"]
         self.vocal = data["vocal"]
-        
+
         self.player_entity = data["player_entity"]
-        
-        self.display_track_name = game_loader.Font.MENU_SCORE.render(f"{self.track_name} - {self.chosen_difficulty}", True, "White")
+
+        self.display_track_name = menu_score_font.render(f"{self.track_name} - {self.chosen_difficulty}", True, "White")
         self.display_track_name_rect = self.display_track_name.get_rect(bottomleft = (self.padding, game_loader.DisplaySurf.HEIGHT - self.padding))
-        
+
     def reset_attr(self):
         super().reset_attr()

@@ -50,7 +50,7 @@ def load_opt_message():
     _message_3_y = game_loader.DisplaySurf.HEIGHT/2 + 150
 
     message_init_map = {
-        "init_message": lambda text: game_loader.Font.TITLE_FONT.render(text, True, "White"),
+        "init_message": lambda text: game_loader.CustomFont.get_font(name="phantommuff-empty", size=100).render(text, True, "White"),
         "get_rect": lambda surf, x, y: surf.get_rect(center = (x, y))
     }
 

@@ -9,11 +9,10 @@ pygame.init()
 class Track:
     def __init__(self, name: str, difficulties: list[str], score: dict, difficulties_config: dict, mapping: dict, soundtrack: dict, player_animation_path: dict):
         self.name = name
-        self.display_name = game_loader.Font.TITLE_FONT_2.render(
-            name.upper(), True, (255, 255, 255))
-
-        self.display_name_on_toggle = game_loader.Font.TITLE_FONT_2.render(
-            name.upper(), True, (0, 255, 255))
+        display_name_font = game_loader.CustomFont.get_font("phantommuff-empty", 75)
+        
+        self.display_name = display_name_font.render(name.upper(), True, (255, 255, 255))
+        self.display_name_on_toggle = display_name_font.render(name.upper(), True, (0, 255, 255))
         
 
         self.difficulties = {}
@@ -92,13 +91,15 @@ class Track:
             if arrow is None: continue
             self.objects[diff].append(
                 game.component.FlyingObject(
-                mapping_determiner_x, game_loader.DisplaySurf.HEIGHT + space + temp_dist,
-                arrow,
-                velocity
+                    mapping_determiner_x, game_loader.DisplaySurf.HEIGHT + space + temp_dist,
+                    arrow,
+                    velocity
                 ))
             temp_dist += space
 
     def _load_side_stuff(self):
+        text_font = game_loader.CustomFont.get_font("phantommuff-empty", 75)
+
         self.arrow_map = {
             "l": game_loader.Gallery.ACTIVATED_LEFT_ARROW,
             "r": game_loader.Gallery.ACTIVATED_RIGHT_ARROW,
@@ -106,11 +107,11 @@ class Track:
             "d": game_loader.Gallery.ACTIVATED_DOWN_ARROW,
         }
 
-        self.easy_text = game_loader.Font.TITLE_FONT_2.render(
+        self.easy_text = text_font.render(
             "EASY", True, (19, 253, 0))
-        self.normal_text = game_loader.Font.TITLE_FONT_2.render(
+        self.normal_text = text_font.render(
             "NORMAL", True, (242, 253, 0))
-        self.hard_text = game_loader.Font.TITLE_FONT_2.render(
+        self.hard_text = text_font.render(
             "HARD", True, (255, 0, 0))
 
         self.easy_text_rect = self.easy_text.get_rect(midleft=(900, 470))

@@ -114,6 +114,8 @@ class SceneSwitcher:
 
 class MenuLogic:
     def __init__(self, tracks, dt):
+        menu_score_font = game_loader.CustomFont.get_font("vrc-osd", 20)
+
         self.tracks = tracks
         self.dt = dt
         self.centery = self.tracks[0].display_name_rect.centery
@@ -128,7 +130,7 @@ class MenuLogic:
 
         self.current_score = self.current_track.score
 
-        self.score_text = game_loader.Font.MENU_SCORE.render(
+        self.score_text = menu_score_font.render(
             f"SCORE: {self.current_score[self.prev_diff]}", True, "White")
         self.st_rect = self.score_text.get_rect(
             midleft=(75, 25))
@@ -227,8 +229,8 @@ class MenuLogic:
 
         self.current_score = self.current_track.score
 
-        self.score_text = game_loader.Font.MENU_SCORE.render(
-            f"SCORE: {self.current_score[self.prev_diff]}", True, "White")
+        menu_score_font = game_loader.CustomFont.get_font("vrc-osd", 20)
+        self.score_text = menu_score_font.render(f"SCORE: {self.current_score[self.prev_diff]}", True, "White")
 
         self.st_rect = self.score_text.get_rect(midleft=(75, 25))
 
