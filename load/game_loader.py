@@ -177,7 +177,7 @@ class Gallery:
     # ENTITY_UP = './assets/img/up.mp4'
     # ENTITY_DOWN = './assets/img/down.mp4'
 
-    LOGO = pygame.image.load("./assets/img/logo-test.jpg").convert()
+    LOGO = pygame.image.load("./assets/img/logo.jpg").convert()
     PAUSED_BACKGROUND = pygame.image.load("./assets/img/paused_template.png").convert_alpha()
 
     PLAY_BUTTON_DEACTIVATED_IMAGES = (
