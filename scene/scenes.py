@@ -141,7 +141,7 @@ class MenuScreen(Scene):
             track.run_init()
             distance += 120
 
-        self.logic = MenuLogic(self.tracks, self.dt)
+        self.logic = MenuLogic(self.tracks)
 
     def redraw(self):
         self.logic.redraw()
@@ -162,7 +162,7 @@ class MenuScreen(Scene):
         if self.allow_keydown:
             self.logic.input()
 
-            for event in self.events:
+            for event in game_loader.shared_data.events:
                 if event.type == pygame.KEYDOWN:
                     match event.key:
                         case pygame.K_ESCAPE:
@@ -191,7 +191,6 @@ class MenuScreen(Scene):
 class MainGame(Scene):
     def __init__(self):
         super().__init__()
-        menu_score_font = game_loader.CustomFont.get_font("vrc-osd", 20)
         self.redirect_delay = 1000
         self.padding = 10
         self.audio_is_playing = False
@@ -204,78 +203,73 @@ class MainGame(Scene):
         self.enemy_arrow_set = game_component.ArrowSet(self.enemy_surface_x, 80)
         self.player_arrow_set = game_component.ArrowSet(self.player_surface_x, 80)
         
-        self.score = 0
-        self.display_stat = menu_score_font.render(f"Score: {self.score}", True, 'White')
-        self.display_stat_rect = self.display_stat.get_rect(midbottom = (self.player_surface_x, game_loader.DisplaySurf.HEIGHT - self.padding))
+        
 
         self.paused_screen_instance = PausedScreen()
+
+        self.changed_scene_time = 0
+        self.current_time = 0
+        self.delay = 3000
+        self.activated = False
     
     def redraw(self):
         game_loader.DisplaySurf.Screen.fill('Black')
-        
+
         # if not self.player_entity.animation_is_playable():
         #     self.player_entity.change_animation("idle")
 
         # self.player_entity.load_animation()
         # self.player_entity.draw_self()
-        
+
         self.enemy_arrow_set.draw_self()
         self.player_arrow_set.draw_self()
 
         pygame.draw.line(game_loader.DisplaySurf.Screen, "White", (game_loader.DisplaySurf.WIDTH/2,
                             0), (game_loader.DisplaySurf.WIDTH/2, game_loader.DisplaySurf.HEIGHT), 3)
-        
 
-        for object in self.objects:
-            if object.arrow_rect.top > game_loader.DisplaySurf.HEIGHT:
-                object.move(self.dt)
-                continue
-
-            object.draw_self()
-            object.move(self.dt)
-
-            # object goes offscreen
-            if object.rect.y <= - object.surface.get_height():
-                self.objects.remove(object)
-
-            if object.collide_for_enemy(self.enemy_arrow_set):
-                self.objects.remove(object)
-
-                break
-
-        game_loader.DisplaySurf.Screen.blit(self.display_stat, self.display_stat_rect)
+        self.game_logic.redraw()
         game_loader.DisplaySurf.Screen.blit(self.display_track_name, self.display_track_name_rect)
         
         if self.paused_screen_instance.run:
             self.paused_screen_instance.activate_pause_screen()
 
-        pygame.display.update()
-
     def input(self):
-        for event in self.events:
-            if event.type == pygame.KEYDOWN:
-                match event.key:
-                    case pygame.K_UP:
-                        self.player_arrow_set.up_arrow = game_loader.Gallery.ACTIVATED_UP_ARROW
-                        # self.player_entity.change_animation("up")
+        self.current_time = pygame.time.get_ticks()
+        if self.current_time - self.changed_scene_time >= self.delay:
+            for event in game_loader.shared_data.events:
+                if event.type == pygame.KEYDOWN:
+                    match event.key:
+                        case pygame.K_UP:
+                            self.player_arrow_set.up_arrow = game_loader.Gallery.ACTIVATED_UP_ARROW
+                            # self.player_entity.change_animation("up")
 
-                    case pygame.K_DOWN:
-                        self.player_arrow_set.down_arrow = game_loader.Gallery.ACTIVATED_DOWN_ARROW
-                        # self.player_entity.change_animation("down")
+                        case pygame.K_DOWN:
+                            self.player_arrow_set.down_arrow = game_loader.Gallery.ACTIVATED_DOWN_ARROW
+                            # self.player_entity.change_animation("down")
 
-                    case pygame.K_LEFT:
-                        self.player_arrow_set.left_arrow = game_loader.Gallery.ACTIVATED_LEFT_ARROW
-                        # self.player_entity.change_animation("left")
+                        case pygame.K_LEFT:
+                            self.player_arrow_set.left_arrow = game_loader.Gallery.ACTIVATED_LEFT_ARROW
+                            # self.player_entity.change_animation("left")
 
-                    case pygame.K_RIGHT:
-                        self.player_arrow_set.right_arrow = game_loader.Gallery.ACTIVATED_RIGHT_ARROW
-                        # self.player_entity.change_animation("right")
+                        case pygame.K_RIGHT:
+                            self.player_arrow_set.right_arrow = game_loader.Gallery.ACTIVATED_RIGHT_ARROW
+                            # self.player_entity.change_animation("right")
 
-                    case pygame.K_p:
-                        self.paused_screen_instance.run = True
+                        case pygame.K_p:
+                            self.paused_screen_instance.run = True
+                
+                    self.game_logic.check_collide_player(event.key)
+                elif event.type == pygame.KEYUP:
+                    self.player_arrow_set.event_on_arrow_deactivate(event)
+    
+    def pre_event(self):
+        self.current_time = pygame.time.get_ticks()
 
-            elif event.type == pygame.KEYUP:
-                self.player_arrow_set.event_on_arrow_deactivate(event)
+        if self.current_time - self.changed_scene_time >= self.delay:
+            self.activated = True
+    
+    def end_pre_event(self):
+        return self.activated
     
     def play_audio(self):
         self.instrument.play()
@@ -287,7 +281,7 @@ class MainGame(Scene):
         self.track_name = data["name"]
         self.chosen_difficulty = data["chosen_difficulty"]
         self.game_delay = data["difficulty_config"]["delay"]
-        self.objects = data["objects"]
+        self.game_logic = game_component.GameLogic(data["objects"], self.player_arrow_set, self.enemy_arrow_set)
 
         self.instrument = data["instrument"]
         self.vocal = data["vocal"]
