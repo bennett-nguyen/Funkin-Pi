@@ -1,12 +1,12 @@
+from email import message
 import pygame
 import load.game_loader as game_loader
-import general_component.component as genc
+import general_component.component as gcom
 import cv2
 
 pygame.init()
 
-
-class ArrowSet(genc.Surface):
+class ArrowSet(gcom.Surface):
     def __init__(self, x: int, y: int):
         super().__init__(x, y, game_loader.DisplaySurf.WIDTH/2/1.3, 70)
 
@@ -53,8 +53,7 @@ class ArrowSet(genc.Surface):
                 self.right_arrow = game_loader.Gallery.RIGHT_ARROW
 
 
-class FlyingObject(genc.Surface):
-
+class FlyingObject(gcom.Surface):
     def __init__(self, x: int, y: int, arrow, VEL) -> None:
         super().__init__(x, y, game_loader.DisplaySurf.WIDTH/(13/5), 70)
         self.VEL = VEL
@@ -84,12 +83,12 @@ class FlyingObject(genc.Surface):
     def draw_self(self):
         game_loader.DisplaySurf.Screen.blit(self.arrow, self.arrow_rect)
 
-    def move(self, dt):
+    def move(self):
         rect_vel_y = self.rect.y
         arrow_rect_vel_y = self.arrow_rect.y
 
-        rect_vel_y -= round(self.VEL * dt)
-        arrow_rect_vel_y -= round(self.VEL * dt)
+        rect_vel_y -= round(self.VEL * game_loader.shared_data.dt)
+        arrow_rect_vel_y -= round(self.VEL * game_loader.shared_data.dt)
 
         self.rect.y = rect_vel_y
         self.arrow_rect.y = arrow_rect_vel_y
@@ -102,20 +101,22 @@ class FlyingObject(genc.Surface):
         lowest_center_range = object.rect.center[1] - range
         highest_center_range = object.rect.center[1] + range
 
-        if target.center[1] >= lowest_center_range and target.center[1] <= highest_center_range and target.colliderect(object.rect):
-            return True
+        score_earned = 25
+        sick_earned = 60
 
+        if target.center[1] >= lowest_center_range and target.center[1] <= highest_center_range and target.colliderect(object.rect):
+            return (True, 'sick', sick_earned)
         elif target.colliderect(object.rect):
-            return True
+            return (True, 'good', score_earned)
+        else:
+            return [False]
 
     # this method is only used for the enemy!
     def collide_for_enemy(self, object):
         return self.rect.center[1] <= object.rect.center[1] and self.rect.colliderect(object)
 
+class Entity(gcom.Surface):
 
-
-
-class Entity(genc.Surface):
     def __init__(self, is_player: bool, video_path) -> None:
         x = game_loader.DisplaySurf.WIDTH/4
 
@@ -153,3 +154,111 @@ class Entity(genc.Surface):
         game_loader.DisplaySurf.Screen.blit(self.surface, self.rect)
         game_loader.DisplaySurf.Screen.blit(
             self.animation_surf, self.animation_rect)
+
+class GameMessage:
+    def __init__(self, message_code, player_arrow_set, vel, goal):
+        match message_code:
+            case "sick":
+                self.surf = game_loader.Gallery.SICK.copy()
+                self.rect = game_loader.Gallery.SICK.get_rect(center = (game_loader.DisplaySurf.WIDTH/2 + 10, player_arrow_set.rect.centery + 100))
+            case "good":
+                self.surf = game_loader.Gallery.GOOD.copy()
+                self.rect = game_loader.Gallery.GOOD.get_rect(center = (game_loader.DisplaySurf.WIDTH/2, player_arrow_set.rect.centery + 100))
+            case "bad":
+                self.surf = game_loader.Gallery.BAD.copy()
+                self.rect = game_loader.Gallery.GOOD.get_rect(center = (game_loader.DisplaySurf.WIDTH/2, player_arrow_set.rect.centery + 100))
+
+        self.goal_vel = goal
+        self.current_vel = vel
+        
+        self.goal_alpha = 0
+        self.current_alpha = 255
+        self.moved_up = False
+
+class GameLogic:
+    def __init__(self, objects, player_arrow_set, enemy_arrow_set):
+        self.menu_score_font = game_loader.CustomFont.get_font("vrc-osd", 20)
+        self.objects = objects
+        self.player_arrow_set = player_arrow_set
+        self.enemy_arrow_set = enemy_arrow_set
+        self.copy_list = []
+
+
+        self.score = 0
+        padding = 10
+        player_surface_x = (game_loader.DisplaySurf.WIDTH/4)*3
+
+        self.display_stat = self.menu_score_font.render(f"Score: {self.score}", True, 'White')
+        self.display_stat_rect = self.display_stat.get_rect(midbottom = (player_surface_x, game_loader.DisplaySurf.HEIGHT - padding))
+
+    def lerp(self, goal, current, dt=1):
+        difference = goal - current
+        
+        if difference > dt:
+            return current + dt
+        elif difference < -dt:
+            return current - dt
+        
+        return goal
+    
+    def message_animation(self):
+        for message in self.copy_list[:]:
+            if not message.moved_up:
+                message.current_vel = self.lerp(message.goal_vel, message.current_vel)
+                message.rect.centery -= message.current_vel
+                game_loader.DisplaySurf.Screen.blit(message.surf, message.rect)
+                if message.current_vel == message.goal_vel:
+                    message.moved_up = True
+            else:
+                message.goal_vel = 15
+                message.current_vel = self.lerp(message.goal_vel, message.current_vel)
+                message.current_alpha = self.lerp(message.goal_alpha, message.current_alpha, 13)
+                
+                message.rect.centery += message.current_vel
+                message.surf.set_alpha(message.current_alpha)
+                
+                game_loader.DisplaySurf.Screen.blit(message.surf, message.rect)
+                
+                if message.surf.get_alpha() <= 25 or message.rect.bottom >= game_loader.DisplaySurf.HEIGHT:
+                    self.copy_list.remove(message)
+
+
+    def redraw(self):
+        player_surface_x = (game_loader.DisplaySurf.WIDTH/4)*3
+        padding = 10
+
+        for object in self.objects:
+            if object.arrow_rect.top > game_loader.DisplaySurf.HEIGHT:
+                object.move()
+                continue
+
+            object.draw_self()
+            object.move()
+
+            # object goes offscreen
+            if object.rect.y <= - object.surface.get_height():
+                self.copy_list.append(GameMessage('bad', self.player_arrow_set, 15, 0))
+                self.objects.remove(object)
+
+            if object.collide_for_enemy(self.enemy_arrow_set):
+                self.objects.remove(object)
+                break
+
+        self.display_stat = self.menu_score_font.render(f"Score: {self.score}", True, 'White')
+        self.display_stat_rect = self.display_stat.get_rect(midbottom = (player_surface_x, game_loader.DisplaySurf.HEIGHT - padding))
+        
+        self.message_animation()
+        game_loader.DisplaySurf.Screen.blit(self.display_stat, self.display_stat_rect)
+
+    def check_collide_player(self, key):
+        for object in self.objects[:]:
+            check = object.collide(self.player_arrow_set)
+            
+            if (not check[0]) or (check[0] and object.key != key):
+                self.copy_list.append(GameMessage('bad', self.player_arrow_set, 15, 0))
+                break
+
+            self.objects.remove(object)
+            self.score += check[2]
+            self.copy_list.append(GameMessage(check[1], self.player_arrow_set, 15, 0))
+            break
