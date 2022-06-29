@@ -1,7 +1,7 @@
 import pygame
 import time
 from secrets import choice
-from load.game_loader import DisplaySurf, Audio, Message
+from load.game_loader import DisplaySurf, Audio, Message, shared_data
 from scene.component import SceneSwitcher
 from scene.scenes import StartScreen, MenuScreen, MainGame, PreStartScreen
 from sys import exit
@@ -20,7 +20,6 @@ game_scenes = {
 
 switcher = SceneSwitcher(game_scenes, start="pre start screen 1")
 
-
 def game():
     Audio.FREAKY_MENU.play(-1)
     dt = 0 # delta time
@@ -35,9 +34,9 @@ def game():
         prev_time = now
         
         events = pygame.event.get()
-        switcher.receive_events(events)
-        switcher.receive_dt(dt)
-
+        shared_data.dt = dt
+        shared_data.events = events
+        
         for event in events:
             if event.type == pygame.QUIT:
                 pygame.quit()
