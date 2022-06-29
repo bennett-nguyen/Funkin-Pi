@@ -3,6 +3,7 @@ Load all of the resources for this game and initialize the display surface
 """
 import pygame
 from pygame.locals import *
+from dataclasses import dataclass
 import load.file_loader as file_loader
 
 flags = FULLSCREEN | DOUBLEBUF
@@ -10,6 +11,16 @@ flags = FULLSCREEN | DOUBLEBUF
 pygame.init()
 pygame.event.set_allowed([pygame.QUIT, pygame.KEYDOWN, pygame.KEYUP, pygame.MOUSEBUTTONDOWN])
 pygame.display.set_caption("Funky Friday at Home")
+
+@dataclass
+class _SharedData:
+    """
+    Defines the data that will be shared across all components
+    """
+    dt: float
+    events: pygame.event
+
+shared_data = _SharedData(None, None)
 
 
 class DisplaySurf:
@@ -24,8 +35,6 @@ class DisplaySurf:
 
 
 # Images
-_scale = 2  # Increase this to get smaller arrow images
-
 _LEFT_ARROW = pygame.image.load(
     "./assets/img/left_arrow.png").convert_alpha()
 _RIGHT_ARROW = pygame.image.load(
@@ -47,7 +56,9 @@ _ACTIVATED_UP_ARROW = pygame.image.load(
 _ACTIVATED_DOWN_ARROW = pygame.image.load(
     "./assets/img/activated_down_arrow.png").convert_alpha()
 
-
+_SICK = pygame.image.load("./assets/img/borrowed/sick.png").convert_alpha()
+_GOOD = pygame.image.load("./assets/img/borrowed/good.png").convert_alpha()
+_BAD = pygame.image.load("./assets/img/borrowed/bad.png").convert_alpha()
 class _Font:
     # TITLE_SIZE = 100
     # TITLE_SIZE_2 = 75
@@ -146,6 +157,9 @@ class Message:
     _opt_message_list = file_loader.load_opt_message()
 
 
+_scale = 2  # Increase this to get smaller arrow images
+_game_message_scale = 1.5
+_game_message_scale_2 = 1.7
 class Gallery:
     LEFT_ARROW = pygame.transform.scale(
         _LEFT_ARROW, (_LEFT_ARROW.get_width() / _scale, _LEFT_ARROW.get_height() / _scale))
@@ -171,11 +185,9 @@ class Gallery:
     ACTIVATED_DOWN_ARROW = pygame.transform.scale(_ACTIVATED_DOWN_ARROW, (
         _ACTIVATED_DOWN_ARROW.get_width() / _scale, _ACTIVATED_DOWN_ARROW.get_height() / _scale))
 
-    # ENTITY_IDLE = './assets/img/idle.mp4'
-    # ENTITY_LEFT = './assets/img/left.mp4'
-    # ENTITY_RIGHT = './assets/img/right.mp4'
-    # ENTITY_UP = './assets/img/up.mp4'
-    # ENTITY_DOWN = './assets/img/down.mp4'
+    SICK = pygame.transform.scale(_SICK, (_SICK.get_width() / _game_message_scale_2, _SICK.get_height() / _game_message_scale_2))
+    GOOD = pygame.transform.scale(_GOOD, (_GOOD.get_width() / _game_message_scale, _GOOD.get_height() / _game_message_scale))
+    BAD =  pygame.transform.scale(_BAD, (_BAD.get_width() / _game_message_scale, _BAD.get_height() / _game_message_scale))
 
     LOGO = pygame.image.load("./assets/img/logo.jpg").convert()
     PAUSED_BACKGROUND = pygame.image.load("./assets/img/paused_template.png").convert_alpha()
@@ -227,5 +239,11 @@ class Audio:
     FREAKY_MENU = pygame.mixer.Sound('./assets/audio/freaky_menu.ogg')
     CONFIRM_MENU = pygame.mixer.Sound('./assets/audio/confirm_menu.ogg')
     SCROLL_MENU = pygame.mixer.Sound('./assets/audio/scroll_menu.ogg')
+    
+    INTRO_1 = pygame.mixer.Sound('./assets/audio/intro1.ogg')
+    INTRO_2 = pygame.mixer.Sound('./assets/audio/intro2.ogg')
+    INTRO_3 = pygame.mixer.Sound('./assets/audio/intro3.ogg')
+    INTRO_GO = pygame.mixer.Sound('./assets/audio/introGo.ogg')
+    
 
     VOCAL_VOLUME = 1
