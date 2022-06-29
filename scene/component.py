@@ -11,18 +11,36 @@ class Scene:
         self.redirect_delay = 0
         self.deactivate_fade = False
         self.allow_keydown = True
-        self.events = None
-        self.dt = 0
-
         self.fade_delay = 0
 
     def input(self):
+        """
+        Defines inputs taken from the player
+        """
         pass
 
     def redraw(self):
+        """
+        Defines what to redraw onto the screen each iteration
+        """
         pass
 
+    def pre_event(self):
+        """
+        Defines what to do before other events occur (input, redraw)
+        """
+        pass
+
+    def end_pre_event(self):
+        """
+        Defines the condition to end pre_event (save extra running time)
+        """
+        return True
+
     def reset_attr(self):
+        """
+        Defines what to reset when a scene finishes work
+        """
         self.redirect = None
         self.allow_keydown = False
 
@@ -54,12 +72,6 @@ class SceneSwitcher:
         if main_game_data is not None:
             self.current.receive_data(main_game_data)
         self.reset_attr()
-    
-    def receive_events(self, events):
-        self.current.events = events
-    
-    def receive_dt(self, dt):
-        self.current.dt = dt
 
     def fade(self):
         if self.fade_state == "OUT":
@@ -84,6 +96,9 @@ class SceneSwitcher:
     def update(self):
         self.current_time = pygame.time.get_ticks()
 
+        if not self.current.end_pre_event():
+            self.current.pre_event()
+        
         if not self.is_transitioning:
             self.current.input()
         self.current.redraw()
@@ -113,11 +128,10 @@ class SceneSwitcher:
 
 
 class MenuLogic:
-    def __init__(self, tracks, dt):
+    def __init__(self, tracks):
         menu_score_font = game_loader.CustomFont.get_font("vrc-osd", 20)
 
         self.tracks = tracks
-        self.dt = dt
         self.centery = self.tracks[0].display_name_rect.centery
 
         self.track_index = self.diff_index = 0
