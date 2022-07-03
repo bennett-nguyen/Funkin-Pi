@@ -1,0 +1,24 @@
+"""
+Defines constants that are used throughout the game
+"""
+
+PLAYER_ARROW_SET_X = 900 # (const.HALF_WIDTH/2)*3
+ENEMY_ARROW_SET_X = 300 # const.HALF_WIDTH/2
+
+MESSAGE_X = 600 # DisplaySurf.WIDTH/2
+MESSAGE_1_Y = 195 # DisplaySurf.HEIGHT/2 - 150
+MESSAGE_2_Y = 345 # DisplaySurf.HEIGHT/2 
+MESSAGE_3_Y = 495 # DisplaySurf.HEIGHT/2 + 150
+
+WIDTH = 1200
+HEIGHT = 690
+FPS = 60
+PAUSED_FPS = 30
+
+HALF_WIDTH = WIDTH/2
+HALF_HEIGHT = HEIGHT/2
+
+TITLE_SIZE = 100
+TITLE_SIZE_2 = 75
+TITLE_SIZE_3 = 50
+MENU_SCORE = 20
