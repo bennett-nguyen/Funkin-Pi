@@ -2,6 +2,7 @@ import pygame
 import load.game_loader as game_loader
 import general_component.component as gcom
 import game.component as game_component
+import general_component.constant as const
 from load.game_loader import Data
 from scene.component import MenuLogic, Scene, PausedScreen
 
@@ -63,7 +64,7 @@ class StartScreen(Scene):
         # ----
         
         self.start_button = gcom.Button(
-            (game_loader.DisplaySurf.WIDTH/2, game_loader.DisplaySurf.HEIGHT/2 + 270),
+            (const.HALF_WIDTH, const.HALF_HEIGHT + 270),
             (250, 120),
             game_loader.Gallery.PLAY_BUTTON_DEACTIVATED_IMAGES,
             game_loader.Gallery.PLAY_BUTTON_ON_HOVER_IMAGES,
@@ -73,7 +74,7 @@ class StartScreen(Scene):
 
     def redraw(self):
         game_loader.DisplaySurf.Screen.blit(game_loader.Gallery.LOGO, game_loader.Gallery.LOGO.get_rect(
-            center=(game_loader.DisplaySurf.WIDTH/2, game_loader.DisplaySurf.HEIGHT/2)))
+            center=(const.HALF_WIDTH, const.HALF_HEIGHT)))
         self.start_button.check_hover()
 
         if self.start_button.is_activated(check_type=1):
@@ -114,13 +115,13 @@ class StartScreen(Scene):
 class MenuScreen(Scene):
     def __init__(self):
         super().__init__()
-        title_font_2 = game_loader.CustomFont.get_font("phantommuff-empty", 75)
+        title_font_2 = game_loader.CustomFont.get_font("phantommuff-empty", const.TITLE_SIZE_2)
         self.redirect_delay = 3500
         self.fade_delay = 2400
         self.on_toggle_chosen_track = False
 
         self.yellow_rectangle = gcom.Surface(
-            game_loader.DisplaySurf.WIDTH/2, 150, game_loader.DisplaySurf.WIDTH - 150, 200, (249, 209, 81))
+            const.HALF_WIDTH, 150, const.WIDTH - 150, 200, (249, 209, 81))
 
         self.choose_your_track = title_font_2.render(
             "CHOOSE YOUR TRACK", True, "Black")
@@ -128,7 +129,7 @@ class MenuScreen(Scene):
             center=self.yellow_rectangle.rect.center)
 
         self.track_chooser_rect = gcom.Surface(
-            game_loader.DisplaySurf.WIDTH/2, 470, 270, 300)
+            const.HALF_WIDTH, 470, 270, 300)
         self.pointer = gcom.ImageAnimation(
             game_loader.Gallery.POINTER, self.track_chooser_rect.rect.centerx + 250, self.track_chooser_rect.rect.centery, 0.1)
         self.tracks = Data.descriptions
@@ -196,14 +197,8 @@ class MainGame(Scene):
         self.audio_is_playing = False
         
         self.decline_vocal_vol = False
-
-        self.player_surface_x = (game_loader.DisplaySurf.WIDTH/4)*3
-        self.enemy_surface_x = game_loader.DisplaySurf.WIDTH/4
-        
-        self.enemy_arrow_set = game_component.ArrowSet(self.enemy_surface_x, 80)
-        self.player_arrow_set = game_component.ArrowSet(self.player_surface_x, 80)
-        
-        
+        self.enemy_arrow_set = game_component.ArrowSet(const.ENEMY_ARROW_SET_X, 80)
+        self.player_arrow_set = game_component.ArrowSet(const.PLAYER_ARROW_SET_X, 80)
 
         self.paused_screen_instance = PausedScreen()
 
@@ -224,8 +219,8 @@ class MainGame(Scene):
         self.enemy_arrow_set.draw_self()
         self.player_arrow_set.draw_self()
 
-        pygame.draw.line(game_loader.DisplaySurf.Screen, "White", (game_loader.DisplaySurf.WIDTH/2,
-                            0), (game_loader.DisplaySurf.WIDTH/2, game_loader.DisplaySurf.HEIGHT), 3)
+        pygame.draw.line(game_loader.DisplaySurf.Screen, "White", (const.HALF_WIDTH,
+                            0), (const.HALF_WIDTH, const.HEIGHT), 3)
 
         self.game_logic.redraw()
         game_loader.DisplaySurf.Screen.blit(self.display_track_name, self.display_track_name_rect)
@@ -276,7 +271,7 @@ class MainGame(Scene):
         self.vocal.play()
     
     def receive_data(self, data):
-        menu_score_font = game_loader.CustomFont.get_font("vrc-osd", 20)
+        menu_score_font = game_loader.CustomFont.get_font("vrc-osd", const.MENU_SCORE)
 
         self.track_name = data["name"]
         self.chosen_difficulty = data["chosen_difficulty"]
@@ -289,7 +284,7 @@ class MainGame(Scene):
         self.player_entity = data["player_entity"]
 
         self.display_track_name = menu_score_font.render(f"{self.track_name} - {self.chosen_difficulty}", True, "White")
-        self.display_track_name_rect = self.display_track_name.get_rect(bottomleft = (self.padding, game_loader.DisplaySurf.HEIGHT - self.padding))
+        self.display_track_name_rect = self.display_track_name.get_rect(bottomleft = (self.padding, const.HEIGHT - self.padding))
 
     def reset_attr(self):
         super().reset_attr()

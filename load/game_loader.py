@@ -5,6 +5,7 @@ import pygame
 from pygame.locals import *
 from dataclasses import dataclass
 import load.file_loader as file_loader
+import general_component.constant as const
 
 flags = FULLSCREEN | DOUBLEBUF
 
@@ -24,12 +25,8 @@ shared_data = _SharedData(None, None)
 
 
 class DisplaySurf:
-    WIDTH = 1200
-    HEIGHT = 690
-    FPS = 60
-
     Clock = pygame.time.Clock()
-    Screen = pygame.display.set_mode((WIDTH, HEIGHT))
+    Screen = pygame.display.set_mode((const.WIDTH, const.HEIGHT))
 
 # Video animation must be 600x690px
 
@@ -96,44 +93,39 @@ class _Font:
 
 CustomFont = _Font()
 
-_message_x = DisplaySurf.WIDTH/2
-_message_1_y = DisplaySurf.HEIGHT/2 - 150
-_message_2_y = DisplaySurf.HEIGHT/2
-_message_3_y = DisplaySurf.HEIGHT/2 + 150
-
 _title_font = CustomFont.get_font("phantommuff-empty", 80)
-_title_font_1 = CustomFont.get_font("phantommuff-empty", 100)
+_title_font_1 = CustomFont.get_font("phantommuff-empty", const.TITLE_SIZE)
 
 _message_1 = _title_font_1.render(" ", True, "White")
-_message_1_rect = _message_1.get_rect(center = (_message_x, _message_1_y))
+_message_1_rect = _message_1.get_rect(center = (const.MESSAGE_X, const.MESSAGE_1_Y))
 
 _message_2 = _title_font.render("BENNETT NGUYEN'S PRESENT", True, "White")
-_message_2_rect = _message_2.get_rect(center = (_message_x, _message_2_y))
+_message_2_rect = _message_2.get_rect(center = (const.MESSAGE_X, const.MESSAGE_2_Y))
 
 _message_3 = _title_font_1.render(" ", True, "White")
-_message_3_rect = _message_3.get_rect(center = (_message_x, _message_3_y))
+_message_3_rect = _message_3.get_rect(center = (const.MESSAGE_X, const.MESSAGE_3_Y))
 
 
 
 _message_4 = _title_font_1.render("MADE", True, "White")
-_message_4_rect = _message_4.get_rect(center = (_message_x, _message_1_y))
+_message_4_rect = _message_4.get_rect(center = (const.MESSAGE_X, const.MESSAGE_1_Y))
 
 _message_5 = _title_font_1.render("WITH", True, "White")
-_message_5_rect = _message_5.get_rect(center = (_message_x, _message_2_y))
+_message_5_rect = _message_5.get_rect(center = (const.MESSAGE_X, const.MESSAGE_2_Y))
 
 _message_6 = _title_font_1.render("PYTHON AND PYGAME", True, "White")
-_message_6_rect = _message_6.get_rect(center = (_message_x, _message_3_y))
+_message_6_rect = _message_6.get_rect(center = (const.MESSAGE_X, const.MESSAGE_3_Y))
 
 
 
 _message_7 = _title_font_1.render("FROM THE", True, "White")
-_message_7_rect = _message_7.get_rect(center = (_message_x, _message_1_y))
+_message_7_rect = _message_7.get_rect(center = (const.MESSAGE_X, const.MESSAGE_1_Y))
 
 _message_8 = _title_font_1.render("AMAZING", True, "White")
-_message_8_rect = _message_8.get_rect(center = (_message_x, _message_2_y))
+_message_8_rect = _message_8.get_rect(center = (const.MESSAGE_X, const.MESSAGE_2_Y))
 
 _message_9 = _title_font_1.render("FRIDAY NIGHT FUNKIN'", True, "White")
-_message_9_rect = _message_9.get_rect(center = (_message_x, _message_3_y))
+_message_9_rect = _message_9.get_rect(center = (const.MESSAGE_X, const.MESSAGE_3_Y))
 
 class Message:
     _req_message_list_1 = [
@@ -240,10 +232,10 @@ class Audio:
     CONFIRM_MENU = pygame.mixer.Sound('./assets/audio/confirm_menu.ogg')
     SCROLL_MENU = pygame.mixer.Sound('./assets/audio/scroll_menu.ogg')
     
-    INTRO_1 = pygame.mixer.Sound('./assets/audio/intro1.ogg')
-    INTRO_2 = pygame.mixer.Sound('./assets/audio/intro2.ogg')
-    INTRO_3 = pygame.mixer.Sound('./assets/audio/intro3.ogg')
-    INTRO_GO = pygame.mixer.Sound('./assets/audio/introGo.ogg')
+    # INTRO_1 = pygame.mixer.Sound('./assets/audio/intro1.ogg')
+    # INTRO_2 = pygame.mixer.Sound('./assets/audio/intro2.ogg')
+    # INTRO_3 = pygame.mixer.Sound('./assets/audio/intro3.ogg')
+    # INTRO_GO = pygame.mixer.Sound('./assets/audio/introGo.ogg')
     
 
     VOCAL_VOLUME = 1

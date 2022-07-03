@@ -1,6 +1,7 @@
 import pygame
 import load.game_loader as game_loader
 import general_component.component as gcom
+import general_component.constant as const
 
 pygame.init()
 
@@ -129,7 +130,7 @@ class SceneSwitcher:
 
 class MenuLogic:
     def __init__(self, tracks):
-        menu_score_font = game_loader.CustomFont.get_font("vrc-osd", 20)
+        menu_score_font = game_loader.CustomFont.get_font("vrc-osd", const.MENU_SCORE)
 
         self.tracks = tracks
         self.centery = self.tracks[0].display_name_rect.centery
@@ -243,7 +244,7 @@ class MenuLogic:
 
         self.current_score = self.current_track.score
 
-        menu_score_font = game_loader.CustomFont.get_font("vrc-osd", 20)
+        menu_score_font = game_loader.CustomFont.get_font("vrc-osd", const.MENU_SCORE)
         self.score_text = menu_score_font.render(f"SCORE: {self.current_score[self.prev_diff]}", True, "White")
 
         self.st_rect = self.score_text.get_rect(midleft=(75, 25))
@@ -260,7 +261,7 @@ class MenuLogic:
             self.difficulty_animation()
 
         for track in self.tracks:
-            if track.display_name_rect.bottom < 250 or track.display_name_rect.top > game_loader.DisplaySurf.HEIGHT:
+            if track.display_name_rect.bottom < 250 or track.display_name_rect.top > const.HEIGHT:
                 continue
 
             if track == self.current_track:
@@ -333,12 +334,12 @@ class PausedScreen:
         self.play_sfx_2 = False
         
         self.paused_background = game_loader.Gallery.PAUSED_BACKGROUND
-        self.paused_background_rect = self.paused_background.get_rect(center = (game_loader.DisplaySurf.WIDTH/2, game_loader.DisplaySurf.HEIGHT/2))
+        self.paused_background_rect = self.paused_background.get_rect(center = (const.HALF_WIDTH, const.HALF_HEIGHT))
 
         button_speed = (0.2, 0.2, 0.2)
 
         self.continue_button = gcom.Button(
-            (game_loader.DisplaySurf.WIDTH/2, game_loader.DisplaySurf.HEIGHT/2 + 30),
+            (const.HALF_WIDTH, const.HALF_HEIGHT + 30),
             (250, 120),
             game_loader.Gallery.CONTINUE_BUTTON_DEACTIVATED_IMAGES,
             game_loader.Gallery.CONTINUE_BUTTON_ON_HOVER_IMAGES,
@@ -346,7 +347,7 @@ class PausedScreen:
         )
         
         self.exit_button = gcom.Button(
-            (game_loader.DisplaySurf.WIDTH/2, game_loader.DisplaySurf.HEIGHT/2 + 180),
+            (const.HALF_WIDTH, const.HALF_HEIGHT + 180),
             (250, 120),
             game_loader.Gallery.EXIT_BUTTON_DEACTIVATED_IMAGES,
             game_loader.Gallery.EXIT_BUTTON_ON_HOVER_IMAGES,
@@ -382,7 +383,7 @@ class PausedScreen:
 
     def activate_pause_screen(self):
         while self.run:
-            game_loader.DisplaySurf.Clock.tick(30)
+            game_loader.DisplaySurf.Clock.tick(const.PAUSED_FPS)
             game_loader.DisplaySurf.Screen.blit(self.background, (0, 0))
             game_loader.DisplaySurf.Screen.blit(self.paused_background, self.paused_background_rect)
 

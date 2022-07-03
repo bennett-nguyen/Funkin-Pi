@@ -1,14 +1,14 @@
-from email import message
 import pygame
 import load.game_loader as game_loader
 import general_component.component as gcom
+import general_component.constant as const
 import cv2
 
 pygame.init()
 
 class ArrowSet(gcom.Surface):
     def __init__(self, x: int, y: int):
-        super().__init__(x, y, game_loader.DisplaySurf.WIDTH/2/1.3, 70)
+        super().__init__(x, y, const.HALF_WIDTH/1.3, 70)
 
         self.left_arrow = game_loader.Gallery.LEFT_ARROW
         self.up_arrow = game_loader.Gallery.UP_ARROW
@@ -55,7 +55,7 @@ class ArrowSet(gcom.Surface):
 
 class FlyingObject(gcom.Surface):
     def __init__(self, x: int, y: int, arrow, VEL) -> None:
-        super().__init__(x, y, game_loader.DisplaySurf.WIDTH/(13/5), 70)
+        super().__init__(x, y, const.WIDTH/(13/5), 70)
         self.VEL = VEL
         self.arrow = arrow
 
@@ -118,13 +118,12 @@ class FlyingObject(gcom.Surface):
 class Entity(gcom.Surface):
 
     def __init__(self, is_player: bool, video_path) -> None:
-        x = game_loader.DisplaySurf.WIDTH/4
+        x = const.HALF_WIDTH/2
 
         if is_player:
-            x = (game_loader.DisplaySurf.WIDTH/4)*3
+            x = (const.HALF_WIDTH/2)*3
 
-        super().__init__(x, game_loader.DisplaySurf.HEIGHT/2, game_loader.DisplaySurf.WIDTH /
-                         2, game_loader.DisplaySurf.HEIGHT)
+        super().__init__(x, const.HALF_HEIGHT, const.HALF_WIDTH, const.HEIGHT)
 
         self.video_path = video_path
         self.state = cv2.VideoCapture(self.video_path["idle"])
@@ -160,13 +159,13 @@ class GameMessage:
         match message_code:
             case "sick":
                 self.surf = game_loader.Gallery.SICK.copy()
-                self.rect = game_loader.Gallery.SICK.get_rect(center = (game_loader.DisplaySurf.WIDTH/2 + 10, player_arrow_set.rect.centery + 100))
+                self.rect = game_loader.Gallery.SICK.get_rect(center = (const.HALF_WIDTH + 10, player_arrow_set.rect.centery + 100))
             case "good":
                 self.surf = game_loader.Gallery.GOOD.copy()
-                self.rect = game_loader.Gallery.GOOD.get_rect(center = (game_loader.DisplaySurf.WIDTH/2, player_arrow_set.rect.centery + 100))
+                self.rect = game_loader.Gallery.GOOD.get_rect(center = (const.HALF_WIDTH, player_arrow_set.rect.centery + 100))
             case "bad":
                 self.surf = game_loader.Gallery.BAD.copy()
-                self.rect = game_loader.Gallery.GOOD.get_rect(center = (game_loader.DisplaySurf.WIDTH/2, player_arrow_set.rect.centery + 100))
+                self.rect = game_loader.Gallery.GOOD.get_rect(center = (const.HALF_WIDTH, player_arrow_set.rect.centery + 100))
 
         self.goal_vel = goal
         self.current_vel = vel
@@ -177,7 +176,7 @@ class GameMessage:
 
 class GameLogic:
     def __init__(self, objects, player_arrow_set, enemy_arrow_set):
-        self.menu_score_font = game_loader.CustomFont.get_font("vrc-osd", 20)
+        self.menu_score_font = game_loader.CustomFont.get_font("vrc-osd", const.MENU_SCORE)
         self.objects = objects
         self.player_arrow_set = player_arrow_set
         self.enemy_arrow_set = enemy_arrow_set
@@ -186,10 +185,9 @@ class GameLogic:
 
         self.score = 0
         padding = 10
-        player_surface_x = (game_loader.DisplaySurf.WIDTH/4)*3
 
         self.display_stat = self.menu_score_font.render(f"Score: {self.score}", True, 'White')
-        self.display_stat_rect = self.display_stat.get_rect(midbottom = (player_surface_x, game_loader.DisplaySurf.HEIGHT - padding))
+        self.display_stat_rect = self.display_stat.get_rect(midbottom = (const.PLAYER_ARROW_SET_X, const.HEIGHT - padding))
 
     def lerp(self, goal, current, dt=1):
         difference = goal - current
@@ -219,16 +217,14 @@ class GameLogic:
                 
                 game_loader.DisplaySurf.Screen.blit(message.surf, message.rect)
                 
-                if message.surf.get_alpha() <= 25 or message.rect.bottom >= game_loader.DisplaySurf.HEIGHT:
+                if message.surf.get_alpha() <= 25 or message.rect.bottom >= const.HEIGHT:
                     self.copy_list.remove(message)
 
-
     def redraw(self):
-        player_surface_x = (game_loader.DisplaySurf.WIDTH/4)*3
         padding = 10
 
         for object in self.objects:
-            if object.arrow_rect.top > game_loader.DisplaySurf.HEIGHT:
+            if object.arrow_rect.top > const.HEIGHT:
                 object.move()
                 continue
 
@@ -245,7 +241,7 @@ class GameLogic:
                 break
 
         self.display_stat = self.menu_score_font.render(f"Score: {self.score}", True, 'White')
-        self.display_stat_rect = self.display_stat.get_rect(midbottom = (player_surface_x, game_loader.DisplaySurf.HEIGHT - padding))
+        self.display_stat_rect = self.display_stat.get_rect(midbottom = (const.PLAYER_ARROW_SET_X, const.HEIGHT - padding))
         
         self.message_animation()
         game_loader.DisplaySurf.Screen.blit(self.display_stat, self.display_stat_rect)

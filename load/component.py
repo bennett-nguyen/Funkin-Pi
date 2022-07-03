@@ -2,6 +2,7 @@ import pygame
 import load.game_loader as game_loader
 import game.component
 import general_component.component as genc
+import general_component.constant as const
 
 pygame.init()
 
@@ -9,7 +10,7 @@ pygame.init()
 class Track:
     def __init__(self, name: str, difficulties: list[str], score: dict, difficulties_config: dict, mapping: dict, soundtrack: dict, player_animation_path: dict):
         self.name = name
-        display_name_font = game_loader.CustomFont.get_font("phantommuff-empty", 75)
+        display_name_font = game_loader.CustomFont.get_font("phantommuff-empty", const.TITLE_SIZE_2)
         
         self.display_name = display_name_font.render(name.upper(), True, (255, 255, 255))
         self.display_name_on_toggle = display_name_font.render(name.upper(), True, (0, 255, 255))
@@ -79,26 +80,23 @@ class Track:
                             space = self.difficulties_config[diff]["space"]
 
     def _enemy_n_player_mapping(self, name, diff, space, map, velocity):
-
-        player_surface_x = (game_loader.DisplaySurf.WIDTH/4)*3
-        enemy_surface_x = game_loader.DisplaySurf.WIDTH/4
         temp_dist = 0
 
-        mapping_determiner_x = enemy_surface_x if "enemy" in name else player_surface_x if "player" in name else None
+        mapping_determiner_x = const.ENEMY_ARROW_SET_X if "enemy" in name else const.PLAYER_ARROW_SET_X if "player" in name else None
 
         for key in map:
             arrow = self.arrow_map.get(key, None)
             if arrow is None: continue
             self.objects[diff].append(
                 game.component.FlyingObject(
-                    mapping_determiner_x, game_loader.DisplaySurf.HEIGHT + space + temp_dist,
+                    mapping_determiner_x, const.HEIGHT + space + temp_dist,
                     arrow,
                     velocity
                 ))
             temp_dist += space
 
     def _load_side_stuff(self):
-        text_font = game_loader.CustomFont.get_font("phantommuff-empty", 75)
+        text_font = game_loader.CustomFont.get_font("phantommuff-empty", const.TITLE_SIZE_2)
 
         self.arrow_map = {
             "l": game_loader.Gallery.ACTIVATED_LEFT_ARROW,

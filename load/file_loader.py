@@ -1,6 +1,7 @@
 import itertools
 import pygame
 import load.component as lcom
+import general_component.constant as const
 
 pygame.init()
 
@@ -41,42 +42,25 @@ def get_mapping(mapping, file):
     return new_mapping
 
 def load_opt_message():
-    import json
     import load.game_loader as game_loader
-    
-    _message_x = game_loader.DisplaySurf.WIDTH/2
-    _message_1_y = game_loader.DisplaySurf.HEIGHT/2 - 150
-    _message_2_y = game_loader.DisplaySurf.HEIGHT/2
-    _message_3_y = game_loader.DisplaySurf.HEIGHT/2 + 150
+    from secrets import choice
+    from json import load
 
     message_init_map = {
-        "init_message": lambda text: game_loader.CustomFont.get_font(name="phantommuff-empty", size=100).render(text, True, "White"),
+        "init_message": lambda text: game_loader.CustomFont.get_font(name="phantommuff-empty", size=const.TITLE_SIZE).render(text, True, "White"),
         "get_rect": lambda surf, x, y: surf.get_rect(center = (x, y))
     }
 
-    random_message = []
-    
     with open("./assets/optional-message.json", "r") as f:
-        file = json.load(f)
-        
-        for messages in file["random"]:
-            message_surf_1 = message_init_map["init_message"](messages["message_1"].upper())
-            message_surf_2 = message_init_map["init_message"](messages["message_2"].upper())
-            message_surf_3 = message_init_map["init_message"](messages["message_3"].upper())
-            
-            message_rect_1 = message_init_map["get_rect"](message_surf_1, _message_x, _message_1_y)
-            message_rect_2 = message_init_map["get_rect"](message_surf_2, _message_x, _message_2_y)
-            message_rect_3 = message_init_map["get_rect"](message_surf_3, _message_x, _message_3_y)
-            
-            random_message.append(
-                (
-                    (message_surf_1, message_rect_1),
-                    (message_surf_2, message_rect_2),
-                    (message_surf_3, message_rect_3)
-                )
-            )
-            
-        return random_message
+        file = load(f)
+        message = choice(file["random"])
+        result = []
+        for i in range(1, 4):
+            message_surf = message_init_map["init_message"](message[f"message_{i}"].upper())
+            message_rect = message_init_map["get_rect"](message_surf, const.MESSAGE_X, getattr(const, f"MESSAGE_{i}_Y"))
+            result.append((message_surf, message_rect))
+
+        return result
 
 def file_parser() -> list[dict]:
     import json

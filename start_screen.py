@@ -1,6 +1,6 @@
 import pygame
 import time
-from secrets import choice
+import general_component.constant as const
 from load.game_loader import DisplaySurf, Audio, Message, shared_data
 from scene.component import SceneSwitcher
 from scene.scenes import StartScreen, MenuScreen, MainGame, PreStartScreen
@@ -12,7 +12,7 @@ game_scenes = {
     "pre start screen 1": PreStartScreen(Message._req_message_list_1, 700, 800, "pre start screen 2"),
     "pre start screen 2": PreStartScreen(Message._req_message_list_2, 700, 800, "pre start screen 3"),
     "pre start screen 3": PreStartScreen(Message._req_message_list_3, 700, 800, "pre start screen 4"),
-    "pre start screen 4": PreStartScreen(choice(Message._opt_message_list), 700, 1000, "start screen"),
+    "pre start screen 4": PreStartScreen(Message._opt_message_list, 700, 1000, "start screen"),
     "start screen": StartScreen(),
     "menu screen": MenuScreen(),
     "main game": MainGame()
@@ -27,7 +27,7 @@ def game():
 
     while True:
         DisplaySurf.Screen.fill('Black')
-        DisplaySurf.Clock.tick(DisplaySurf.FPS)
+        DisplaySurf.Clock.tick(const.FPS)
         
         now = time.time()
         dt = float(now - prev_time)
