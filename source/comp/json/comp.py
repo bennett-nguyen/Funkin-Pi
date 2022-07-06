@@ -1,7 +1,9 @@
 import pygame
-import load.game_loader as game_loader
-import game.component
-import general_component.component as genc
+import source.load.assets as assets
+import source.load.constant as const
+from source.load.comp import ImageAnimation
+from source.comp.other.entity import Entity
+from source.comp.other.object import FlyingObject
 
 pygame.init()
 
@@ -9,7 +11,7 @@ pygame.init()
 class Track:
     def __init__(self, name: str, difficulties: list[str], score: dict, difficulties_config: dict, mapping: dict, soundtrack: dict, player_animation_path: dict):
         self.name = name
-        display_name_font = game_loader.CustomFont.get_font("phantommuff-empty", 75)
+        display_name_font = assets.CustomFont.get_font("phantommuff-empty", const.TITLE_SIZE_2)
         
         self.display_name = display_name_font.render(name.upper(), True, (255, 255, 255))
         self.display_name_on_toggle = display_name_font.render(name.upper(), True, (0, 255, 255))
@@ -39,12 +41,11 @@ class Track:
         self.mapping = mapping
         
         self.soundtrack_path = soundtrack
-        self.player_animation_path = player_animation_path
-        self.player_entity = game.component.Entity(True, player_animation_path)
+        self.player_entity = Entity(True, player_animation_path)
 
     def init_display_name_rect_coordinates(self, x, y):
         self.display_name_rect = self.display_name.get_rect(center=(x, y))
-        self.display_name_animation = genc.ImageAnimation(
+        self.display_name_animation = ImageAnimation(
             (self.display_name, self.display_name_on_toggle), self.display_name_rect.centerx, self.display_name_rect.centery, 0.3)
     
     def run_init(self):
@@ -79,41 +80,45 @@ class Track:
                             space = self.difficulties_config[diff]["space"]
 
     def _enemy_n_player_mapping(self, name, diff, space, map, velocity):
-
-        player_surface_x = (game_loader.DisplaySurf.WIDTH/4)*3
-        enemy_surface_x = game_loader.DisplaySurf.WIDTH/4
         temp_dist = 0
 
-        mapping_determiner_x = enemy_surface_x if "enemy" in name else player_surface_x if "player" in name else None
+        mapping_determiner_x = const.ENEMY_ARROW_SET_X if "enemy" in name else const.PLAYER_ARROW_SET_X if "player" in name else None
 
         for key in map:
             arrow = self.arrow_map.get(key, None)
             if arrow is None: continue
             self.objects[diff].append(
-                game.component.FlyingObject(
-                    mapping_determiner_x, game_loader.DisplaySurf.HEIGHT + space + temp_dist,
+                FlyingObject(
+                    mapping_determiner_x, const.HEIGHT + space + temp_dist,
                     arrow,
                     velocity
                 ))
             temp_dist += space
 
     def _load_side_stuff(self):
-        text_font = game_loader.CustomFont.get_font("phantommuff-empty", 75)
+        text_font = assets.CustomFont.get_font("phantommuff-empty", const.TITLE_SIZE_2)
 
         self.arrow_map = {
-            "l": game_loader.Gallery.ACTIVATED_LEFT_ARROW,
-            "r": game_loader.Gallery.ACTIVATED_RIGHT_ARROW,
-            "u": game_loader.Gallery.ACTIVATED_UP_ARROW,
-            "d": game_loader.Gallery.ACTIVATED_DOWN_ARROW,
+            "l": assets.Gallery.ACTIVATED_LEFT_ARROW,
+            "r": assets.Gallery.ACTIVATED_RIGHT_ARROW,
+            "u": assets.Gallery.ACTIVATED_UP_ARROW,
+            "d": assets.Gallery.ACTIVATED_DOWN_ARROW,
         }
 
-        self.easy_text = text_font.render(
-            "EASY", True, (19, 253, 0))
-        self.normal_text = text_font.render(
-            "NORMAL", True, (242, 253, 0))
-        self.hard_text = text_font.render(
-            "HARD", True, (255, 0, 0))
+        self.easy_text = text_font.render("EASY", True, (19, 253, 0))
+        self.normal_text = text_font.render("NORMAL", True, (242, 253, 0))
+        self.hard_text = text_font.render("HARD", True, (255, 0, 0))
 
         self.easy_text_rect = self.easy_text.get_rect(midleft=(900, 470))
         self.normal_text_rect = self.normal_text.get_rect(midleft=(900, 470))
         self.hard_text_rect = self.hard_text.get_rect(midleft=(900, 470))
+    
+    def destruct_unnecessary_stuff(self):
+        del self.easy_text
+        del self.normal_text
+        del self.hard_text
+        del self.easy_text_rect
+        del self.normal_text_rect
+        del self.hard_text_rect
+        del self.mapping
+        del self.soundtrack_path

@@ -15,7 +15,7 @@
             "easy": {
                 "delay": 0,
                 "space": 125,
-                "velocity": 1000000
+                "velocity": 1000
             },
             "normal": {
                 "delay": 0,
