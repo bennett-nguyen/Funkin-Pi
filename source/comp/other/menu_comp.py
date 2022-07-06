@@ -16,16 +16,13 @@ class MenuLogic:
         self.current_track = self.tracks[self.track_index]
 
         self.avail_diff = self.current_track.available_difficulties
-        self.curr_diff_text = self.current_track.difficulties[
-            self.avail_diff[self.diff_index]]
+        self.curr_diff_text = self.current_track.difficulties[self.avail_diff[self.diff_index]]
         self.prev_diff = self.avail_diff[self.diff_index]
 
         self.current_score = self.current_track.score
 
-        self.score_text = menu_score_font.render(
-            f"SCORE: {self.current_score[self.prev_diff]}", True, "White")
-        self.st_rect = self.score_text.get_rect(
-            midleft=(75, 25))
+        self.score_text = menu_score_font.render(f"SCORE: {self.current_score[self.prev_diff]}", True, "White")
+        self.st_rect = self.score_text.get_rect(midleft=(75, 25))
 
         self.speed = 20
         self.jumping_speed = 30
@@ -163,6 +160,8 @@ class MenuLogic:
                 self.is_moving_down = True
                 self.track_index -= 1
 
+            assets.Audio.SCROLL_MENU.play()
+
         elif key[pygame.K_DOWN]:
 
             if self.track_index + 1 < track_len:
@@ -172,7 +171,7 @@ class MenuLogic:
                 self.is_moving_down = self.jumping = track_len > 1
                 self.track_index = 0 if track_len > 1 else self.track_index
 
-        assets.Audio.SCROLL_MENU.play()
+            assets.Audio.SCROLL_MENU.play()
 
     def key_left_n_right(self, key):
         avail_diff_len = len(self.avail_diff)

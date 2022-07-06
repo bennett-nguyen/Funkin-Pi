@@ -97,7 +97,7 @@ class GameMessage:
                 self.rect = assets.Gallery.GOOD.get_rect(center = (const.HALF_WIDTH, player_arrow_set.rect.centery + 100))
             case "bad":
                 self.surf = assets.Gallery.BAD.copy()
-                self.rect = assets.Gallery.GOOD.get_rect(center = (const.HALF_WIDTH, player_arrow_set.rect.centery + 100))
+                self.rect = assets.Gallery.GOOD.get_rect(center = (const.HALF_WIDTH + 20, player_arrow_set.rect.centery + 100))
 
         self.goal_vel = goal
         self.current_vel = vel
@@ -139,7 +139,7 @@ class GameLogic:
                 continue
 
             message.current_vel = self.lerp(message.goal_vel, message.current_vel)
-            message.rect.centery -= round(message.current_vel * shared_data.dt)
+            message.rect.centery -= message.current_vel
 
             ds.screen.blit(message.surf, message.rect)
 
@@ -190,7 +190,7 @@ class GameLogic:
         message.current_vel = self.lerp(message.goal_vel, message.current_vel)
         message.current_alpha = self.lerp(message.goal_alpha, message.current_alpha, 13)
 
-        message.rect.centery += round(message.current_vel * shared_data.dt)
+        message.rect.centery += message.current_vel
         message.surf.set_alpha(message.current_alpha)
 
         ds.screen.blit(message.surf, message.rect)

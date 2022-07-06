@@ -16,27 +16,19 @@ class PreStartScreen(Scene):
         self.displayed_time = 0
 
     def draw_message(self):
-        if self.display_message[0]:
-            ds.screen.blit(self.message_list[0][0], self.message_list[0][1])
-        if self.display_message[1]:
-            ds.screen.blit(self.message_list[1][0], self.message_list[1][1])
-        if self.display_message[2]:
-            ds.screen.blit(self.message_list[2][0], self.message_list[2][1])
-
+        for index, flag in enumerate(self.display_message):
+            if flag:
+                ds.screen.blit(self.message_list[index][0], self.message_list[index][1])
 
     def redraw(self):
         self.current_time = pygame.time.get_ticks()
 
         if self.current_time - self.displayed_time >= self.delay_display:
-            if not self.display_message[0]:
-                self.displayed_time = pygame.time.get_ticks()
-                self.display_message[0] = True
-            elif not self.display_message[1]:
-                self.displayed_time = pygame.time.get_ticks()
-                self.display_message[1] = True
-            elif not self.display_message[2]:
-                self.displayed_time = pygame.time.get_ticks()
-                self.display_message[2] = True
-                self.redirect = self.redirect_code
-        
+            for index, flag in enumerate(self.display_message):
+                if not flag:
+                    self.displayed_time = pygame.time.get_ticks()
+                    self.display_message[index] = True
+                    if self.display_message[2]: self.redirect = self.redirect_code
+                    break
+
         self.draw_message()

@@ -12,8 +12,7 @@ def _check_presence(file):
 
     for difficulty in available_difficulties:
         if difficulty not in description["score"] or difficulty not in description["config"]:
-            raise Exception(
-                "difficulties in either score, config or mapping didn't match available difficulties")
+            raise AttributeError("difficulties in either score, config or mapping didn't match available difficulties")
 
 
 def _process_info_diff(array):

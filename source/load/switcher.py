@@ -24,10 +24,11 @@ class SceneSwitcher:
     def change_scene(self):
         state = self.current.redirect
         main_game_data = getattr(self.current, 'loaded_data', None)
+
         self.current.reset_attr()
         self.current = self.scenes[state]
-        if main_game_data is not None:
-            self.current.receive_data(main_game_data)
+
+        if main_game_data is not None: self.current.receive_data(main_game_data)
         self.reset_attr()
 
     def fade(self):

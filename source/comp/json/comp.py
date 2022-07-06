@@ -41,7 +41,6 @@ class Track:
         self.mapping = mapping
         
         self.soundtrack_path = soundtrack
-        self.player_animation_path = player_animation_path
         self.player_entity = Entity(True, player_animation_path)
 
     def init_display_name_rect_coordinates(self, x, y):
@@ -113,3 +112,13 @@ class Track:
         self.easy_text_rect = self.easy_text.get_rect(midleft=(900, 470))
         self.normal_text_rect = self.normal_text.get_rect(midleft=(900, 470))
         self.hard_text_rect = self.hard_text.get_rect(midleft=(900, 470))
+    
+    def destruct_unnecessary_stuff(self):
+        del self.easy_text
+        del self.normal_text
+        del self.hard_text
+        del self.easy_text_rect
+        del self.normal_text_rect
+        del self.hard_text_rect
+        del self.mapping
+        del self.soundtrack_path

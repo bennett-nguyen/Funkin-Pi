@@ -21,13 +21,19 @@ class ArrowSet(Surface):
         self.right_arrow_rect = self.right_arrow.get_rect(midright=(self.rect.midright[0] - 25, self.rect.midright[1]))
 
         self.arrow_list = (
-            (self.left_arrow, self.left_arrow_rect), (self.up_arrow, self.up_arrow_rect), (
-            self.down_arrow, self.down_arrow_rect), (self.right_arrow, self.right_arrow_rect)
+            (self.left_arrow, self.left_arrow_rect),
+            (self.up_arrow, self.up_arrow_rect),
+            (self.down_arrow, self.down_arrow_rect),
+            (self.right_arrow, self.right_arrow_rect)
         )
 
     def update_arrows(self):
-        self.arrow_list = ((self.left_arrow, self.left_arrow_rect), (self.up_arrow, self.up_arrow_rect), (
-            self.down_arrow, self.down_arrow_rect), (self.right_arrow, self.right_arrow_rect))
+        self.arrow_list = (
+            (self.left_arrow, self.left_arrow_rect),
+            (self.up_arrow, self.up_arrow_rect), 
+            (self.down_arrow, self.down_arrow_rect),
+            (self.right_arrow, self.right_arrow_rect)
+        )
 
     def draw_self(self):
         self.update_arrows()

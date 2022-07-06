@@ -32,8 +32,7 @@ class StartScreen(Scene):
 
 
     def redraw(self):
-        ds.screen.blit(assets.Gallery.LOGO, assets.Gallery.LOGO.get_rect(
-            center=(const.HALF_WIDTH, const.HALF_HEIGHT)))
+        ds.screen.blit(assets.Gallery.LOGO, assets.Gallery.LOGO.get_rect(center=(const.HALF_WIDTH, const.HALF_HEIGHT)))
         self.start_button.check_hover()
 
         if self.start_button.is_activated(check_type=1):
@@ -45,7 +44,7 @@ class StartScreen(Scene):
             if not self.sound_2_effect_played:
                 assets.Audio.SCROLL_MENU.play()
                 self.sound_2_effect_played = True
-        
+
         else:
             self.start_button.toggle_animation(animation_type=0)
             self.sound_2_effect_played = False
