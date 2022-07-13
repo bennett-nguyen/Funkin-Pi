@@ -8,7 +8,7 @@ pygame.init()
 
 class ArrowSet(Surface):
     def __init__(self, x: int, y: int):
-        super().__init__(x, y, const.HALF_WIDTH/1.3, 70)
+        super().__init__(x, y, const.HALF_WIDTH/1.3, 65, (255, 255, 255))
 
         self.left_arrow = assets.Gallery.LEFT_ARROW
         self.up_arrow = assets.Gallery.UP_ARROW
@@ -36,6 +36,7 @@ class ArrowSet(Surface):
         )
 
     def draw_self(self):
+        # ds.screen.blit(self.surface, self.rect) # un-comment this to reveal hitbox
         self.update_arrows()
 
         for object in self.arrow_list:
