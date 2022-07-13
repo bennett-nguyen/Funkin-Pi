@@ -9,9 +9,11 @@ pygame.init()
 
 class FlyingObject(Surface):
     def __init__(self, x: int, y: int, arrow, VEL) -> None:
-        super().__init__(x, y, const.WIDTH/(13/5), 70)
+        super().__init__(x, y, const.WIDTH/(13/5), 65, (255, 255, 255))
         self.VEL = VEL
         self.arrow = arrow
+        self.score_earned = 0
+        self.message = None
 
         match self.arrow:
             case assets.Gallery.ACTIVATED_LEFT_ARROW:
@@ -35,6 +37,7 @@ class FlyingObject(Surface):
                 self.key = pygame.K_RIGHT
 
     def draw_self(self):
+        # ds.screen.blit(self.surface, self.rect) # un-comment this to reveal hitbox
         ds.screen.blit(self.arrow, self.arrow_rect)
 
     def move(self):
@@ -44,17 +47,23 @@ class FlyingObject(Surface):
     def collide(self, object):
         # range from object.rect.center[1] + range --> object.rect.center[1] - range
         # the shorter the range, the harder you'll get a sick move
-        range = 8
+        collide_range = 8
         target = self.rect
-        lowest_center_range = object.rect.center[1] - range
-        highest_center_range = object.rect.center[1] + range
+        lowest_center_range = object.rect.center[1] - collide_range
+        highest_center_range = object.rect.center[1] + collide_range
 
         if target.center[1] >= lowest_center_range and target.center[1] <= highest_center_range and target.colliderect(object.rect):
-            return (True, 'sick', const.SICK_EARNED)
+            self.message = 'sick'
+            self.score_earned = const.SICK_EARNED
+            return True
         elif target.colliderect(object.rect):
-            return (True, 'good', const.GOOD_EARNED)
+            self.message = 'good'
+            self.score_earned = const.GOOD_EARNED
+            return True
         else:
-            return [False]
+            self.message = None
+            self.score_earned = 0
+            return False
 
     # this method is only used for the enemy!
     def collide_for_enemy(self, object):
