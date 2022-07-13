@@ -66,7 +66,7 @@ class SceneSwitcher:
                 self.redirected_time = pygame.time.get_ticks()
                 self.redirect_delay = self.current.redirect_delay
                 self.deactivate_fade = self.current.deactivate_fade
-                
+
                 if not self.deactivate_fade:
                     self.fade_delay = self.current.fade_delay
                     self.is_transitioning = True

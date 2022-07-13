@@ -97,6 +97,11 @@ _SICK = pygame.image.load("./assets/img/borrowed/sick.png").convert_alpha()
 _GOOD = pygame.image.load("./assets/img/borrowed/good.png").convert_alpha()
 _BAD = pygame.image.load("./assets/img/borrowed/bad.png").convert_alpha()
 
+_ONE = pygame.image.load("./assets/img/1.png").convert_alpha()
+_TWO = pygame.image.load("./assets/img/2.png").convert_alpha()
+_THREE = pygame.image.load("./assets/img/3.png").convert_alpha()
+_GO = pygame.image.load("./assets/img/go.png").convert_alpha()
+
 class Gallery:
     LEFT_ARROW = pygame.transform.scale(_LEFT_ARROW, (_LEFT_ARROW.get_width() / _scale, _LEFT_ARROW.get_height() / _scale))
     RIGHT_ARROW = pygame.transform.scale(_RIGHT_ARROW, (_RIGHT_ARROW.get_width() / _scale, _RIGHT_ARROW.get_height() / _scale))
@@ -153,16 +158,19 @@ class Gallery:
         pygame.transform.rotozoom(pygame.image.load("./assets/img/pointer_2.png").convert_alpha(), 0, 0.2)
     )
 
+    ONE = _ONE
+    TWO = _TWO
+    THREE = _THREE
+
+    GO = _GO
+
 
 class Audio:
     FREAKY_MENU = pygame.mixer.Sound('./assets/audio/freaky_menu.ogg')
     CONFIRM_MENU = pygame.mixer.Sound('./assets/audio/confirm_menu.ogg')
     SCROLL_MENU = pygame.mixer.Sound('./assets/audio/scroll_menu.ogg')
 
-    # INTRO_1 = pygame.mixer.Sound('./assets/audio/intro1.ogg')
-    # INTRO_2 = pygame.mixer.Sound('./assets/audio/intro2.ogg')
-    # INTRO_3 = pygame.mixer.Sound('./assets/audio/intro3.ogg')
-    # INTRO_GO = pygame.mixer.Sound('./assets/audio/introGo.ogg')
-
-
-    VOCAL_VOLUME = 1
+    INTRO_1 = pygame.mixer.Sound('./assets/audio/intro1.ogg')
+    INTRO_2 = pygame.mixer.Sound('./assets/audio/intro2.ogg')
+    INTRO_3 = pygame.mixer.Sound('./assets/audio/intro3.ogg')
+    INTRO_GO = pygame.mixer.Sound('./assets/audio/introGo.ogg')

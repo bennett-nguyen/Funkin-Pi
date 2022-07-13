@@ -4,7 +4,7 @@ import source.load.ds as ds
 pygame.init()
 
 class Surface:
-    def __init__(self, x: int, y: int, width: int, height: int, color: tuple[int] = None, alpha: bool = False):
+    def __init__(self, x: int, y: int, width: int, height: int, color: tuple[int, int, int] = None, alpha: bool = False):
         self.surface = pygame.Surface((width, height), pygame.SRCALPHA, 32) if alpha else pygame.Surface((width, height))
         self.rect = self.surface.get_rect(center=(x, y))
         
