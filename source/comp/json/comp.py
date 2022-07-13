@@ -122,3 +122,4 @@ class Track:
         del self.hard_text_rect
         del self.mapping
         del self.soundtrack_path
+        del self.arrow_map
