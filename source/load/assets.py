@@ -1,28 +1,21 @@
 import pygame
 import source.load.constant as const
+import inspect
+from dataclasses import dataclass
 
 pygame.init()
 
 # Video animation must be 600x690px
+# 976x1081px
 
-class _Font:
-    # TITLE_SIZE = 100
-    # TITLE_SIZE_2 = 75
-    # TITLE_SIZE_3 = 50
-    # MENU_SCORE = 20
-
-    DEPRECATED_FNF_FONT = './assets/font/FridayFunkin-Regular.ttf'
-    VRC_OSD = './assets/font/vcr_osd.ttf'
-    PHANTOMMUFF_EMPTY = './assets/font/PhantomMuff Empty Letters.ttf'
-    PHANTOMMUFF_FULL = './assets/font/PhantomMuff Full Letters.ttf'
-
-    def __init__(self):
-        self.FONT_MAP = {
-            "vrc-osd": self.VRC_OSD,
-            "deprecated-fnf-font": self.DEPRECATED_FNF_FONT,
-            "phantommuff-empty": self.PHANTOMMUFF_EMPTY,
-            "phantommuff-full": self.PHANTOMMUFF_FULL
-        }
+@dataclass(frozen=True, init=True, eq=False, unsafe_hash=False)
+class __Font:
+    FONT_MAP = {
+        "vrc-osd": './assets/font/vcr_osd.ttf',
+        "deprecated-fnf-font": './assets/font/FridayFunkin-Regular.ttf',
+        "phantommuff-empty": './assets/font/PhantomMuff Empty Letters.ttf',
+        "phantommuff-full": './assets/font/PhantomMuff Full Letters.ttf'
+    }
 
     def get_font(self, name: str, size: int):
         """
@@ -40,7 +33,7 @@ class _Font:
         """
         return pygame.font.Font(self.FONT_MAP[name], size)
 
-CustomFont = _Font()
+CustomFont = __Font()
 
 def _generate_message(message_list, font):
     result = []
@@ -72,6 +65,8 @@ def _load_opt_message():
 
         return result
     
+
+@dataclass(frozen=True, init=False, eq=False, unsafe_hash=False)
 class Message:
     opt_message_list = _load_opt_message()
     req_message_list_1 = _generate_message([" ", "BENNETT NGUYEN'S PRESENT", " "], CustomFont.get_font("phantommuff-empty", 80))
@@ -102,6 +97,9 @@ _TWO = pygame.image.load("./assets/img/2.png").convert_alpha()
 _THREE = pygame.image.load("./assets/img/3.png").convert_alpha()
 _GO = pygame.image.load("./assets/img/go.png").convert_alpha()
 
+_HEALTHBAR = pygame.image.load('./assets/img/healthbar.png').convert_alpha()
+
+@dataclass(frozen=True, init=False, eq=False, unsafe_hash=False)
 class Gallery:
     LEFT_ARROW = pygame.transform.scale(_LEFT_ARROW, (_LEFT_ARROW.get_width() / _scale, _LEFT_ARROW.get_height() / _scale))
     RIGHT_ARROW = pygame.transform.scale(_RIGHT_ARROW, (_RIGHT_ARROW.get_width() / _scale, _RIGHT_ARROW.get_height() / _scale))
@@ -164,9 +162,9 @@ class Gallery:
 
     GO = _GO
 
-
+@dataclass(frozen=True, init=False, eq=False, unsafe_hash=False)
 class Audio:
-    FREAKY_MENU = pygame.mixer.Sound('./assets/audio/freaky_menu.ogg')
+    FREAKY_MENU = './assets/audio/freaky_menu.ogg'
     CONFIRM_MENU = pygame.mixer.Sound('./assets/audio/confirm_menu.ogg')
     SCROLL_MENU = pygame.mixer.Sound('./assets/audio/scroll_menu.ogg')
 
@@ -174,3 +172,7 @@ class Audio:
     INTRO_2 = pygame.mixer.Sound('./assets/audio/intro2.ogg')
     INTRO_3 = pygame.mixer.Sound('./assets/audio/intro3.ogg')
     INTRO_GO = pygame.mixer.Sound('./assets/audio/introGo.ogg')
+
+    MISS_NOTE_SOUND = (pygame.mixer.Sound('./assets/audio/missnote1.ogg'), pygame.mixer.Sound('./assets/audio/missnote2.ogg'), pygame.mixer.Sound('./assets/audio/missnote3.ogg'))
+
+pygame.mixer.music.load(Audio.FREAKY_MENU)
