@@ -3,6 +3,7 @@ import source.load.ds as ds
 import source.load.assets as assets
 import source.load.constant as const
 from sys import exit
+from random import randint
 from source.comp.other.button import Button
 
 pygame.init()
@@ -179,6 +180,7 @@ class GameLogic:
     def check_collide_player(self, key):
         if not self.collision_list and key is not None:
             self.copy_list.append(GameMessage('bad', self.player_arrow_set, 15, 0))
+            assets.Audio.MISS_NOTE_SOUND[randint(0, 2)].play()
             return
 
         for object in self.collision_list:
@@ -187,6 +189,7 @@ class GameLogic:
                 if object == self.collision_list[-1]:
                     self.copy_list.append(GameMessage('bad', self.player_arrow_set, 15, 0))
                     self.collision_list = []
+                    assets.Audio.MISS_NOTE_SOUND[randint(0, 2)].play()
                     return
 
                 continue

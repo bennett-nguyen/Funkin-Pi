@@ -27,7 +27,7 @@ game_scenes = {
 switcher = SceneSwitcher(game_scenes, start="pre start screen 1")
 
 def game():
-    assets.Audio.FREAKY_MENU.play(-1)
+    pygame.mixer.music.play(-1)
     dt = 0 # delta time
     prev_time = time.time()
 

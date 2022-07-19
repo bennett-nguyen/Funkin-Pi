@@ -32,10 +32,6 @@ class MainGame(Scene):
 
     def redraw(self):
         ds.screen.fill('Black')
-        if not self.intro_screen_instance.done_playing:
-            if not self.intro_screen_instance.activate_time:
-                self.intro_screen_instance.activate_time = pygame.time.get_ticks()
-            self.intro_screen_instance.play()
 
         # if not self.player_entity.animation_is_playable():
         #     self.player_entity.change_animation("idle")
@@ -54,6 +50,10 @@ class MainGame(Scene):
         if self.paused_screen_instance.run:
             self.paused_screen_instance.activate_pause_screen()
 
+        if not self.intro_screen_instance.done_playing:
+            if not self.intro_screen_instance.activate_time:
+                self.intro_screen_instance.activate_time = pygame.time.get_ticks()
+            self.intro_screen_instance.play()
     def pre_event(self):
         self.current_time = pygame.time.get_ticks()
 
@@ -119,6 +119,7 @@ class MainGame(Scene):
         self.display_track_name = menu_score_font.render(f"{self.track_name} - {self.chosen_difficulty}", True, "White")
         self.display_track_name_rect = self.display_track_name.get_rect(bottomleft = (self.padding, const.HEIGHT - self.padding))
         self.before_mov_obj = pygame.time.get_ticks()
+        pygame.mixer.music.fadeout(600)
 
     def reset_attr(self):
         super().reset_attr()
