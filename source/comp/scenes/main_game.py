@@ -5,7 +5,7 @@ import source.load.constant as const
 from source.load.template import Scene
 from source.load.shared import shared_data
 from source.comp.other.arrow_set import ArrowSet 
-from source.comp.other.main_comp import Intro, PausedScreen, GameLogic
+from source.comp.other.main_comp import HealthBar, Intro, PausedScreen, GameLogic
 
 pygame.init()
 
@@ -20,6 +20,7 @@ class MainGame(Scene):
         self.enemy_arrow_set = ArrowSet(const.ENEMY_ARROW_SET_X, 80)
         self.player_arrow_set = ArrowSet(const.PLAYER_ARROW_SET_X, 80)
 
+        # Services
         self.paused_screen_instance = PausedScreen()
         self.intro_screen_instance = Intro()
 
@@ -109,7 +110,10 @@ class MainGame(Scene):
         self.track_name = data["name"]
         self.chosen_difficulty = data["chosen_difficulty"]
         self.game_delay = data["difficulty_config"]["delay"]
-        self.game_logic = GameLogic(data["objects"], self.player_arrow_set, self.enemy_arrow_set)
+        
+        # Services
+        self.game_logic = GameLogic(data["objects"], self.player_arrow_set, self.enemy_arrow_set, health_bar=HealthBar(data['hb_player_rgb'], data['hb_enemy_rgb']))
+        # --
 
         self.instrument = data["instrument"]
         self.vocal = data["vocal"]
