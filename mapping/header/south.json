@@ -13,20 +13,35 @@
         },
         "config": {
             "easy": {
-                "delay": 0,
+                "delay": 3000,
                 "space": 125,
-                "velocity": 1000
+                "velocity": 100
             },
             "normal": {
-                "delay": 0,
+                "delay": 10000,
                 "space": 125,
                 "velocity": 60
             },
             "hard": {
-                "delay": 0,
+                "delay": 10000,
                 "space": 125,
                 "velocity": 170
             }
+        },
+        "healthbar": {
+            "color": {
+                "enemy": [
+                    255,
+                    0,
+                    0
+                ],
+                "player": [
+                    0,
+                    255,
+                    0
+                ]
+            },
+            "state": {}
         },
         "mapping": {
             "easy": "include.easy",
@@ -38,11 +53,11 @@
             "vocal": "assets/audio/soundtrack/south/south_vocal.ogg"
         },
         "player_animation": {
-            "idle": "assets/img/video/south/player/idle.mp4",
-            "left": "assets/img/video/south/player/left.mp4",
-            "right": "assets/img/video/south/player/right.mp4",
-            "up": "assets/img/video/south/player/up.mp4",
-            "down": "assets/img/video/south/player/down.mp4"
+            "idle": "./assets/img/video/player/idle.mp4",
+            "left": "./assets/img/video/player/left.mp4",
+            "right": "./assets/img/video/player/right.mp4",
+            "up": "./assets/img/video/player/up.mp4",
+            "down": "./assets/img/video/player/down.mp4"
         },
         "enemy_animation": {}
     },
@@ -53,6 +68,9 @@
                 "l",
                 "l",
                 "l"
+            ],
+            "player_2": [
+                "u"
             ]
         },
         "normal": {
