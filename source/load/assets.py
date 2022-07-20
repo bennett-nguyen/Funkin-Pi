@@ -159,8 +159,9 @@ class Gallery:
     ONE = _ONE
     TWO = _TWO
     THREE = _THREE
-
     GO = _GO
+
+    HEALTH_BAR_TEMPLATE = pygame.transform.rotozoom(_HEALTHBAR, 0, const.HEALTHBAR_SCALE)
 
 @dataclass(frozen=True, init=False, eq=False, unsafe_hash=False)
 class Audio:
