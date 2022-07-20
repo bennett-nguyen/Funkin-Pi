@@ -75,7 +75,8 @@ def data_parser(files: list[dict]) -> list[Track]:
             file["description"]["config"],
             file["description"]["mapping"],
             file["description"]["soundtrack"],
-            file["description"]["player_animation"]
+            file["description"]["player_animation"],
+            file["description"]["healthbar"]
         ) 
         for file in files if "description" in file
     ]
