@@ -1,10 +1,10 @@
 import cv2
-import pygame
+import pygame as pg
 import source.load.ds as ds
 import source.load.constant as const
 from source.load.comp import Surface
 
-pygame.init()
+pg.init()
 
 class Entity(Surface):
     def __init__(self, is_player: bool, video_path) -> None:
@@ -32,7 +32,7 @@ class Entity(Surface):
         if not success:
             return
 
-        self.animation_surf = pygame.image.frombuffer(
+        self.animation_surf = pg.image.frombuffer(
             frame.tobytes(), frame.shape[1::-1], "BGR")
         self.animation_rect = self.animation_surf.get_rect(
             center=self.rect.center)

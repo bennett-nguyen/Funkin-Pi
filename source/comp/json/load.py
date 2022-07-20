@@ -1,8 +1,8 @@
-import pygame
+import pygame as pg
 import itertools
 from source.comp.json.comp import Track
 
-pygame.init()
+pg.init()
 
 
 def _check_presence(file):

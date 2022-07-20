@@ -1,21 +1,20 @@
-import pygame
+import pygame as pg
 import source.load.assets as assets
 import source.load.constant as const
 from source.load.comp import ImageAnimation
 from source.comp.other.entity import Entity
 from source.comp.other.object import FlyingObject
 
-pygame.init()
+pg.init()
 
 
 class Track:
     def __init__(self, name: str, difficulties: list[str], score: dict, difficulties_config: dict, mapping: dict, soundtrack: dict, player_animation_path: dict, healthbar: dict):
         self.name = name
         display_name_font = assets.CustomFont.get_font("phantommuff-empty", const.TITLE_SIZE_2)
-        
+
         self.display_name = display_name_font.render(name.upper(), True, (255, 255, 255))
         self.display_name_on_toggle = display_name_font.render(name.upper(), True, (0, 255, 255))
-        
 
         self.difficulties = {}
         self.available_difficulties = difficulties
@@ -39,7 +38,7 @@ class Track:
         }
         self.difficulties_config = difficulties_config
         self.mapping = mapping
-        
+
         self.soundtrack_path = soundtrack
         self.player_entity = Entity(True, player_animation_path)
 
@@ -60,8 +59,8 @@ class Track:
         self.display_name_animation.rect.centery = y
         
     def _load_audio(self):
-        self.instrument = pygame.mixer.Sound(self.soundtrack_path["instrument"])
-        self.vocal = pygame.mixer.Sound(self.soundtrack_path["vocal"])
+        self.instrument = pg.mixer.Sound(self.soundtrack_path["instrument"])
+        self.vocal = pg.mixer.Sound(self.soundtrack_path["vocal"])
 
     def _mapping_to_objects(self):
         self.objects = {}

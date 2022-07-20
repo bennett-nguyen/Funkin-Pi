@@ -1,9 +1,9 @@
-import pygame
+import pygame as pg
 import source.load.ds as ds
 import source.load.assets as assets
 import source.load.constant as const
 
-pygame.init()
+pg.init()
 
 class MenuLogic:
     def __init__(self, tracks):
@@ -64,8 +64,8 @@ class MenuLogic:
                 self.is_moving_down = self.is_moving_up = self.is_transitioning = self.jumping = False
 
     def input(self):
-        key = pygame.key.get_pressed()
-        self.current_time = pygame.time.get_ticks()
+        key = pg.key.get_pressed()
+        self.current_time = pg.time.get_ticks()
 
         if self.current_time - self.keydown_time > self.delay_time:
             self.on_keydown_delay = False
@@ -73,11 +73,11 @@ class MenuLogic:
         if all(
             (
                 not (self.on_keydown_delay or self.is_transitioning),
-                any((key[pygame.K_UP], key[pygame.K_DOWN],
-                    key[pygame.K_LEFT], key[pygame.K_RIGHT]))
+                any((key[pg.K_UP], key[pg.K_DOWN],
+                    key[pg.K_LEFT], key[pg.K_RIGHT]))
             )
         ):
-            self.keydown_time = pygame.time.get_ticks()
+            self.keydown_time = pg.time.get_ticks()
             self.on_keydown_delay = self.is_transitioning = True
 
             self.key_up_n_down(key)
@@ -154,7 +154,7 @@ class MenuLogic:
     def key_up_n_down(self, key):
         track_len = len(self.tracks)
 
-        if key[pygame.K_UP]:
+        if key[pg.K_UP]:
 
             if min(0, self.track_index - 1):
                 self.is_moving_up = self.jumping = track_len > 1
@@ -165,7 +165,7 @@ class MenuLogic:
 
             assets.Audio.SCROLL_MENU.play()
 
-        elif key[pygame.K_DOWN]:
+        elif key[pg.K_DOWN]:
 
             if self.track_index + 1 < track_len:
                 self.is_moving_up = True
@@ -179,7 +179,7 @@ class MenuLogic:
     def key_left_n_right(self, key):
         avail_diff_len = len(self.avail_diff)
 
-        if key[pygame.K_LEFT]:
+        if key[pg.K_LEFT]:
             self.changing_difficulty = True
 
             if self.diff_index >= 1:
@@ -189,7 +189,7 @@ class MenuLogic:
 
             assets.Audio.SCROLL_MENU.play()
 
-        elif key[pygame.K_RIGHT]:
+        elif key[pg.K_RIGHT]:
             self.changing_difficulty = True
 
             if self.diff_index + 1 < avail_diff_len:

@@ -1,7 +1,7 @@
-import pygame
+import pygame as pg
 from source.load.comp import ImageAnimation, Surface
 
-pygame.init()
+pg.init()
 
 class Button(Surface):
     def __init__(self, pos: tuple[int, int], hitbox_size: tuple[int, int], deactivation_assets, on_hover_assets, activation_assets = None, speed: tuple[int, int, int] = (0.1, 0.1, 0.1)):
@@ -34,14 +34,14 @@ class Button(Surface):
             - 2: right click
         '''
         self.check_hover()
-        self.activated_by_click = self.is_on_hover and pygame.mouse.get_pressed()[click_type]
+        self.activated_by_click = self.is_on_hover and pg.mouse.get_pressed()[click_type]
 
     def check_key_activate(self, key):
-        keys = pygame.key.get_pressed()
+        keys = pg.key.get_pressed()
         self.activated_by_key = keys[key]
 
     def check_hover(self):
-        self.is_on_hover = self.rect.collidepoint(pygame.mouse.get_pos())
+        self.is_on_hover = self.rect.collidepoint(pg.mouse.get_pos())
 
     def deactivate_button(self, deactivate_type: int):
         """

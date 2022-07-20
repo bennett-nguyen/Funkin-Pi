@@ -1,11 +1,11 @@
-import pygame
+import pygame as pg
 import source.load.ds as ds
 import source.load.assets as assets
 import source.load.constant as const
 from source.load.template import Scene
 from source.comp.other.button import Button
 
-pygame.init()
+pg.init()
 
 class StartScreen(Scene):
     def __init__(self):
@@ -16,7 +16,7 @@ class StartScreen(Scene):
         self.fade_delay = 2500
 
         # custom fade in animation
-        self.surf = pygame.Surface(ds.screen.get_size())
+        self.surf = pg.Surface(ds.screen.get_size())
         self.surf.fill((255, 255, 255))
 
         self.alpha = 255
@@ -54,7 +54,7 @@ class StartScreen(Scene):
 
     def input(self):
         self.start_button.check_click(click_type=0)
-        self.start_button.check_key_activate(key = pygame.K_RETURN)
+        self.start_button.check_key_activate(key = pg.K_RETURN)
 
         if self.start_button.is_activated(check_type=1) and not self.sound_1_effect_played:
             assets.Audio.CONFIRM_MENU.play()

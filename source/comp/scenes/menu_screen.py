@@ -1,4 +1,4 @@
-import pygame
+import pygame as pg
 import source.load.ds as ds
 import source.load.assets as assets
 import source.load.constant as const
@@ -9,7 +9,7 @@ from source.comp.other.menu_comp import MenuLogic
 from source.load.comp import Surface, ImageAnimation
 from source.comp.json.load import data_parser, file_parser
 
-pygame.init()
+pg.init()
 
 class MenuScreen(Scene):
     def __init__(self):
@@ -54,13 +54,13 @@ class MenuScreen(Scene):
             self.logic.input()
 
             for event in shared_data.events:
-                if event.type == pygame.KEYDOWN:
+                if event.type == pg.KEYDOWN:
                     match event.key:
-                        case pygame.K_ESCAPE:
+                        case pg.K_ESCAPE:
                             self.redirect = "start screen"
                             self.allow_keydown = False
 
-                        case pygame.K_RETURN:
+                        case pg.K_RETURN:
                             self._key_return_event()
 
     def _key_return_event(self):

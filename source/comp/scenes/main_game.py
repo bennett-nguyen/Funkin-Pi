@@ -1,4 +1,4 @@
-import pygame
+import pygame as pg
 import source.load.ds as ds
 import source.load.assets as assets
 import source.load.constant as const
@@ -7,7 +7,7 @@ from source.load.shared import shared_data
 from source.comp.other.arrow_set import ArrowSet 
 from source.comp.other.main_comp import HealthBar, Intro, PausedScreen, GameLogic
 
-pygame.init()
+pg.init()
 
 class MainGame(Scene):
     def __init__(self):
@@ -43,7 +43,7 @@ class MainGame(Scene):
         self.enemy_arrow_set.draw_self()
         self.player_arrow_set.draw_self()
 
-        pygame.draw.line(ds.screen, "White", (const.HALF_WIDTH,0), (const.HALF_WIDTH, const.HEIGHT), 3)
+        pg.draw.line(ds.screen, "White", (const.HALF_WIDTH,0), (const.HALF_WIDTH, const.HEIGHT), 3)
 
         self.game_logic.redraw(self.activate_main_game)
         ds.screen.blit(self.display_track_name, self.display_track_name_rect)
@@ -53,10 +53,10 @@ class MainGame(Scene):
 
         if not self.intro_screen_instance.done_playing:
             if not self.intro_screen_instance.activate_time:
-                self.intro_screen_instance.activate_time = pygame.time.get_ticks()
+                self.intro_screen_instance.activate_time = pg.time.get_ticks()
             self.intro_screen_instance.play()
     def pre_event(self):
-        self.current_time = pygame.time.get_ticks()
+        self.current_time = pg.time.get_ticks()
 
         if self.current_time - self.before_mov_obj >= self.game_delay:
             self.activate_main_game = True
@@ -70,34 +70,34 @@ class MainGame(Scene):
     def input(self):
         if self.activate_main_game:
             for event in shared_data.events:
-                if event.type == pygame.KEYDOWN:
+                if event.type == pg.KEYDOWN:
                     match event.key:
-                        case pygame.K_UP:
+                        case pg.K_UP:
                             self.player_arrow_set.up_arrow = assets.Gallery.ACTIVATED_UP_ARROW
                             # self.player_entity.change_animation("up")
-                            self.current_key = pygame.K_UP
+                            self.current_key = pg.K_UP
 
-                        case pygame.K_DOWN:
+                        case pg.K_DOWN:
                             self.player_arrow_set.down_arrow = assets.Gallery.ACTIVATED_DOWN_ARROW
                             # self.player_entity.change_animation("down")
-                            self.current_key = pygame.K_DOWN
+                            self.current_key = pg.K_DOWN
 
-                        case pygame.K_LEFT:
+                        case pg.K_LEFT:
                             self.player_arrow_set.left_arrow = assets.Gallery.ACTIVATED_LEFT_ARROW
                             # self.player_entity.change_animation("left")
-                            self.current_key = pygame.K_LEFT
+                            self.current_key = pg.K_LEFT
 
-                        case pygame.K_RIGHT:
+                        case pg.K_RIGHT:
                             self.player_arrow_set.right_arrow = assets.Gallery.ACTIVATED_RIGHT_ARROW
                             # self.player_entity.change_animation("right")
-                            self.current_key = pygame.K_RIGHT
+                            self.current_key = pg.K_RIGHT
 
-                        case pygame.K_p:
+                        case pg.K_p:
                             self.paused_screen_instance.run = True
 
                     self.game_logic.check_collide_player(self.current_key)
                     self.current_key = None
-                elif event.type == pygame.KEYUP:
+                elif event.type == pg.KEYUP:
                     self.player_arrow_set.event_on_arrow_deactivate(event)
 
     def play_audio(self):
@@ -122,8 +122,8 @@ class MainGame(Scene):
 
         self.display_track_name = menu_score_font.render(f"{self.track_name} - {self.chosen_difficulty}", True, "White")
         self.display_track_name_rect = self.display_track_name.get_rect(bottomleft = (self.padding, const.HEIGHT - self.padding))
-        self.before_mov_obj = pygame.time.get_ticks()
-        pygame.mixer.music.fadeout(600)
+        self.before_mov_obj = pg.time.get_ticks()
+        pg.mixer.music.fadeout(600)
 
     def reset_attr(self):
         super().reset_attr()

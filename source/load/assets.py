@@ -1,9 +1,8 @@
-import pygame
+import pygame as pg
 import source.load.constant as const
-import inspect
 from dataclasses import dataclass
 
-pygame.init()
+pg.init()
 
 # Video animation must be 600x690px
 # 976x1081px
@@ -31,7 +30,7 @@ class __Font:
         - title font 3: 50
         - menu score: 20
         """
-        return pygame.font.Font(self.FONT_MAP[name], size)
+        return pg.font.Font(self.FONT_MAP[name], size)
 
 CustomFont = __Font()
 
@@ -78,82 +77,82 @@ _game_message_scale = 1.5
 _game_message_scale_2 = 1.7
 
 # Images
-_LEFT_ARROW = pygame.image.load("./assets/img/left_arrow.png").convert_alpha()
-_RIGHT_ARROW = pygame.image.load("./assets/img/right_arrow.png").convert_alpha()
-_UP_ARROW = pygame.image.load("./assets/img/up_arrow.png").convert_alpha()
-_DOWN_ARROW = pygame.image.load("./assets/img/down_arrow.png").convert_alpha()
+_LEFT_ARROW = pg.image.load("./assets/img/left_arrow.png").convert_alpha()
+_RIGHT_ARROW = pg.image.load("./assets/img/right_arrow.png").convert_alpha()
+_UP_ARROW = pg.image.load("./assets/img/up_arrow.png").convert_alpha()
+_DOWN_ARROW = pg.image.load("./assets/img/down_arrow.png").convert_alpha()
 
-_ACTIVATED_LEFT_ARROW = pygame.image.load("./assets/img/activated_left_arrow.png").convert_alpha()
-_ACTIVATED_RIGHT_ARROW = pygame.image.load("./assets/img/activated_right_arrow.png").convert_alpha()
-_ACTIVATED_UP_ARROW = pygame.image.load("./assets/img/activated_up_arrow.png").convert_alpha()
-_ACTIVATED_DOWN_ARROW = pygame.image.load("./assets/img/activated_down_arrow.png").convert_alpha()
+_ACTIVATED_LEFT_ARROW = pg.image.load("./assets/img/activated_left_arrow.png").convert_alpha()
+_ACTIVATED_RIGHT_ARROW = pg.image.load("./assets/img/activated_right_arrow.png").convert_alpha()
+_ACTIVATED_UP_ARROW = pg.image.load("./assets/img/activated_up_arrow.png").convert_alpha()
+_ACTIVATED_DOWN_ARROW = pg.image.load("./assets/img/activated_down_arrow.png").convert_alpha()
 
-_SICK = pygame.image.load("./assets/img/borrowed/sick.png").convert_alpha()
-_GOOD = pygame.image.load("./assets/img/borrowed/good.png").convert_alpha()
-_BAD = pygame.image.load("./assets/img/borrowed/bad.png").convert_alpha()
+_SICK = pg.image.load("./assets/img/borrowed/sick.png").convert_alpha()
+_GOOD = pg.image.load("./assets/img/borrowed/good.png").convert_alpha()
+_BAD = pg.image.load("./assets/img/borrowed/bad.png").convert_alpha()
 
-_ONE = pygame.image.load("./assets/img/1.png").convert_alpha()
-_TWO = pygame.image.load("./assets/img/2.png").convert_alpha()
-_THREE = pygame.image.load("./assets/img/3.png").convert_alpha()
-_GO = pygame.image.load("./assets/img/go.png").convert_alpha()
+_ONE = pg.image.load("./assets/img/1.png").convert_alpha()
+_TWO = pg.image.load("./assets/img/2.png").convert_alpha()
+_THREE = pg.image.load("./assets/img/3.png").convert_alpha()
+_GO = pg.image.load("./assets/img/go.png").convert_alpha()
 
-_HEALTHBAR = pygame.image.load('./assets/img/healthbar.png').convert_alpha()
+_HEALTHBAR = pg.image.load('./assets/img/healthbar.png').convert_alpha()
 
 @dataclass(frozen=True, init=False, eq=False, unsafe_hash=False)
 class Gallery:
-    LEFT_ARROW = pygame.transform.scale(_LEFT_ARROW, (_LEFT_ARROW.get_width() / _scale, _LEFT_ARROW.get_height() / _scale))
-    RIGHT_ARROW = pygame.transform.scale(_RIGHT_ARROW, (_RIGHT_ARROW.get_width() / _scale, _RIGHT_ARROW.get_height() / _scale))
-    UP_ARROW = pygame.transform.scale(_UP_ARROW, (_UP_ARROW.get_width() / _scale, _UP_ARROW.get_height() / _scale))
-    DOWN_ARROW = pygame.transform.scale(_DOWN_ARROW, (_DOWN_ARROW.get_width() / _scale, _DOWN_ARROW.get_height() / _scale))
+    LEFT_ARROW = pg.transform.scale(_LEFT_ARROW, (_LEFT_ARROW.get_width() / _scale, _LEFT_ARROW.get_height() / _scale))
+    RIGHT_ARROW = pg.transform.scale(_RIGHT_ARROW, (_RIGHT_ARROW.get_width() / _scale, _RIGHT_ARROW.get_height() / _scale))
+    UP_ARROW = pg.transform.scale(_UP_ARROW, (_UP_ARROW.get_width() / _scale, _UP_ARROW.get_height() / _scale))
+    DOWN_ARROW = pg.transform.scale(_DOWN_ARROW, (_DOWN_ARROW.get_width() / _scale, _DOWN_ARROW.get_height() / _scale))
 
-    ACTIVATED_LEFT_ARROW = pygame.transform.scale(_ACTIVATED_LEFT_ARROW, (_ACTIVATED_LEFT_ARROW.get_width() / _scale, _ACTIVATED_LEFT_ARROW.get_height() / _scale))
-    ACTIVATED_RIGHT_ARROW = pygame.transform.scale(_ACTIVATED_RIGHT_ARROW, (_ACTIVATED_RIGHT_ARROW.get_width() / _scale, _ACTIVATED_RIGHT_ARROW.get_height() / _scale))
-    ACTIVATED_UP_ARROW = pygame.transform.scale(_ACTIVATED_UP_ARROW, (_ACTIVATED_UP_ARROW.get_width() / _scale, _ACTIVATED_UP_ARROW.get_height() / _scale))
-    ACTIVATED_DOWN_ARROW = pygame.transform.scale(_ACTIVATED_DOWN_ARROW, (_ACTIVATED_DOWN_ARROW.get_width() / _scale, _ACTIVATED_DOWN_ARROW.get_height() / _scale))
+    ACTIVATED_LEFT_ARROW = pg.transform.scale(_ACTIVATED_LEFT_ARROW, (_ACTIVATED_LEFT_ARROW.get_width() / _scale, _ACTIVATED_LEFT_ARROW.get_height() / _scale))
+    ACTIVATED_RIGHT_ARROW = pg.transform.scale(_ACTIVATED_RIGHT_ARROW, (_ACTIVATED_RIGHT_ARROW.get_width() / _scale, _ACTIVATED_RIGHT_ARROW.get_height() / _scale))
+    ACTIVATED_UP_ARROW = pg.transform.scale(_ACTIVATED_UP_ARROW, (_ACTIVATED_UP_ARROW.get_width() / _scale, _ACTIVATED_UP_ARROW.get_height() / _scale))
+    ACTIVATED_DOWN_ARROW = pg.transform.scale(_ACTIVATED_DOWN_ARROW, (_ACTIVATED_DOWN_ARROW.get_width() / _scale, _ACTIVATED_DOWN_ARROW.get_height() / _scale))
 
-    SICK = pygame.transform.scale(_SICK, (_SICK.get_width() / _game_message_scale_2, _SICK.get_height() / _game_message_scale_2))
-    GOOD = pygame.transform.scale(_GOOD, (_GOOD.get_width() / _game_message_scale, _GOOD.get_height() / _game_message_scale))
-    BAD =  pygame.transform.scale(_BAD, (_BAD.get_width() / _game_message_scale, _BAD.get_height() / _game_message_scale))
+    SICK = pg.transform.scale(_SICK, (_SICK.get_width() / _game_message_scale_2, _SICK.get_height() / _game_message_scale_2))
+    GOOD = pg.transform.scale(_GOOD, (_GOOD.get_width() / _game_message_scale, _GOOD.get_height() / _game_message_scale))
+    BAD =  pg.transform.scale(_BAD, (_BAD.get_width() / _game_message_scale, _BAD.get_height() / _game_message_scale))
 
-    LOGO = pygame.image.load("./assets/img/logo.jpg").convert()
-    PAUSED_BACKGROUND = pygame.image.load("./assets/img/paused_template.png").convert_alpha()
+    LOGO = pg.image.load("./assets/img/logo.jpg").convert()
+    PAUSED_BACKGROUND = pg.image.load("./assets/img/paused_template.png").convert_alpha()
 
     PLAY_BUTTON_DEACTIVATED_IMAGES = (
-        pygame.transform.rotozoom(pygame.image.load("./assets/img/play_1.jpg").convert(), 0, 0.6),
-        pygame.transform.rotozoom(pygame.image.load("./assets/img/play_2.jpg").convert(), 0, 0.6)
+        pg.transform.rotozoom(pg.image.load("./assets/img/play_1.jpg").convert(), 0, 0.6),
+        pg.transform.rotozoom(pg.image.load("./assets/img/play_2.jpg").convert(), 0, 0.6)
     )
     PLAY_BUTTON_ON_HOVER_IMAGES = (
-        pygame.transform.rotozoom(pygame.image.load("./assets/img/play_3.png").convert_alpha(), 0, 0.6),
-        pygame.transform.rotozoom(pygame.image.load("./assets/img/play_4.png").convert_alpha(), 0, 0.6)
+        pg.transform.rotozoom(pg.image.load("./assets/img/play_3.png").convert_alpha(), 0, 0.6),
+        pg.transform.rotozoom(pg.image.load("./assets/img/play_4.png").convert_alpha(), 0, 0.6)
     )
     PLAY_BUTTON_ACTIVATED_IMAGES = (
-        pygame.transform.rotozoom(pygame.image.load("./assets/img/play_1.jpg").convert(), 0, 0.6),
-        pygame.transform.rotozoom(pygame.image.load("./assets/img/play_3.png").convert_alpha(), 0, 0.6)
+        pg.transform.rotozoom(pg.image.load("./assets/img/play_1.jpg").convert(), 0, 0.6),
+        pg.transform.rotozoom(pg.image.load("./assets/img/play_3.png").convert_alpha(), 0, 0.6)
     )
     
     PS_BUTTON_SCALE = 0.6
 
     CONTINUE_BUTTON_DEACTIVATED_IMAGES = (
-        pygame.transform.rotozoom(pygame.image.load("./assets/img/continue_1.png").convert_alpha(), 0, PS_BUTTON_SCALE),
-        pygame.transform.rotozoom(pygame.image.load("./assets/img/continue_2.png").convert_alpha(), 0, PS_BUTTON_SCALE)
+        pg.transform.rotozoom(pg.image.load("./assets/img/continue_1.png").convert_alpha(), 0, PS_BUTTON_SCALE),
+        pg.transform.rotozoom(pg.image.load("./assets/img/continue_2.png").convert_alpha(), 0, PS_BUTTON_SCALE)
     )
     CONTINUE_BUTTON_ON_HOVER_IMAGES = (
-        pygame.transform.rotozoom(pygame.image.load("./assets/img/continue_3.png").convert_alpha(), 0, PS_BUTTON_SCALE),
-        pygame.transform.rotozoom(pygame.image.load("./assets/img/continue_4.png").convert_alpha(), 0, PS_BUTTON_SCALE)
+        pg.transform.rotozoom(pg.image.load("./assets/img/continue_3.png").convert_alpha(), 0, PS_BUTTON_SCALE),
+        pg.transform.rotozoom(pg.image.load("./assets/img/continue_4.png").convert_alpha(), 0, PS_BUTTON_SCALE)
     )
 
     EXIT_BUTTON_DEACTIVATED_IMAGES = (
-        pygame.transform.rotozoom(pygame.image.load("./assets/img/exit_1.png").convert_alpha(), 0, PS_BUTTON_SCALE),
-        pygame.transform.rotozoom(pygame.image.load("./assets/img/exit_2.png").convert_alpha(), 0, PS_BUTTON_SCALE)
+        pg.transform.rotozoom(pg.image.load("./assets/img/exit_1.png").convert_alpha(), 0, PS_BUTTON_SCALE),
+        pg.transform.rotozoom(pg.image.load("./assets/img/exit_2.png").convert_alpha(), 0, PS_BUTTON_SCALE)
     )
     EXIT_BUTTON_ON_HOVER_IMAGES = (
-        pygame.transform.rotozoom(pygame.image.load("./assets/img/exit_3.png").convert_alpha(), 0, PS_BUTTON_SCALE),
-        pygame.transform.rotozoom(pygame.image.load("./assets/img/exit_4.png").convert_alpha(), 0, PS_BUTTON_SCALE)
+        pg.transform.rotozoom(pg.image.load("./assets/img/exit_3.png").convert_alpha(), 0, PS_BUTTON_SCALE),
+        pg.transform.rotozoom(pg.image.load("./assets/img/exit_4.png").convert_alpha(), 0, PS_BUTTON_SCALE)
     )
 
     POINTER = (
-        pygame.transform.rotozoom(pygame.image.load("./assets/img/pointer_1.png").convert_alpha(), 0, 0.2),
-        pygame.transform.rotozoom(pygame.image.load("./assets/img/pointer_2.png").convert_alpha(), 0, 0.2)
+        pg.transform.rotozoom(pg.image.load("./assets/img/pointer_1.png").convert_alpha(), 0, 0.2),
+        pg.transform.rotozoom(pg.image.load("./assets/img/pointer_2.png").convert_alpha(), 0, 0.2)
     )
 
     ONE = _ONE
@@ -161,19 +160,19 @@ class Gallery:
     THREE = _THREE
     GO = _GO
 
-    HEALTH_BAR_TEMPLATE = pygame.transform.rotozoom(_HEALTHBAR, 0, const.HEALTHBAR_SCALE)
+    HEALTH_BAR_TEMPLATE = pg.transform.rotozoom(_HEALTHBAR, 0, const.HEALTHBAR_SCALE)
 
 @dataclass(frozen=True, init=False, eq=False, unsafe_hash=False)
 class Audio:
     FREAKY_MENU = './assets/audio/freaky_menu.ogg'
-    CONFIRM_MENU = pygame.mixer.Sound('./assets/audio/confirm_menu.ogg')
-    SCROLL_MENU = pygame.mixer.Sound('./assets/audio/scroll_menu.ogg')
+    CONFIRM_MENU = pg.mixer.Sound('./assets/audio/confirm_menu.ogg')
+    SCROLL_MENU = pg.mixer.Sound('./assets/audio/scroll_menu.ogg')
 
-    INTRO_1 = pygame.mixer.Sound('./assets/audio/intro1.ogg')
-    INTRO_2 = pygame.mixer.Sound('./assets/audio/intro2.ogg')
-    INTRO_3 = pygame.mixer.Sound('./assets/audio/intro3.ogg')
-    INTRO_GO = pygame.mixer.Sound('./assets/audio/introGo.ogg')
+    INTRO_1 = pg.mixer.Sound('./assets/audio/intro1.ogg')
+    INTRO_2 = pg.mixer.Sound('./assets/audio/intro2.ogg')
+    INTRO_3 = pg.mixer.Sound('./assets/audio/intro3.ogg')
+    INTRO_GO = pg.mixer.Sound('./assets/audio/introGo.ogg')
 
-    MISS_NOTE_SOUND = (pygame.mixer.Sound('./assets/audio/missnote1.ogg'), pygame.mixer.Sound('./assets/audio/missnote2.ogg'), pygame.mixer.Sound('./assets/audio/missnote3.ogg'))
+    MISS_NOTE_SOUND = (pg.mixer.Sound('./assets/audio/missnote1.ogg'), pg.mixer.Sound('./assets/audio/missnote2.ogg'), pg.mixer.Sound('./assets/audio/missnote3.ogg'))
 
-pygame.mixer.music.load(Audio.FREAKY_MENU)
+pg.mixer.music.load(Audio.FREAKY_MENU)

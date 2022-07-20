@@ -1,5 +1,5 @@
 import time
-import pygame
+import pygame as pg
 import source.load.ds as ds
 import source.load.assets as assets
 import source.load.constant as const
@@ -12,7 +12,7 @@ from source.comp.scenes.menu_screen import MenuScreen
 from source.comp.scenes.start_screen import StartScreen
 from source.comp.scenes.pre_start_screen import PreStartScreen
 
-pygame.init()
+pg.init()
 
 game_scenes = {
     "pre start screen 1": PreStartScreen(assets.Message.req_message_list_1, 700, 800, "pre start screen 2"),
@@ -27,7 +27,7 @@ game_scenes = {
 switcher = SceneSwitcher(game_scenes, start="pre start screen 1")
 
 def game():
-    pygame.mixer.music.play(-1)
+    pg.mixer.music.play(-1)
     dt = 0 # delta time
     prev_time = time.time()
 
@@ -39,17 +39,17 @@ def game():
         dt = float(now - prev_time)
         prev_time = now
 
-        events = pygame.event.get()
+        events = pg.event.get()
         shared_data.dt = dt
         shared_data.events = events
 
         for event in events:
-            if event.type == pygame.QUIT:
-                pygame.quit()
+            if event.type == pg.QUIT:
+                pg.quit()
                 exit()
 
         switcher.update()
-        pygame.display.update()
-        
+        pg.display.update()
+
 if __name__ == "__main__":
     game()

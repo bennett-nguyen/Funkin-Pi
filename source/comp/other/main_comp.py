@@ -1,4 +1,4 @@
-import pygame
+import pygame as pg
 import source.load.ds as ds
 import source.load.assets as assets
 import source.load.constant as const
@@ -7,12 +7,12 @@ from sys import exit
 from random import randint
 from source.comp.other.button import Button
 
-pygame.init()
+pg.init()
 
 
 class PausedScreen:
     def __init__(self):
-        self.background = pygame.Surface((1200, 690))
+        self.background = pg.Surface((1200, 690))
         self.background.fill("Grey")
         self.background.set_alpha(15)
         self.play_sfx_1 = False
@@ -72,9 +72,9 @@ class PausedScreen:
             ds.screen.blit(self.background, (0, 0))
             ds.screen.blit(self.paused_background, self.paused_background_rect)
 
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
+            for event in pg.event.get():
+                if event.type == pg.QUIT:
+                    pg.quit()
                     exit()
 
 
@@ -84,7 +84,7 @@ class PausedScreen:
                 self.run = False
                 ds.clock.tick(const.FPS)
 
-            pygame.display.update()
+            pg.display.update()
 
 
 
@@ -119,12 +119,12 @@ class HealthBar:
         padding = 5
 
         self.out_of_health = False
-        self.player_bar = pygame.Surface(
+        self.player_bar = pg.Surface(
             (
                 (health_bar_width - round(border_size * const.HEALTHBAR_SCALE))/2, 
                 health_bar_height - round(border_size * const.HEALTHBAR_SCALE))
         )
-        self.enemy_bar = pygame.Surface(
+        self.enemy_bar = pg.Surface(
             (
                 health_bar_width - round(border_size * const.HEALTHBAR_SCALE),
                 health_bar_height - round(border_size * const.HEALTHBAR_SCALE)
@@ -174,7 +174,7 @@ class HealthBar:
                 self.out_of_health = True
                 self.player_bar.set_alpha(0)
 
-        self.player_bar = pygame.transform.smoothscale(self.player_bar, self.player_rect.size)
+        self.player_bar = pg.transform.smoothscale(self.player_bar, self.player_rect.size)
         
         padding = 5
         self.player_rect.right = self.health_bar_rect.right - round(padding * const.HEALTHBAR_SCALE)
@@ -319,7 +319,7 @@ class Intro:
         self.activate_time = 0
 
     def play(self):
-        self.current_time = pygame.time.get_ticks()
+        self.current_time = pg.time.get_ticks()
         
         if self.current_time - self.activate_time >= self.delay:
             if not self.played:

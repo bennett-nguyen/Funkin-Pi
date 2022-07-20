@@ -1,7 +1,7 @@
-import pygame
+import pygame as pg
 import source.load.ds as ds
 
-pygame.init()
+pg.init()
 
 class SceneSwitcher:
     def __init__(self, scenes: dict, start: str):
@@ -14,7 +14,7 @@ class SceneSwitcher:
         self.current_time = 0
         self.redirected_time = 0
         
-        self.screen = pygame.Surface(ds.screen.get_size())
+        self.screen = pg.Surface(ds.screen.get_size())
         self.screen.fill((0, 0, 0))
 
         self.alpha = 0
@@ -52,18 +52,13 @@ class SceneSwitcher:
                 self.is_transitioning = False
 
     def update(self):
-        self.current_time = pygame.time.get_ticks()
+        self.current_time = pg.time.get_ticks()
 
-        if not self.current.end_pre_event():
-            self.current.pre_event()
-        
-        if not self.is_transitioning:
-            self.current.input()
-        self.current.redraw()
+        self.current.update(self.is_transitioning)
 
         if self.current.redirect is not None:
             if not self.redirected_time:
-                self.redirected_time = pygame.time.get_ticks()
+                self.redirected_time = pg.time.get_ticks()
                 self.redirect_delay = self.current.redirect_delay
                 self.deactivate_fade = self.current.deactivate_fade
 

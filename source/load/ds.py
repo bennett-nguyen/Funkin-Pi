@@ -1,12 +1,12 @@
-import pygame
-from pygame.locals import *
+import pygame as pg
+from pygame.locals import FULLSCREEN, DOUBLEBUF, QUIT, KEYDOWN, KEYUP, MOUSEBUTTONDOWN
 import source.load.constant as const
 
 flags = FULLSCREEN | DOUBLEBUF
 
-pygame.init()
-pygame.event.set_allowed([pygame.QUIT, pygame.KEYDOWN, pygame.KEYUP, pygame.MOUSEBUTTONDOWN])
-pygame.display.set_caption("Funky Friday at Home")
+pg.init()
+pg.event.set_allowed([QUIT, KEYDOWN, KEYUP, MOUSEBUTTONDOWN])
+pg.display.set_caption("Funky Friday at Home")
 
-clock = pygame.time.Clock()
-screen = pygame.display.set_mode((const.WIDTH, const.HEIGHT))
+clock = pg.time.Clock()
+screen = pg.display.set_mode((const.WIDTH, const.HEIGHT))
