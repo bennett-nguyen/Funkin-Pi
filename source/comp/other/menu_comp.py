@@ -96,8 +96,8 @@ class MenuLogic:
 
             "player_entity": self.current_track.player_entity,
             
-            "hb_enemy_rgb": self.current_track.hb_enemy_rgb,
-            "hb_player_rgb": self.current_track.hb_player_rgb
+            'hbcolors': self.current_track.hbcolors,
+            "player_state": self.current_track.player_state_dict
         }
 
     def process_input_data(self):

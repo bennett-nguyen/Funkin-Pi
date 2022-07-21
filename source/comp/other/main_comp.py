@@ -109,7 +109,73 @@ class GameMessage:
         self.moved_up = False
 
 class HealthBar:
-    def __init__(self, player_rgb, enemy_rgb, steps: int | None = None):
+    def __init__(self, hb_colors, state: dict, steps: int | None = None):
+        self.__init_bars(hb_colors)
+        self.__init_logic(steps)
+        self.__compute_range()
+        self.player_state = state
+        self.current_state = 'neutral'
+        self.rect = self.state[self.current_state].get_rect(midbottom = self.player_state_mount_rect.midtop)
+
+    def redraw(self):
+        ds.screen.blit(assets.Gallery.HEALTH_BAR_TEMPLATE, self.health_bar_rect)
+        ds.screen.blit(self.enemy_bar, self.enemy_rect)
+        ds.screen.blit(self.player_bar, self.player_rect)
+        # ds.screen.blit(self.player_state_mount, self.player_state_mount_rect)
+        ds.screen.blit(self.player_state[self.current_state], self.rect)
+
+        
+        # y = self.enemy_rect.top
+        # ds.screen.blit(self.neutral_range_1, (self.half_hb_coordinates - self.neutral_range, y))
+        # ds.screen.blit(self.neutral_range_2, (self.half_hb_coordinates + self.neutral_range, y))
+        # ds.screen.blit(self.win_range, (self.half_hb_coordinates - self.win_or_lose_range, y))
+        # ds.screen.blit(self.lose_range, (self.half_hb_coordinates + self.win_or_lose_range, y))
+    
+    def modify_health(self, flag):
+        if flag == "increase":
+            self.player_bar.set_alpha(255)
+            if self.out_of_health:
+                self.out_of_health = False
+                self.player_bar.set_alpha(255)
+            elif self.player_rect.width + self.pixel_per_step >= self.enemy_bar.get_width():
+                self.player_rect.width = self.enemy_rect.width
+            else:
+                self.player_rect.width += self.pixel_per_step
+        elif flag == "decrease":
+            if self.player_rect.width - self.pixel_per_step > 0:
+                self.player_rect.width -= self.pixel_per_step
+                self.player_bar.set_alpha(255)
+            else:
+                self.out_of_health = True
+                self.player_bar.set_alpha(0)
+
+        padding = 5
+        self.player_bar = pg.transform.smoothscale(self.player_bar, self.player_rect.size)
+        self.player_rect.right = self.health_bar_rect.right - round(padding * const.HEALTHBAR_SCALE)
+        self.player_state_mount_rect = self.player_state_mount.get_rect(midleft=(self.player_rect.left + self.distance_from_pb_right, self.player_rect.centery))
+        self.rect = self.state[self.current_state].get_rect(midbottom = self.player_state_mount_rect.midtop)
+        self.check_health()
+
+    def check_health(self):
+        if self.player_rect.left < self.half_hb_coordinates:
+            self.__check_winning()
+        elif self.player_rect.left > self.half_hb_coordinates:
+            self.__check_losing()
+    
+    def __check_winning(self):
+        if self.player_rect.left > self.half_hb_coordinates - self.neutral_range:
+            self.current_state = 'neutral'
+        elif self.player_rect.left > self.half_hb_coordinates - self.win_or_lose_range:
+            self.current_state = 'winning'
+            
+
+    def __check_losing(self):
+        if self.player_rect.left < self.half_hb_coordinates + self.neutral_range:
+            self.current_state = 'neutral'
+        elif self.player_rect.left < self.half_hb_coordinates + self.win_or_lose_range:
+            self.current_state = 'losing'
+
+    def __init_bars(self, hb_colors):
         self.health_bar_rect = assets.Gallery.HEALTH_BAR_TEMPLATE.get_rect(center = (const.HALF_WIDTH, 600))
 
         health_bar_width, health_bar_height = assets.Gallery.HEALTH_BAR_TEMPLATE.get_size()
@@ -118,7 +184,6 @@ class HealthBar:
         border_size = 10
         padding = 5
 
-        self.out_of_health = False
         self.player_bar = pg.Surface(
             (
                 (health_bar_width - round(border_size * const.HEALTHBAR_SCALE))/2, 
@@ -143,42 +208,41 @@ class HealthBar:
                 rect_midright_y
             )
         )
-        
+        self.player_bar.fill(hb_colors.player)
+        self.enemy_bar.fill(hb_colors.enemy)
+
+    def __init_logic(self, steps: int | None = None):
+        self.out_of_health = False
         unoccupied_part = self.enemy_bar.get_width() - self.player_bar.get_width()
         self.steps = steps if steps is not None else fun.largest_divisor(unoccupied_part, lowest_range=15, highest_range=40, start=40)
         self.pixel_per_step = self.enemy_bar.get_width() / self.steps
 
-        self.player_bar.fill(player_rgb)
-        self.enemy_bar.fill(enemy_rgb)
+        self.distance_from_pb_right = 50
+        self.player_state_mount = pg.Surface((10, self.player_bar.get_height() + 50))
+        self.player_state_mount_rect = self.player_state_mount.get_rect(midleft=(self.player_rect.left + self.distance_from_pb_right, self.player_rect.centery))
+        self.player_state_mount.fill("Gray")
+    
+    def __compute_range(self):
+        neutral_range_percentage = 30
+        win_or_lost_percentage = 50
+        half_hb = self.enemy_bar.get_width() // 2
 
-    def redraw(self):
-        ds.screen.blit(assets.Gallery.HEALTH_BAR_TEMPLATE, self.health_bar_rect)
-        ds.screen.blit(self.enemy_bar, self.enemy_rect)
-        ds.screen.blit(self.player_bar, self.player_rect)
-
-    def modify_health(self, flag):
-        if flag == "increase":
-            self.player_bar.set_alpha(255)
-            if self.out_of_health:
-                self.out_of_health = False
-                self.player_bar.set_alpha(255)
-            elif self.player_rect.width + self.pixel_per_step >= self.enemy_bar.get_width():
-                self.player_rect.width = self.enemy_rect.width
-            else:
-                self.player_rect.width += self.pixel_per_step
-        elif flag == "decrease":
-            if self.player_rect.width - self.pixel_per_step > 0:
-                self.player_rect.width -= self.pixel_per_step
-                self.player_bar.set_alpha(255)
-            else:
-                self.out_of_health = True
-                self.player_bar.set_alpha(0)
-
-        self.player_bar = pg.transform.smoothscale(self.player_bar, self.player_rect.size)
+        self.half_hb_coordinates = self.player_rect.left
+        self.neutral_range = (neutral_range_percentage * half_hb) // 100
+        self.win_or_lose_range = (win_or_lost_percentage * half_hb) // 100
         
-        padding = 5
-        self.player_rect.right = self.health_bar_rect.right - round(padding * const.HEALTHBAR_SCALE)
-
+        # height = self.player_bar.get_height()
+        # self.neutral_range_1 = pg.Surface((2, height))
+        # self.neutral_range_1.fill('Blue')
+        
+        # self.neutral_range_2 = pg.Surface((2, height))
+        # self.neutral_range_2.fill('Red')
+        
+        # self.win_range = pg.Surface((2, height))
+        # self.win_range.fill('Green')
+        
+        # self.lose_range = pg.Surface((2, height))
+        # self.lose_range.fill('Orange')
 
 class GameLogic:
     def __init__(self, objects, player_arrow_set, enemy_arrow_set, health_bar: HealthBar):
@@ -228,6 +292,8 @@ class GameLogic:
                 # object goes offscreen
                 if object.rect.y <= - object.surface.get_height():
                     self.copy_list.append(GameMessage('bad', self.player_arrow_set, 15, 0))
+                    self.health_bar.modify_health('decrease')
+                    assets.Audio.MISS_NOTE_SOUND[randint(0, 2)].play()
                     self.objects.remove(object)
 
                 if object.collide_for_enemy(self.enemy_arrow_set):
