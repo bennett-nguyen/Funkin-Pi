@@ -5,6 +5,7 @@ import source.load.constant as const
 
 pg.init()
 
+
 class MenuLogic:
     def __init__(self, tracks):
         menu_score_font = assets.CustomFont.get_font("vrc-osd", const.MENU_SCORE)
@@ -95,7 +96,7 @@ class MenuLogic:
             "vocal": self.current_track.vocal,
 
             "player_entity": self.current_track.player_entity,
-            
+
             'hbcolors': self.current_track.hbcolors,
             "player_state": self.current_track.player_state_dict
         }
@@ -114,7 +115,6 @@ class MenuLogic:
 
         elif prev_diff_index != current_diff_index_of_prev:
             self.diff_index = current_diff_index_of_prev
-
 
         self.curr_diff_text = self.current_track.difficulties[self.avail_diff[self.diff_index]]
         self.prev_diff = self.avail_diff[self.diff_index]

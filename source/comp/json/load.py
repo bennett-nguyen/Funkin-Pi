@@ -23,7 +23,7 @@ def _process_info_diff(array):
     remove_junk = [
         difficulty for difficulty in list(set(lower_case_text)) if difficulty in ["easy", "normal", "hard"]
     ]
-    
+
     return [
         string for order, string in itertools.product(("e", "n", "h"), remove_junk) if string[0] == order
     ]
@@ -55,16 +55,17 @@ def file_parser() -> list[dict]:
         with open(f"./mapping/header/{entry}", "r") as f:
             file = json.load(f)
             file["description"]["difficulties"] = _process_info_diff(file["description"]["difficulties"])
-            
+
         with open(f"./mapping/header/{entry}", "w") as f:
             json.dump(file, f, indent=4)
-        
+
         _check_presence(file)
-        
+
         file["description"]["mapping"] = _get_mapping(file["description"]["mapping"], file)
         files.append(file)
 
     return files
+
 
 def data_parser(files: list[dict]) -> list[Track]:
     return [
@@ -77,6 +78,6 @@ def data_parser(files: list[dict]) -> list[Track]:
             file["description"]["soundtrack"],
             file["description"]["animation"],
             file["description"]["healthbar"],
-        ) 
+        )
         for file in files if "description" in file
     ]

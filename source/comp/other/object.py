@@ -7,6 +7,7 @@ from source.load.shared import shared_data
 
 pg.init()
 
+
 class FlyingObject(Surface):
     def __init__(self, x: int, y: int, arrow, VEL) -> None:
         super().__init__(x, y, const.WIDTH/(13/5), 65, (255, 255, 255))

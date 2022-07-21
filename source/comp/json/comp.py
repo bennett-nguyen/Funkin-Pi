@@ -55,7 +55,7 @@ class Track:
         self.display_name_rect = self.display_name.get_rect(center=(x, y))
         self.display_name_animation = ImageAnimation(
             (self.display_name, self.display_name_on_toggle), self.display_name_rect.centerx, self.display_name_rect.centery, 0.3)
-    
+
     def run_init(self):
         self._mapping_to_objects()
         self._load_audio()
@@ -63,7 +63,7 @@ class Track:
     def set_animation_coordinates(self, x, y):
         self.display_name_animation.rect.centerx = x
         self.display_name_animation.rect.centery = y
-        
+
     def _load_audio(self):
         self.instrument = pg.mixer.Sound(self.soundtrack_path["instrument"])
         self.vocal = pg.mixer.Sound(self.soundtrack_path["vocal"])
@@ -73,7 +73,7 @@ class Track:
 
         for diff, instruction in self.mapping.items():
             space = self.difficulties_config[diff]["space"]
-            
+
             self.objects[diff] = []
 
             for name, map in instruction.items():
@@ -94,7 +94,8 @@ class Track:
 
         for key in map:
             arrow = self.arrow_map.get(key, None)
-            if arrow is None: continue
+            if arrow is None:
+                continue
             self.objects[diff].append(
                 FlyingObject(
                     mapping_determiner_x, const.HEIGHT + space + temp_dist,
@@ -120,7 +121,7 @@ class Track:
         self.easy_text_rect = self.easy_text.get_rect(midleft=(900, 470))
         self.normal_text_rect = self.normal_text.get_rect(midleft=(900, 470))
         self.hard_text_rect = self.hard_text.get_rect(midleft=(900, 470))
-    
+
     def destruct_unnecessary_stuff(self):
         del self.easy_text
         del self.normal_text
