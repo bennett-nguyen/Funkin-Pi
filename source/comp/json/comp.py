@@ -1,6 +1,7 @@
 import pygame as pg
 import source.load.assets as assets
 import source.load.constant as const
+from collections import namedtuple
 from source.load.comp import ImageAnimation
 from source.comp.other.entity import Entity
 from source.comp.other.object import FlyingObject
@@ -9,7 +10,7 @@ pg.init()
 
 
 class Track:
-    def __init__(self, name: str, difficulties: list[str], score: dict, difficulties_config: dict, mapping: dict, soundtrack: dict, player_animation_path: dict, healthbar: dict):
+    def __init__(self, name: str, difficulties: list[str], score: dict, difficulties_config: dict, mapping: dict, soundtrack: dict, animation: dict, healthbar: dict):
         self.name = name
         display_name_font = assets.CustomFont.get_font("phantommuff-empty", const.TITLE_SIZE_2)
 
@@ -40,10 +41,15 @@ class Track:
         self.mapping = mapping
 
         self.soundtrack_path = soundtrack
-        self.player_entity = Entity(True, player_animation_path)
+        self.player_entity = Entity(True, animation['player_animation'])
 
-        self.hb_enemy_rgb = healthbar['color']['enemy']
-        self.hb_player_rgb = healthbar['color']['player']
+        HBColors = namedtuple('RGB', ('player', 'enemy'))
+        self.hbcolors = HBColors(healthbar['color']['player'], healthbar['color']['enemy'])
+
+        hb_player_state = healthbar['state']['player_state']
+        hb_player_state_scale = healthbar['state']['player_state']['scale']
+
+        self.player_state_dict = self._init_state(hb_player_state, hb_player_state_scale)
 
     def init_display_name_rect_coordinates(self, x, y):
         self.display_name_rect = self.display_name.get_rect(center=(x, y))
@@ -125,3 +131,11 @@ class Track:
         del self.mapping
         del self.soundtrack_path
         del self.arrow_map
+
+    def _init_state(self, hb_state: dict, scale: float) -> dict:
+        state_dict = {}
+        for label, path in hb_state.items():
+            if label != 'scale':
+                state = pg.transform.rotozoom(pg.image.load(path).convert_alpha(), 0, scale) if scale is not None else pg.image.load(path).convert_alpha()
+                state_dict[label] = state
+        return state_dict
