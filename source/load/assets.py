@@ -1,11 +1,13 @@
 import pygame as pg
 import source.load.constant as const
 from dataclasses import dataclass
+from source.load.spritesheet import Spritesheet
 
 pg.init()
 
 # Video animation must be 600x690px
 # 976x1081px
+
 
 @dataclass(frozen=True, init=True, eq=False, unsafe_hash=False)
 class __Font:
@@ -23,7 +25,7 @@ class __Font:
         - deprecated-fnf-font
         - phantommuff-empty
         - phantommuff-full
-        
+
         Standard size:
         - title font 1: 100
         - title font 2: 75
@@ -32,17 +34,20 @@ class __Font:
         """
         return pg.font.Font(self.FONT_MAP[name], size)
 
+
 CustomFont = __Font()
+
 
 def _generate_message(message_list, font):
     result = []
     for index, element in enumerate(message_list):
         message = font.render(element, True, "White")
-        rect = message.get_rect(center = (const.MESSAGE_X, getattr(const, f"MESSAGE_{index+1}_Y")))
+        rect = message.get_rect(center=(const.MESSAGE_X, getattr(const, f"MESSAGE_{index+1}_Y")))
 
         result.append((message, rect))
 
     return result
+
 
 def _load_opt_message():
     from secrets import choice
@@ -50,7 +55,7 @@ def _load_opt_message():
 
     message_init_map = {
         "init_message": lambda text: CustomFont.get_font(name="phantommuff-empty", size=const.TITLE_SIZE).render(text, True, "White"),
-        "get_rect": lambda surf, x, y: surf.get_rect(center = (x, y))
+        "get_rect": lambda surf, x, y: surf.get_rect(center=(x, y))
     }
 
     with open("./assets/optional-message.json", "r") as f:
@@ -63,7 +68,7 @@ def _load_opt_message():
             result.append((message_surf, message_rect))
 
         return result
-    
+
 
 @dataclass(frozen=True, init=False, eq=False, unsafe_hash=False)
 class Message:
@@ -72,95 +77,84 @@ class Message:
     req_message_list_2 = _generate_message(["MADE", "WITH", "PYTHON AND PYGAME"], CustomFont.get_font("phantommuff-empty", const.TITLE_SIZE))
     req_message_list_3 = _generate_message(["FROM THE", "AMAZING", "FRIDAY NIGHT FUNKIN'"], CustomFont.get_font("phantommuff-empty", const.TITLE_SIZE))
 
+
 _scale = 2  # Increase this to get smaller arrow images
 _game_message_scale = 1.5
 _game_message_scale_2 = 1.7
 
 # Images
-_LEFT_ARROW = pg.image.load("./assets/img/left_arrow.png").convert_alpha()
-_RIGHT_ARROW = pg.image.load("./assets/img/right_arrow.png").convert_alpha()
-_UP_ARROW = pg.image.load("./assets/img/up_arrow.png").convert_alpha()
-_DOWN_ARROW = pg.image.load("./assets/img/down_arrow.png").convert_alpha()
-
-_ACTIVATED_LEFT_ARROW = pg.image.load("./assets/img/activated_left_arrow.png").convert_alpha()
-_ACTIVATED_RIGHT_ARROW = pg.image.load("./assets/img/activated_right_arrow.png").convert_alpha()
-_ACTIVATED_UP_ARROW = pg.image.load("./assets/img/activated_up_arrow.png").convert_alpha()
-_ACTIVATED_DOWN_ARROW = pg.image.load("./assets/img/activated_down_arrow.png").convert_alpha()
-
-_SICK = pg.image.load("./assets/img/borrowed/sick.png").convert_alpha()
-_GOOD = pg.image.load("./assets/img/borrowed/good.png").convert_alpha()
-_BAD = pg.image.load("./assets/img/borrowed/bad.png").convert_alpha()
-
-_ONE = pg.image.load("./assets/img/1.png").convert_alpha()
-_TWO = pg.image.load("./assets/img/2.png").convert_alpha()
-_THREE = pg.image.load("./assets/img/3.png").convert_alpha()
-_GO = pg.image.load("./assets/img/go.png").convert_alpha()
+play_button_ss = Spritesheet('./assets/img/spritesheets/play/play.png')
+continue_button_ss = Spritesheet('assets/img/spritesheets/continue/continue.png')
+exit_button_ss = Spritesheet('./assets/img/spritesheets/exit/exit.png')
+pointer_ss = Spritesheet('./assets/img/spritesheets/pointer/pointer.png')
+intro_ss = Spritesheet('./assets/img/spritesheets/intro/intro.png')
+arrows_ss = Spritesheet('./assets/img/spritesheets/arrows/arrows.png')
+messages_ss = Spritesheet('./assets/img/borrowed/messages/messages.png')
 
 _HEALTHBAR = pg.image.load('./assets/img/healthbar.png').convert_alpha()
 
 @dataclass(frozen=True, init=False, eq=False, unsafe_hash=False)
 class Gallery:
-    LEFT_ARROW = pg.transform.scale(_LEFT_ARROW, (_LEFT_ARROW.get_width() / _scale, _LEFT_ARROW.get_height() / _scale))
-    RIGHT_ARROW = pg.transform.scale(_RIGHT_ARROW, (_RIGHT_ARROW.get_width() / _scale, _RIGHT_ARROW.get_height() / _scale))
-    UP_ARROW = pg.transform.scale(_UP_ARROW, (_UP_ARROW.get_width() / _scale, _UP_ARROW.get_height() / _scale))
-    DOWN_ARROW = pg.transform.scale(_DOWN_ARROW, (_DOWN_ARROW.get_width() / _scale, _DOWN_ARROW.get_height() / _scale))
+    LEFT_ARROW = arrows_ss.parse_sprite('left_arrow.png')
+    RIGHT_ARROW = arrows_ss.parse_sprite('right_arrow.png')
+    UP_ARROW = arrows_ss.parse_sprite('up_arrow.png')
+    DOWN_ARROW = arrows_ss.parse_sprite('down_arrow.png')
 
-    ACTIVATED_LEFT_ARROW = pg.transform.scale(_ACTIVATED_LEFT_ARROW, (_ACTIVATED_LEFT_ARROW.get_width() / _scale, _ACTIVATED_LEFT_ARROW.get_height() / _scale))
-    ACTIVATED_RIGHT_ARROW = pg.transform.scale(_ACTIVATED_RIGHT_ARROW, (_ACTIVATED_RIGHT_ARROW.get_width() / _scale, _ACTIVATED_RIGHT_ARROW.get_height() / _scale))
-    ACTIVATED_UP_ARROW = pg.transform.scale(_ACTIVATED_UP_ARROW, (_ACTIVATED_UP_ARROW.get_width() / _scale, _ACTIVATED_UP_ARROW.get_height() / _scale))
-    ACTIVATED_DOWN_ARROW = pg.transform.scale(_ACTIVATED_DOWN_ARROW, (_ACTIVATED_DOWN_ARROW.get_width() / _scale, _ACTIVATED_DOWN_ARROW.get_height() / _scale))
+    ACTIVATED_LEFT_ARROW = arrows_ss.parse_sprite('activated_left_arrow.png')
+    ACTIVATED_RIGHT_ARROW = arrows_ss.parse_sprite('activated_right_arrow.png')
+    ACTIVATED_UP_ARROW = arrows_ss.parse_sprite('activated_up_arrow.png')
+    ACTIVATED_DOWN_ARROW = arrows_ss.parse_sprite('activated_down_arrow.png')
 
-    SICK = pg.transform.scale(_SICK, (_SICK.get_width() / _game_message_scale_2, _SICK.get_height() / _game_message_scale_2))
-    GOOD = pg.transform.scale(_GOOD, (_GOOD.get_width() / _game_message_scale, _GOOD.get_height() / _game_message_scale))
-    BAD =  pg.transform.scale(_BAD, (_BAD.get_width() / _game_message_scale, _BAD.get_height() / _game_message_scale))
+    SICK = messages_ss.parse_sprite('sick.png', scale=0.59)
+    GOOD = messages_ss.parse_sprite('good.png')
+    BAD = messages_ss.parse_sprite('bad.png')
 
     LOGO = pg.image.load("./assets/img/logo.jpg").convert()
     PAUSED_BACKGROUND = pg.image.load("./assets/img/paused_template.png").convert_alpha()
 
     PLAY_BUTTON_DEACTIVATED_IMAGES = (
-        pg.transform.rotozoom(pg.image.load("./assets/img/play_1.jpg").convert(), 0, 0.6),
-        pg.transform.rotozoom(pg.image.load("./assets/img/play_2.jpg").convert(), 0, 0.6)
+        play_button_ss.parse_sprite("play_1.jpg"),
+        play_button_ss.parse_sprite("play_2.jpg")
     )
     PLAY_BUTTON_ON_HOVER_IMAGES = (
-        pg.transform.rotozoom(pg.image.load("./assets/img/play_3.png").convert_alpha(), 0, 0.6),
-        pg.transform.rotozoom(pg.image.load("./assets/img/play_4.png").convert_alpha(), 0, 0.6)
+        play_button_ss.parse_sprite("play_3.png"),
+        play_button_ss.parse_sprite("play_4.png")
     )
     PLAY_BUTTON_ACTIVATED_IMAGES = (
-        pg.transform.rotozoom(pg.image.load("./assets/img/play_1.jpg").convert(), 0, 0.6),
-        pg.transform.rotozoom(pg.image.load("./assets/img/play_3.png").convert_alpha(), 0, 0.6)
+        play_button_ss.parse_sprite("play_1.jpg"),
+        play_button_ss.parse_sprite("play_3.png")
     )
-    
-    PS_BUTTON_SCALE = 0.6
 
     CONTINUE_BUTTON_DEACTIVATED_IMAGES = (
-        pg.transform.rotozoom(pg.image.load("./assets/img/continue_1.png").convert_alpha(), 0, PS_BUTTON_SCALE),
-        pg.transform.rotozoom(pg.image.load("./assets/img/continue_2.png").convert_alpha(), 0, PS_BUTTON_SCALE)
+        continue_button_ss.parse_sprite('continue_1.png'),
+        (continue_button_ss.parse_sprite('continue_2.png'))
     )
     CONTINUE_BUTTON_ON_HOVER_IMAGES = (
-        pg.transform.rotozoom(pg.image.load("./assets/img/continue_3.png").convert_alpha(), 0, PS_BUTTON_SCALE),
-        pg.transform.rotozoom(pg.image.load("./assets/img/continue_4.png").convert_alpha(), 0, PS_BUTTON_SCALE)
+        continue_button_ss.parse_sprite('continue_3.png'),
+        continue_button_ss.parse_sprite('continue_4.png')
     )
 
     EXIT_BUTTON_DEACTIVATED_IMAGES = (
-        pg.transform.rotozoom(pg.image.load("./assets/img/exit_1.png").convert_alpha(), 0, PS_BUTTON_SCALE),
-        pg.transform.rotozoom(pg.image.load("./assets/img/exit_2.png").convert_alpha(), 0, PS_BUTTON_SCALE)
+        exit_button_ss.parse_sprite('exit_1.png'),
+        exit_button_ss.parse_sprite('exit_2.png')
     )
     EXIT_BUTTON_ON_HOVER_IMAGES = (
-        pg.transform.rotozoom(pg.image.load("./assets/img/exit_3.png").convert_alpha(), 0, PS_BUTTON_SCALE),
-        pg.transform.rotozoom(pg.image.load("./assets/img/exit_4.png").convert_alpha(), 0, PS_BUTTON_SCALE)
+        exit_button_ss.parse_sprite('exit_3.png'),
+        exit_button_ss.parse_sprite('exit_4.png')
     )
 
     POINTER = (
-        pg.transform.rotozoom(pg.image.load("./assets/img/pointer_1.png").convert_alpha(), 0, 0.2),
-        pg.transform.rotozoom(pg.image.load("./assets/img/pointer_2.png").convert_alpha(), 0, 0.2)
+        pointer_ss.parse_sprite('pointer_1.png'),
+        pointer_ss.parse_sprite('pointer_2.png')
     )
 
-    ONE = _ONE
-    TWO = _TWO
-    THREE = _THREE
-    GO = _GO
+    ONE = intro_ss.parse_sprite('1.png')
+    TWO = intro_ss.parse_sprite('2.png')
+    THREE = intro_ss.parse_sprite('3.png')
+    GO = intro_ss.parse_sprite('go.png')
 
     HEALTH_BAR_TEMPLATE = pg.transform.rotozoom(_HEALTHBAR, 0, const.HEALTHBAR_SCALE)
+
 
 @dataclass(frozen=True, init=False, eq=False, unsafe_hash=False)
 class Audio:
@@ -174,5 +168,6 @@ class Audio:
     INTRO_GO = pg.mixer.Sound('./assets/audio/introGo.ogg')
 
     MISS_NOTE_SOUND = (pg.mixer.Sound('./assets/audio/missnote1.ogg'), pg.mixer.Sound('./assets/audio/missnote2.ogg'), pg.mixer.Sound('./assets/audio/missnote3.ogg'))
+
 
 pg.mixer.music.load(Audio.FREAKY_MENU)
