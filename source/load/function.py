@@ -1,6 +1,8 @@
 """
 Defines mathematical functions that are generally used in the game
 """
+
+
 def largest_divisor(num: int, lowest_range: int = 1, highest_range: int | None = None, start: int | None = None) -> int:
     """
     Finding largest divisor function, designed specifically for this game
@@ -31,4 +33,3 @@ def lerp(goal, current, dt=1):
         return current - dt
 
     return goal
-

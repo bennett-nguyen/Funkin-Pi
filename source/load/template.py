@@ -2,6 +2,7 @@ import pygame as pg
 
 pg.init()
 
+
 class Scene:
     def __init__(self):
         self.redirect = None
@@ -40,14 +41,14 @@ class Scene:
         """
         self.redirect = None
         self.allow_keydown = False
-    
+
     def update(self, is_transitioning):
         """
         Defines what to update every frame
         """
         if not self.end_pre_event():
             self.pre_event()
-        
+
         if not is_transitioning:
             self.input()
         self.redraw()

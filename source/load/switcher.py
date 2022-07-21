@@ -3,6 +3,7 @@ import source.load.ds as ds
 
 pg.init()
 
+
 class SceneSwitcher:
     def __init__(self, scenes: dict, start: str):
         self.scenes = scenes
@@ -13,7 +14,7 @@ class SceneSwitcher:
 
         self.current_time = 0
         self.redirected_time = 0
-        
+
         self.screen = pg.Surface(ds.screen.get_size())
         self.screen.fill((0, 0, 0))
 
@@ -28,7 +29,8 @@ class SceneSwitcher:
         self.current.reset_attr()
         self.current = self.scenes[state]
 
-        if main_game_data is not None: self.current.receive_data(main_game_data)
+        if main_game_data is not None:
+            self.current.receive_data(main_game_data)
         self.reset_attr()
 
     def fade(self):
