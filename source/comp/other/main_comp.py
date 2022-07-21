@@ -153,7 +153,7 @@ class HealthBar:
         self.player_bar = pg.transform.smoothscale(self.player_bar, self.player_rect.size)
         self.player_rect.right = self.health_bar_rect.right - round(padding * const.HEALTHBAR_SCALE)
         self.player_state_mount_rect = self.player_state_mount.get_rect(midleft=(self.player_rect.left + self.distance_from_pb_right, self.player_rect.centery))
-        self.rect = self.state[self.current_state].get_rect(midbottom = self.player_state_mount_rect.midtop)
+        self.rect = self.player_state[self.current_state].get_rect(midbottom = self.player_state_mount_rect.midtop)
         self.check_health()
 
     def check_health(self):
