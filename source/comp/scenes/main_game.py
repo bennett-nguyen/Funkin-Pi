@@ -112,7 +112,7 @@ class MainGame(Scene):
         self.game_delay = data["difficulty_config"]["delay"]
         
         # Services
-        self.game_logic = GameLogic(data["objects"], self.player_arrow_set, self.enemy_arrow_set, health_bar=HealthBar(data['hb_player_rgb'], data['hb_enemy_rgb']))
+        self.game_logic = GameLogic(data["objects"], self.player_arrow_set, self.enemy_arrow_set, health_bar=HealthBar(data['hbcolors'], data['player_state']))
         # --
 
         self.instrument = data["instrument"]
