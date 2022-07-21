@@ -15,7 +15,7 @@
             "easy": {
                 "delay": 3000,
                 "space": 125,
-                "velocity": 100
+                "velocity": 150
             },
             "normal": {
                 "delay": 10000,
@@ -41,7 +41,15 @@
                     0
                 ]
             },
-            "state": {}
+            "state": {
+                "player_state": {
+                    "neutral": "./assets/img/state/player/player_neutral_state.png",
+                    "losing": "./assets/img/state/player/player_losing_state.png",
+                    "winning": "./assets/img/state/player/player_winning_state.png",
+                    "scale": 0.06
+                },
+                "enemy_state": {}
+            }
         },
         "mapping": {
             "easy": "include.easy",
@@ -52,14 +60,16 @@
             "instrument": "assets/audio/soundtrack/south/south_instrument.ogg",
             "vocal": "assets/audio/soundtrack/south/south_vocal.ogg"
         },
-        "player_animation": {
-            "idle": "./assets/img/video/player/idle.mp4",
-            "left": "./assets/img/video/player/left.mp4",
-            "right": "./assets/img/video/player/right.mp4",
-            "up": "./assets/img/video/player/up.mp4",
-            "down": "./assets/img/video/player/down.mp4"
-        },
-        "enemy_animation": {}
+        "animation": {
+            "player_animation": {
+                "idle": "./assets/img/video/player/idle.mp4",
+                "left": "./assets/img/video/player/left.mp4",
+                "right": "./assets/img/video/player/right.mp4",
+                "up": "./assets/img/video/player/up.mp4",
+                "down": "./assets/img/video/player/down.mp4"
+            },
+            "enemy_animation": {}
+        }
     },
     "include": {
         "easy": {
@@ -70,7 +80,15 @@
                 "l"
             ],
             "player_2": [
-                "u"
+                "u",
+                "d",
+                "r",
+                "r",
+                "r",
+                "r",
+                "r",
+                "r",
+                "r"
             ]
         },
         "normal": {
