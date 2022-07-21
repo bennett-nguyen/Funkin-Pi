@@ -109,13 +109,13 @@ class GameMessage:
         self.moved_up = False
 
 class HealthBar:
-    def __init__(self, hb_colors, state: dict, steps: int | None = None):
+    def __init__(self, hb_colors, player_state: dict, steps: int | None = None):
         self.__init_bars(hb_colors)
         self.__init_logic(steps)
         self.__compute_range()
-        self.player_state = state
+        self.player_state = player_state
         self.current_state = 'neutral'
-        self.rect = self.state[self.current_state].get_rect(midbottom = self.player_state_mount_rect.midtop)
+        self.rect = self.player_state[self.current_state].get_rect(midbottom = self.player_state_mount_rect.midtop)
 
     def redraw(self):
         ds.screen.blit(assets.Gallery.HEALTH_BAR_TEMPLATE, self.health_bar_rect)
