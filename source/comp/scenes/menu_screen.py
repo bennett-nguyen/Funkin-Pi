@@ -11,6 +11,7 @@ from source.comp.json.load import data_parser, file_parser
 
 pg.init()
 
+
 class MenuScreen(Scene):
     def __init__(self):
         super().__init__()

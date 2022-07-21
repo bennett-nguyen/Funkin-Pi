@@ -4,10 +4,11 @@ import source.load.assets as assets
 import source.load.constant as const
 from source.load.template import Scene
 from source.load.shared import shared_data
-from source.comp.other.arrow_set import ArrowSet 
+from source.comp.other.arrow_set import ArrowSet
 from source.comp.other.main_comp import HealthBar, Intro, PausedScreen, GameLogic
 
 pg.init()
+
 
 class MainGame(Scene):
     def __init__(self):
@@ -15,7 +16,7 @@ class MainGame(Scene):
         self.redirect_delay = 1000
         self.padding = 10
         self.audio_is_playing = False
-        
+
         self.decline_vocal_vol = False
         self.enemy_arrow_set = ArrowSet(const.ENEMY_ARROW_SET_X, 80)
         self.player_arrow_set = ArrowSet(const.PLAYER_ARROW_SET_X, 80)
@@ -28,7 +29,7 @@ class MainGame(Scene):
         self.before_mov_obj = 0
         self.game_delay = 0
         self.activate_main_game = False
-        
+
         self.current_key = None
 
     def redraw(self):
@@ -43,7 +44,7 @@ class MainGame(Scene):
         self.enemy_arrow_set.draw_self()
         self.player_arrow_set.draw_self()
 
-        pg.draw.line(ds.screen, "White", (const.HALF_WIDTH,0), (const.HALF_WIDTH, const.HEIGHT), 3)
+        pg.draw.line(ds.screen, "White", (const.HALF_WIDTH, 0), (const.HALF_WIDTH, const.HEIGHT), 3)
 
         self.game_logic.redraw(self.activate_main_game)
         ds.screen.blit(self.display_track_name, self.display_track_name_rect)
@@ -55,6 +56,7 @@ class MainGame(Scene):
             if not self.intro_screen_instance.activate_time:
                 self.intro_screen_instance.activate_time = pg.time.get_ticks()
             self.intro_screen_instance.play()
+
     def pre_event(self):
         self.current_time = pg.time.get_ticks()
 
@@ -110,7 +112,7 @@ class MainGame(Scene):
         self.track_name = data["name"]
         self.chosen_difficulty = data["chosen_difficulty"]
         self.game_delay = data["difficulty_config"]["delay"]
-        
+
         # Services
         self.game_logic = GameLogic(data["objects"], self.player_arrow_set, self.enemy_arrow_set, health_bar=HealthBar(data['hbcolors'], data['player_state']))
         # --
@@ -121,7 +123,7 @@ class MainGame(Scene):
         self.player_entity = data["player_entity"]
 
         self.display_track_name = menu_score_font.render(f"{self.track_name} - {self.chosen_difficulty}", True, "White")
-        self.display_track_name_rect = self.display_track_name.get_rect(bottomleft = (self.padding, const.HEIGHT - self.padding))
+        self.display_track_name_rect = self.display_track_name.get_rect(bottomleft=(self.padding, const.HEIGHT - self.padding))
         self.before_mov_obj = pg.time.get_ticks()
         pg.mixer.music.fadeout(600)
 

@@ -2,6 +2,7 @@ import pygame as pg
 import source.load.ds as ds
 from source.load.template import Scene
 
+
 class PreStartScreen(Scene):
     def __init__(self, message_list, delay_display, delay_transition, redirect_code):
         super().__init__()
@@ -28,7 +29,8 @@ class PreStartScreen(Scene):
                 if not flag:
                     self.displayed_time = pg.time.get_ticks()
                     self.display_message[index] = True
-                    if self.display_message[2]: self.redirect = self.redirect_code
+                    if self.display_message[2]:
+                        self.redirect = self.redirect_code
                     break
 
         self.draw_message()

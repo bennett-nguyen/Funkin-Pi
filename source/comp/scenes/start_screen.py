@@ -7,6 +7,7 @@ from source.comp.other.button import Button
 
 pg.init()
 
+
 class StartScreen(Scene):
     def __init__(self):
         super().__init__()
@@ -21,7 +22,7 @@ class StartScreen(Scene):
 
         self.alpha = 255
         # ----
-        
+
         self.start_button = Button(
             (const.HALF_WIDTH, const.HALF_HEIGHT + 270),
             (250, 120),
@@ -29,7 +30,6 @@ class StartScreen(Scene):
             assets.Gallery.PLAY_BUTTON_ON_HOVER_IMAGES,
             assets.Gallery.PLAY_BUTTON_ACTIVATED_IMAGES
         )
-
 
     def redraw(self):
         ds.screen.blit(assets.Gallery.LOGO, assets.Gallery.LOGO.get_rect(center=(const.HALF_WIDTH, const.HALF_HEIGHT)))
@@ -54,7 +54,7 @@ class StartScreen(Scene):
 
     def input(self):
         self.start_button.check_click(click_type=0)
-        self.start_button.check_key_activate(key = pg.K_RETURN)
+        self.start_button.check_key_activate(key=pg.K_RETURN)
 
         if self.start_button.is_activated(check_type=1) and not self.sound_1_effect_played:
             assets.Audio.CONFIRM_MENU.play()
