@@ -12,7 +12,7 @@ def largest_divisor(num: int, lowest_range: int = 1, highest_range: int | None =
     if start < lowest_range: raise ValueError("start value is smaller than lowest range")
     if lowest_range < 1 or highest_range < 0: raise ValueError("invalid range")
 
-    for divisor in reversed(range(start)):
+    for divisor in reversed(range(start+1)):
         if num % divisor == 0 and lowest_range <= divisor <= highest_range:
             return divisor
 
