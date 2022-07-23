@@ -87,7 +87,7 @@ class PausedScreen:
 
 
 class GameMessage:
-    def __init__(self, message_code, player_arrow_set, vel, goal):
+    def __init__(self, message_code: str, player_arrow_set, vel: int, goal: int):
         match message_code:
             case "sick":
                 self.surf = assets.Gallery.SICK.copy()
@@ -218,7 +218,7 @@ class HealthBar:
         self.out_of_health = False
 
         unoccupied_part = self.enemy_bar.get_width() - self.player_bar.get_width()
-        self.steps = steps if steps is not None else fun.largest_divisor(unoccupied_part, lowest_range=15, highest_range=40, start=40)
+        self.steps = steps if steps is not None else fun.largest_divisor_within_interval(unoccupied_part, lowest=15, highest=40, start=40)
         self.pixel_per_step = self.enemy_bar.get_width() / self.steps
 
         self.distance_from_pb_right = 50
@@ -285,9 +285,8 @@ class GameLogic:
 
     def redraw(self, activate_main_game):
         padding = 10
-
         if activate_main_game:
-            for obj in self.objs:
+            for obj in self.objs[:]:
                 if obj.arrow_rect.top > const.HEIGHT:
                     obj.move()
                     continue
@@ -295,12 +294,17 @@ class GameLogic:
                 obj.draw_self()
                 obj.move()
 
-                # object goes offscreen
-                if obj.rect.y <= - obj.surface.get_height():
-                    self.copy_list.append(GameMessage('bad', self.player_arrow_set, 15, 0))
-                    self.health_bar.modify_health('decrease')
-                    assets.Audio.MISS_NOTE_SOUND[randint(0, 2)].play()
-                    self.objs.remove(obj)
+                # object goes above the arrow set
+                if obj.rect.bottom < self.player_arrow_set.rect.top:
+                    if not obj.disabled:
+                        self.__missed()
+                        original_obj = self.objs[self.objs.index(obj)]
+                        original_obj.disable_obj()
+
+                    elif obj.rect.bottom < 0:
+                        self.objs.remove(obj)
+                        continue
+
 
                 if obj.collide_for_enemy(self.enemy_arrow_set):
                     self.objs.remove(obj)
@@ -312,38 +316,27 @@ class GameLogic:
         ds.screen.blit(self.display_stat, self.display_stat_rect)
         self.message_animation()
         self.health_bar.redraw()
+    
 
     def check_collide_player(self, key):
-        if not self.collision_list and key is not None:
-            self.copy_list.append(GameMessage('bad', self.player_arrow_set, 15, 0))
-            assets.Audio.MISS_NOTE_SOUND[randint(0, 2)].play()
-            self.health_bar.modify_health('decrease')
+        if not self.collision_list:
+            self.__missed()
             return
 
         for obj in self.collision_list:
             if key != obj.key:
-
                 if obj == self.collision_list[-1]:
-                    self.copy_list.append(GameMessage(obj.message, self.player_arrow_set, 15, 0))
-                    self.collision_list = []
-                    assets.Audio.MISS_NOTE_SOUND[randint(0, 2)].play()
-                    self.health_bar.modify_health('decrease')
-                    return
-
+                    self.__missed()
+                    break
                 continue
-
-            self.score += obj.score_earned
-            self.health_bar.modify_health('increase')
-            self.copy_list.append(GameMessage(obj.message, self.player_arrow_set, 15, 0))
-            self.collision_list = []
-            self.objs.remove(obj)
+            self.__striked(obj)
             break
 
     def detect_collision(self):
         for obj in self.objs:
-            check = obj.collide(self.player_arrow_set)
+            obj.collide(self.player_arrow_set)
 
-            if check and self.collision_counter < self.collision_threshold:
+            if obj.message in ['good', 'sick'] and self.collision_counter < self.collision_threshold:
                 self.collision_list.append(obj)
                 self.collision_counter += 1
 
@@ -361,6 +354,19 @@ class GameLogic:
 
         if message.surf.get_alpha() <= 25 or message.rect.bottom >= const.HEIGHT:
             self.copy_list.remove(message)
+
+    def __missed(self, clear_collision_list=False):
+        self.copy_list.append(GameMessage('bad', self.player_arrow_set, 15, 0))
+        if clear_collision_list: self.collision_list = []
+        assets.Audio.MISS_NOTE_SOUND[randint(0, 2)].play()
+        self.health_bar.modify_health('decrease')
+
+    def __striked(self, obj):
+        self.score += obj.score_earned
+        self.objs.remove(obj)
+        self.health_bar.modify_health('increase')
+        self.copy_list.append(GameMessage(obj.message, self.player_arrow_set, 15, 0))
+        self.collision_list = []
 
 
 

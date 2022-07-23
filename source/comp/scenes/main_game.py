@@ -63,9 +63,6 @@ class MainGame(Scene):
         if self.current_time - self.before_mov_obj >= self.game_delay:
             self.activate_main_game = True
 
-        if self.activate_main_game:
-            self.game_logic.detect_collision()
-
     def end_pre_event(self):
         return False
 
@@ -97,10 +94,13 @@ class MainGame(Scene):
                         case pg.K_p:
                             self.paused_screen_instance.run = True
 
-                    self.game_logic.check_collide_player(self.current_key)
-                    self.current_key = None
+                    if self.current_key is not None:
+                        self.game_logic.detect_collision()
+                        self.game_logic.check_collide_player(self.current_key)
+                        self.current_key = None
+
                 elif event.type == pg.KEYUP:
-                    self.player_arrow_set.event_on_arrow_deactivate(event)
+                    self.player_arrow_set.event_on_arrow_deactivate(event.key)
 
     def play_audio(self):
         self.instrument.play()
