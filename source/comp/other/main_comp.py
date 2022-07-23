@@ -251,9 +251,9 @@ class HealthBar:
 
 
 class GameLogic:
-    def __init__(self, objects, player_arrow_set, enemy_arrow_set, health_bar: HealthBar):
+    def __init__(self, objs, player_arrow_set, enemy_arrow_set, health_bar: HealthBar):
         self.menu_score_font = assets.CustomFont.get_font("vrc-osd", const.MENU_SCORE)
-        self.objects = objects
+        self.objs = objs
         self.player_arrow_set = player_arrow_set
         self.enemy_arrow_set = enemy_arrow_set
         self.collision_list = []
@@ -287,23 +287,23 @@ class GameLogic:
         padding = 10
 
         if activate_main_game:
-            for object in self.objects:
-                if object.arrow_rect.top > const.HEIGHT:
-                    object.move()
+            for obj in self.objs:
+                if obj.arrow_rect.top > const.HEIGHT:
+                    obj.move()
                     continue
 
-                object.draw_self()
-                object.move()
+                obj.draw_self()
+                obj.move()
 
                 # object goes offscreen
-                if object.rect.y <= - object.surface.get_height():
+                if obj.rect.y <= - obj.surface.get_height():
                     self.copy_list.append(GameMessage('bad', self.player_arrow_set, 15, 0))
                     self.health_bar.modify_health('decrease')
                     assets.Audio.MISS_NOTE_SOUND[randint(0, 2)].play()
-                    self.objects.remove(object)
+                    self.objs.remove(obj)
 
-                if object.collide_for_enemy(self.enemy_arrow_set):
-                    self.objects.remove(object)
+                if obj.collide_for_enemy(self.enemy_arrow_set):
+                    self.objs.remove(obj)
                     break
 
         self.display_stat = self.menu_score_font.render(f"Score: {self.score}", True, 'White')
@@ -320,11 +320,11 @@ class GameLogic:
             self.health_bar.modify_health('decrease')
             return
 
-        for object in self.collision_list:
-            if key != object.key:
+        for obj in self.collision_list:
+            if key != obj.key:
 
-                if object == self.collision_list[-1]:
-                    self.copy_list.append(GameMessage(object.message, self.player_arrow_set, 15, 0))
+                if obj == self.collision_list[-1]:
+                    self.copy_list.append(GameMessage(obj.message, self.player_arrow_set, 15, 0))
                     self.collision_list = []
                     assets.Audio.MISS_NOTE_SOUND[randint(0, 2)].play()
                     self.health_bar.modify_health('decrease')
@@ -332,19 +332,19 @@ class GameLogic:
 
                 continue
 
-            self.score += object.score_earned
+            self.score += obj.score_earned
             self.health_bar.modify_health('increase')
-            self.copy_list.append(GameMessage(object.message, self.player_arrow_set, 15, 0))
+            self.copy_list.append(GameMessage(obj.message, self.player_arrow_set, 15, 0))
             self.collision_list = []
-            self.objects.remove(object)
+            self.objs.remove(obj)
             break
 
     def detect_collision(self):
-        for object in self.objects:
-            check = object.collide(self.player_arrow_set)
+        for obj in self.objs:
+            check = obj.collide(self.player_arrow_set)
 
             if check and self.collision_counter < self.collision_threshold:
-                self.collision_list.append(object)
+                self.collision_list.append(obj)
                 self.collision_counter += 1
 
         self.collision_counter = 0

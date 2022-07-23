@@ -90,7 +90,7 @@ class MenuLogic:
             "name": self.current_track.name,
             "chosen_difficulty": self.prev_diff,
             "difficulty_config": self.current_track.difficulties_config[self.prev_diff],
-            "objects": self.current_track.objects[self.prev_diff],
+            "objects": self.current_track.objs[self.prev_diff],
 
             "instrument": self.current_track.instrument,
             "vocal": self.current_track.vocal,

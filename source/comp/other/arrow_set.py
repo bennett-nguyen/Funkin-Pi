@@ -40,8 +40,8 @@ class ArrowSet(Surface):
         # ds.screen.blit(self.surface, self.rect) # un-comment this to reveal hitbox
         self.update_arrows()
 
-        for object in self.arrow_list:
-            ds.screen.blit(object[0], object[1])
+        for obj in self.arrow_list:
+            ds.screen.blit(obj[0], obj[1])
 
     def event_on_arrow_deactivate(self, event):
         match event.key:

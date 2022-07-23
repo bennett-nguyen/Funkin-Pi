@@ -4,7 +4,7 @@ import source.load.constant as const
 from collections import namedtuple
 from source.load.comp import ImageAnimation
 from source.comp.other.entity import Entity
-from source.comp.other.object import FlyingObject
+from source.comp.other.obj import FlyingObject
 
 pg.init()
 
@@ -69,12 +69,12 @@ class Track:
         self.vocal = pg.mixer.Sound(self.soundtrack_path["vocal"])
 
     def _mapping_to_objects(self):
-        self.objects = {}
+        self.objs = {}
 
         for diff, instruction in self.mapping.items():
             space = self.difficulties_config[diff]["space"]
 
-            self.objects[diff] = []
+            self.objs[diff] = []
 
             for name, map in instruction.items():
                 if "enemy" in name or "player" in name:
@@ -96,7 +96,7 @@ class Track:
             arrow = self.arrow_map.get(key, None)
             if arrow is None:
                 continue
-            self.objects[diff].append(
+            self.objs[diff].append(
                 FlyingObject(
                     mapping_determiner_x, const.HEIGHT + space + temp_dist,
                     arrow,
