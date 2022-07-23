@@ -16,10 +16,10 @@ class ArrowSet(Surface):
         self.down_arrow = assets.Gallery.DOWN_ARROW
         self.right_arrow = assets.Gallery.RIGHT_ARROW
 
-        self.left_arrow_rect = self.left_arrow.get_rect(midleft=(self.rect.midleft[0] + 25, self.rect.midleft[1]))
-        self.down_arrow_rect = self.down_arrow.get_rect(midleft=(self.rect.midleft[0] + 135, self.rect.midleft[1]))
-        self.up_arrow_rect = self.up_arrow.get_rect(midright=(self.rect.midright[0] - 135, self.rect.midright[1]))
-        self.right_arrow_rect = self.right_arrow.get_rect(midright=(self.rect.midright[0] - 25, self.rect.midright[1]))
+        self.left_arrow_rect = self.left_arrow.get_rect(midleft=(self.rect.left + 25, self.rect.centery))
+        self.down_arrow_rect = self.down_arrow.get_rect(midleft=(self.rect.left + 135, self.rect.centery))
+        self.up_arrow_rect = self.up_arrow.get_rect(midright=(self.rect.right - 135, self.rect.centery))
+        self.right_arrow_rect = self.right_arrow.get_rect(midright=(self.rect.right - 25, self.rect.centery))
 
         self.arrow_list = (
             (self.left_arrow, self.left_arrow_rect),
@@ -27,6 +27,11 @@ class ArrowSet(Surface):
             (self.down_arrow, self.down_arrow_rect),
             (self.right_arrow, self.right_arrow_rect)
         )
+
+        sick_range = 8
+        self.lowest = self.rect.centery - sick_range
+        self.highest = self.rect.centery + sick_range
+
 
     def update_arrows(self):
         self.arrow_list = (
@@ -43,8 +48,8 @@ class ArrowSet(Surface):
         for obj in self.arrow_list:
             ds.screen.blit(obj[0], obj[1])
 
-    def event_on_arrow_deactivate(self, event):
-        match event.key:
+    def event_on_arrow_deactivate(self, key):
+        match key:
             case pg.K_UP:
                 self.up_arrow = assets.Gallery.UP_ARROW
 
@@ -56,3 +61,10 @@ class ArrowSet(Surface):
 
             case pg.K_RIGHT:
                 self.right_arrow = assets.Gallery.RIGHT_ARROW
+    
+    def check_collide_type(self, cy):
+        # you'll get a sick move if you press the key at the moment
+        # when the centery coordinate of the object (reference as: cy) met the following condition: lowest <= cy <= highest
+        if self.lowest <= cy <= self.highest:
+            return ('sick', const.SICK_EARNED)
+        return ('good', const.GOOD_EARNED)

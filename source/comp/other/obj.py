@@ -9,32 +9,33 @@ pg.init()
 
 
 class FlyingObject(Surface):
-    def __init__(self, x: int, y: int, arrow, VEL) -> None:
+    def __init__(self, x: int, y: int, arrow, VEL: int):
         super().__init__(x, y, const.WIDTH/(13/5), 65, (255, 255, 255))
         self.VEL = VEL
         self.arrow = arrow
         self.score_earned = 0
         self.message = None
+        self.disabled = False
 
         match self.arrow:
             case assets.Gallery.ACTIVATED_LEFT_ARROW:
                 self.arrow_rect = self.arrow.get_rect(
-                    midleft=(self.rect.midleft[0] + 25, self.rect.midleft[1]))
+                    midleft=(self.rect.left + 25, self.rect.centery))
                 self.key = pg.K_LEFT
 
             case assets.Gallery.ACTIVATED_DOWN_ARROW:
                 self.arrow_rect = self.arrow.get_rect(
-                    midleft=(self.rect.midleft[0] + 135, self.rect.midleft[1]))
+                    midleft=(self.rect.left + 135, self.rect.centery))
                 self.key = pg.K_DOWN
 
             case assets.Gallery.ACTIVATED_UP_ARROW:
                 self.arrow_rect = self.arrow.get_rect(
-                    midright=(self.rect.midright[0] - 135, self.rect.midleft[1]))
+                    midright=(self.rect.right - 135, self.rect.centery))
                 self.key = pg.K_UP
 
             case assets.Gallery.ACTIVATED_RIGHT_ARROW:
                 self.arrow_rect = self.arrow.get_rect(
-                    midright=(self.rect.midright[0] - 25, self.rect.midright[1]))
+                    midright=(self.rect.right - 25, self.rect.centery))
                 self.key = pg.K_RIGHT
 
     def draw_self(self):
@@ -45,27 +46,20 @@ class FlyingObject(Surface):
         self.rect.y -= round(self.VEL * shared_data.dt)
         self.arrow_rect.y -= round(self.VEL * shared_data.dt)
 
-    def collide(self, obj):
-        # range from object.rect.center[1] + range --> object.rect.center[1] - range
-        # the shorter the range, the harder you'll get a sick move
-        collide_range = 8
-        target = self.rect
-        lowest_center_range = obj.rect.center[1] - collide_range
-        highest_center_range = obj.rect.center[1] + collide_range
-
-        if target.center[1] >= lowest_center_range and target.center[1] <= highest_center_range and target.colliderect(obj.rect):
-            self.message = 'sick'
-            self.score_earned = const.SICK_EARNED
-            return True
-        elif target.colliderect(obj.rect):
-            self.message = 'good'
-            self.score_earned = const.GOOD_EARNED
-            return True
-        else:
-            self.message = None
+    def collide(self, arrow_set) -> str:
+        is_colliding = self.rect.colliderect(arrow_set.rect)
+        if not is_colliding:
+            self.message = 'bad'
             self.score_earned = 0
-            return False
+            return
+        
+        collide_type, score_earned = arrow_set.check_collide_type(self.rect.centery)
+        self.message = collide_type
+        self.score_earned = score_earned
+
+    def disable_obj(self):
+        self.disabled = True
 
     # this method is only used for the enemy!
-    def collide_for_enemy(self, obj):
-        return self.rect.center[1] <= obj.rect.center[1] and self.rect.colliderect(obj)
+    def collide_for_enemy(self, arrow_set):
+        return self.rect.centery <= arrow_set.rect.centery and self.rect.colliderect(arrow_set)
