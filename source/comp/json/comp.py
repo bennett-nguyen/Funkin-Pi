@@ -20,7 +20,7 @@ class Track:
         self.difficulties = {}
         self.available_difficulties = difficulties
 
-        self._load_side_stuff()
+        self.__load_side_stuff()
         for string, text, rect in (
             ("easy", self.easy_text, self.easy_text_rect),
             ("normal", self.normal_text, self.normal_text_rect),
@@ -51,7 +51,7 @@ class Track:
 
         self.player_state_dict = self._init_state(hb_player_state, hb_player_state_scale)
 
-    def init_display_name_rect_coordinates(self, x, y):
+    def init_display_name_rect_coordinates(self, x: int, y: int):
         self.display_name_rect = self.display_name.get_rect(center=(x, y))
         self.display_name_animation = ImageAnimation(
             (self.display_name, self.display_name_on_toggle), self.display_name_rect.centerx, self.display_name_rect.centery, 0.3)
@@ -60,7 +60,7 @@ class Track:
         self._mapping_to_objects()
         self._load_audio()
 
-    def set_animation_coordinates(self, x, y):
+    def set_animation_coordinates(self, x: int, y: int):
         self.display_name_animation.rect.centerx = x
         self.display_name_animation.rect.centery = y
 
@@ -78,7 +78,7 @@ class Track:
 
             for name, map in instruction.items():
                 if "enemy" in name or "player" in name:
-                    self._enemy_n_player_mapping(name, diff, space, map, self.difficulties_config[diff]["velocity"])
+                    self.__enemy_n_player_mapping(name, diff, space, map, self.difficulties_config[diff]["velocity"])
 
                 elif "set" in name and map.startswith("$"):
                     match map[1:map.find(":")]:
@@ -87,7 +87,7 @@ class Track:
                         case "reset":
                             space = self.difficulties_config[diff]["space"]
 
-    def _enemy_n_player_mapping(self, name, diff, space, map, velocity):
+    def __enemy_n_player_mapping(self, name, diff, space, map, velocity):
         temp_dist = 0
 
         mapping_determiner_x = const.ENEMY_ARROW_SET_X if "enemy" in name else const.PLAYER_ARROW_SET_X if "player" in name else None
@@ -104,7 +104,7 @@ class Track:
                 ))
             temp_dist += space
 
-    def _load_side_stuff(self):
+    def __load_side_stuff(self):
         text_font = assets.CustomFont.get_font("phantommuff-empty", const.TITLE_SIZE_2)
 
         self.arrow_map = {

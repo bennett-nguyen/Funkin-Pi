@@ -15,7 +15,7 @@ def _check_presence(file):
             raise AttributeError("difficulties in either score, config or mapping didn't match available difficulties")
 
 
-def _process_info_diff(array):
+def _process_info_diff(array) -> list:
     lower_case_text = [
         difficulty.lower() for difficulty in array
     ]
@@ -29,7 +29,7 @@ def _process_info_diff(array):
     ]
 
 
-def _get_mapping(mapping, file):
+def _get_mapping(mapping: dict, file) -> dict:
     new_mapping = {}
 
     for diff_key, instruction in mapping.items():
