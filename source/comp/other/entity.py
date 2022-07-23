@@ -8,7 +8,7 @@ pg.init()
 
 
 class Entity(Surface):
-    def __init__(self, is_player: bool, video_path) -> None:
+    def __init__(self, is_player: bool, video_path: dict) -> None:
         x = const.HALF_WIDTH/2
         if is_player:
             x = (const.HALF_WIDTH/2)*3

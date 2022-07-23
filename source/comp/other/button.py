@@ -6,7 +6,9 @@ pg.init()
 
 class Button(Surface):
     def __init__(self, pos: tuple[int, int], hitbox_size: tuple[int, int], deactivation_assets, on_hover_assets, activation_assets=None, speed: tuple[int, int, int] = (0.1, 0.1, 0.1)):
-        super().__init__(pos[0], pos[1], hitbox_size[0], hitbox_size[1], None, True)
+        x, y = pos
+        hw, hh = hitbox_size
+        super().__init__(x, y, hw, hh, None, True)
 
         deactivation_state = ImageAnimation(deactivation_assets, self.rect.centerx, self.rect.centery, speed[0])
         on_hover_state = ImageAnimation(on_hover_assets, self.rect.centerx, self.rect.centery, speed[1])

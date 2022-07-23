@@ -4,7 +4,7 @@ from source.load.template import Scene
 
 
 class PreStartScreen(Scene):
-    def __init__(self, message_list, delay_display, delay_transition, redirect_code):
+    def __init__(self, message_list: list, delay_display: int | float, delay_transition: int | float, redirect_code: str):
         super().__init__()
         self.message_list = message_list
         self.display_message = [False, False, False]
