@@ -6,8 +6,7 @@ pg.init()
 
 class Surface:
     def __init__(self, x: int, y: int, width: int, height: int, color: tuple[int, int, int] = None, alpha: bool = False):
-        self.surface = pg.Surface(
-            (width, height), pg.SRCALPHA, 32) if alpha else pg.Surface((width, height))
+        self.surface = pg.Surface((width, height), pg.SRCALPHA, 32) if alpha else pg.Surface((width, height))
         self.rect = self.surface.get_rect(center=(x, y))
 
         if color is not None:

@@ -78,10 +78,6 @@ class Message:
     req_message_list_3 = _generate_message(["FROM THE", "AMAZING", "FRIDAY NIGHT FUNKIN'"], CustomFont.get_font("phantommuff-empty", const.TITLE_SIZE))
 
 
-_scale = 2  # Increase this to get smaller arrow images
-_game_message_scale = 1.5
-_game_message_scale_2 = 1.7
-
 # Images
 play_button_ss = Spritesheet('./assets/img/spritesheets/play/play.png')
 continue_button_ss = Spritesheet('assets/img/spritesheets/continue/continue.png')

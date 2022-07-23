@@ -42,7 +42,7 @@ class Scene:
         self.redirect = None
         self.allow_keydown = False
 
-    def update(self, is_transitioning):
+    def update(self, is_transitioning: bool):
         """
         Defines what to update every frame
         """
